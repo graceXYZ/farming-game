@@ -1,5 +1,6 @@
 <script>
     import { base } from "$app/paths";
+    import '../styles.css';
 </script>
   
 <nav>
@@ -13,7 +14,7 @@
     nav ul {
         list-style: none;
         padding: 3px 5px;
-        background: #111;
+        background: #5027f2;
     }
 
     a {

@@ -10,6 +10,8 @@
     let programData;
   
     import {levelStore} from '../../lib/stores.js';
+    import { dataset_dev } from 'svelte/internal';
+    
     let level = 0;
   
     levelStore.subscribe(value => {
@@ -30,7 +32,6 @@
   
   <main>
   
-
     <div class="wrapElements">
         
         <div class="wrap">
@@ -91,7 +92,7 @@
     }
 
     main {
-        margin: 0 auto;
+        /* margin: 0 auto; */
     }
 
     .ModalText {
@@ -119,6 +120,7 @@
     }
   
     button {
+      background-color: white;
       font-family: 'Roboto', sans-serif;
       font-style: normal;
       font-weight: 100;
