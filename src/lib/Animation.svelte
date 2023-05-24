@@ -312,7 +312,7 @@
             {/if} -->
             
             <div class="characterSVG" class:hideCell={charPosition[0]!=outerIndex || charPosition[1]!=index}>
-              <Icon name={charSelect} width="120px" height="120px" class="large"/>
+              <Icon name={charSelect} width="{widthBoard / BOARD_SIZE}px" height="{widthBoard / BOARD_SIZE}px" class="large"/>
             </div>
           </div>
         {/each}
