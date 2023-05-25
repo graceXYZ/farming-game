@@ -18,7 +18,7 @@ export function load({ cookies }) {
 
 export const actions = {
 
-    signIn: async ({ request, cookies }) => {
+    default: async ({ request, cookies }) => {
 		const data = await request.formData();
         let name = data.get('name');
         let character = data.get('character');

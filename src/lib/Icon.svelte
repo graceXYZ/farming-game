@@ -1,6 +1,6 @@
 
 <script>
-    export let name;
+    export let name = "femaleWhite";
     export let width = "1rem";
     export let height = "1rem";
 

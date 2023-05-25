@@ -44,7 +44,7 @@
 
 <h2 style="margin-top:1em; margin-bottom: 1em;">Type your name!</h2>
 
-<form method="POST" action="?/signIn">
+<form method="POST">
     <div style="display:flex">
         <input style="margin-left: 5px; height:30px; font-size:20px" type="name" name="name"/>
         <p class:hidden={!visited} style="margin-left:10px"> {defaultName}</p>
