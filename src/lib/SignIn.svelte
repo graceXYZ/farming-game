@@ -4,9 +4,12 @@
     let charOptions = ["femaleWhite","teacher","maleBrown"]
 
     import Icon from "./Icon.svelte";
+    import {goto} from "$app/navigation"
+    import {page} from "$app/stores"
 
     let selected = data.character;
     let defaultName = data.name;
+    let visited = data.visited;
     
     $:{
         console.log(data.character)
@@ -18,6 +21,10 @@
     charSelectStore.subscribe(value => {
         charSelect = value;
     });
+
+    function playGame(){
+        goto("/level0")
+    }
 
 </script>
 
@@ -35,23 +42,24 @@
     {/each}
 </div>
 
-<h2 style="margin-top:1em">Type your name!</h2>
+<h2 style="margin-top:1em; margin-bottom: 1em;">Type your name!</h2>
 
 <form method="POST" action="?/signIn">
     <div style="display:flex">
         <input style="margin-left: 5px; height:30px; font-size:20px" type="name" name="name"/>
-        <p style="margin-left:10px"> {defaultName}</p>
+        <p class:hidden={!visited} style="margin-left:10px"> {defaultName}</p>
     </div>
     <input class="hidden" type="character" name="character" value={selected} />
-    <button style="margin-top: 2em" type="submit">Submit</button>
+    <button style="margin-top: 2em;" type="submit" on:click={playGame}>Let's Play!</button>
 </form>
+
 
 </div>
 
 <style>
     .wrap {
-        width: 500px;
-        margin: 1em 1em;
+        max-width: 500px;
+        margin: 1.5em auto;
         padding: 1em;
         background-color: rgb(246, 246, 246)    
     }
@@ -85,13 +93,16 @@
 
     button {
         margin: 5px;
+        background-color: white;
         border: black 0.5px solid;
     }
 
     .charSelect {
         display: flex;
         flex-wrap: wrap;
-        width: 450px;
+        justify-content: left;
+        margin-top: 1em;
+        /* width: 450px; */
     }
 
 </style>

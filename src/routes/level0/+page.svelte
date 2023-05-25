@@ -5,6 +5,7 @@
     import Modal from "../../lib/Modal.svelte";
   
     import {feedback} from '../../lib/stores.js';
+    import {feedbackCodeS} from '../../lib/stores.js';
   
     let modal;
     let programData;
@@ -16,15 +17,27 @@
   
     levelStore.subscribe(value => {
       level = value;
-      });
+    });
   
     let feedbackThis = "";
     feedback.subscribe(value => {
           feedbackThis = value;
       });
+
+    let feedbackCode= "";
+      feedbackCodeS.subscribe(value => {
+        feedbackCode = value;
+      });
   
     function changeLevel(){
       levelStore.update(n => level)
+      modal.show()
+    }
+
+    function nextLevel(){
+      console.log("next level")
+      level += 1;
+      changeLevel()
     }
   
   </script>
@@ -40,18 +53,39 @@
         </div>
     
       <Modal bind:this={modal}>
-        <h2 style="margin-bottom: 0.1em">Welcome to The Sugar Shortage</h2>
-        <div class="ModalText"> 
-        <p>You are visiting a sugar beet farm to help figure out why all the beet plants are dying!</p>
-        <p>Your first task is to make sure all the plants are watered.</p>
-        <p>Using the toolbox commands on the left, construct a program to move your character around the field and water the plants.</p>
-        <br>
-        <p>Press <strong>Play</strong> to activate your program, and <strong>Reset</strong> to try again. </p>
-        <br>
-        <p>When all the plants are watered, you can move on to the next level!</p>
-      </div>
+        
+
+        <!-- LEVEL 0 -->
+        <h2 class:hide={level!=0}  style="margin-bottom: 0.1em">Welcome to The Sugar Shortage</h2>
+        <div class:hide={level!=0} class="ModalText"> 
+          <p>You are visiting a sugar beet farm to help figure out why all the beet plants are dying!</p>
+          <p>Your first task is to make sure all the plants are watered.</p>
+          <p>Using the toolbox commands on the left, construct a program to move your character around the field and water the plants.</p>
+          <br>
+          <p>Press <strong>Play</strong> to activate your program, and <strong>Reset</strong> to try again. </p>
+          <br>
+          <p>When all the plants are watered, you can move on to the next level!</p>
+        </div>
+
+        <!-- LEVEL 1 -->
+        <h2 class:hide={level!=1}  style="margin-bottom: 0.1em">Level 1</h2>
+        <div class:hide={level!=1}  class="ModalText"> 
+          <p style="margin-bottom: 15px">It's the next day. The farm has expanded and you need to water all the plants again!</p>
+          <p>To communicate more easily with your character, you have a new toolbox option to allow repeated commands!
+            Create a <strong>repeat block</strong> by adding a single indent to each of following commands to be repeated.</p>
+          <br>
+          <br>
+          <br>
+          
+          <img src="../../lib/repeat.png" alt="Repeat block example">
+          <p>Press <strong>Play</strong> to activate your program, and <strong>Reset</strong> to go back to the start. </p>
+          
+          <p>When all the plants are watered, you can move on to the next level!</p>
+        </div>
+
         <button class="modalButton" on:click={() => modal.hide()}>Close</button>
       </Modal>
+
 
       <div class="footerWrap">
         <button on:click={() => modal.show()}>Show instructions</button>
@@ -67,22 +101,31 @@
           </select>
         
         </div>
-        <div class="feedback"> {feedbackThis} </div>
+        <div class="feedback"> 
+          {feedbackThis} 
+          <button class="buttonNext" class:hide={feedbackCode!="correct"} on:click={nextLevel}> Next Level</button>
+        </div>
       </div>
 
       
 
-    </div>
-  
-    
-    
-    
-  
-    
+    </div>    
   
   </main>
   
   <style>
+    .buttonNext {
+      position: absolute;
+      right:0;
+      margin: 0px 10px;
+      padding: 2px !important;
+      width: 130px !important;
+    }
+
+    .hide {
+      display: none;
+    }
+
     .wrap {
         display: flex;
         flex-direction: row;
@@ -115,7 +158,7 @@
       flex-direction: column;
       justify-content: center;
       margin: 0;
-      margin-top: 2.5em;
+      margin-top: 1.5em;
       position: relative;
     }
   
@@ -139,7 +182,9 @@
     }
   
     .feedback {
+      display: flex;
       text-align: right;
+      position: relative;
     }
     
   

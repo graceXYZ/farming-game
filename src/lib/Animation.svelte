@@ -5,6 +5,7 @@
     import { repCountsStore} from '../lib/stores.js';
     import { stepI } from '../lib/stores.js';
     import { feedback } from '../lib/stores.js';
+    import { feedbackCodeS } from '../lib/stores.js';
     import { charSelectStore } from '../lib/stores.js';
     import Icon from "./Icon.svelte";
 
@@ -62,7 +63,7 @@
 
     let feedbackItems = {'drag': 'Drag the toolbox commands into the program and press play!',
                           'incorrect': 'Make sure to water all the plants!',
-                          'correct': 'Great job! All the plants are watered! You completed Level 0!',
+                          'correct': 'Great job! You completed Level 0!',
                           'collision': 'You can\'t walk outside the field!',
                           'bad indent': 'Your indents are not correct!',
                           'start indent': 'Your first command should not be indented!'
@@ -111,6 +112,7 @@
     function updateFeedback(key){
       let newItem = feedbackItems[key]
       feedback.update(n => newItem)
+      feedbackCodeS.update(n=> key)
     }
 
     function outOfBounds(){

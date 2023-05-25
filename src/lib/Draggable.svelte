@@ -55,6 +55,10 @@
 		handleLevelUpdate()
 	});
 
+	function resetAll(){
+		handleLevelUpdate();
+	}
+
 	function handleLevelUpdate(){
 		console.log(" LEVEL UPDATE")
 		console.log(level)
@@ -165,13 +169,27 @@
 
 <div class="together">
 	<Board columns={columnsData} onFinalUpdate={handleBoardUpdated}/>
+	<button class="resetButton" on:click={resetAll}> Clear All </button>
+
 </div>
 
+
 <style>
+.resetButton {
+    position: absolute;
+    right: 15px;
+    bottom: 15px;
+    background-color: white;
+    padding: 5px;
+    /* border: 0.5px black solid; */
+    font-size: 15px;
+  }
+
 .together {
 	display: flex;
 	padding: 0;
 	margin: 0;
+	position: relative;
 }
 	
 :global(*) {

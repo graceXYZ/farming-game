@@ -28,11 +28,31 @@
 	}
 </script>
 
+
+<section class="board">
+  {#each columns as {id, name,items,indents}, idx (id)}
+    <div class:program="{name==='program'}" class="column" animate:flip="{{duration: flipDurationMs}}" >    
+      <Column name={name} items={items} onDrop={(newItems) => handleItemFinalize(idx, name, newItems)}/>
+    </div>
+  {/each}
+
+</section>
+
+
 <style>
+  .resetButton {
+    position: absolute;
+    right: 15px;
+    bottom: 15px;
+    /* background-color: white; */
+    padding: 5px;
+    border: 0.5px black solid;
+    font-size: 15px;
+  }
   .board {
     display:flex;
     /* width: 100%; */
-    /* position: relative; */
+    position: relative;
   }
     .column {
         height: 400px;
@@ -55,11 +75,3 @@
     }
     
 </style>
-
-<section class="board">
-    {#each columns as {id, name,items,indents}, idx (id)}
-  		<div class:program="{name==='program'}" class="column" animate:flip="{{duration: flipDurationMs}}" >    
-				<Column name={name} items={items} onDrop={(newItems) => handleItemFinalize(idx, name, newItems)}/>
-			</div>
-    {/each}
-</section>

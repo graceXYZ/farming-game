@@ -1,3 +1,5 @@
+import { redirect } from '@sveltejs/kit';
+
 export function load({ cookies }) {
 	const visited = cookies.get('visited');
     const name = cookies.get('name');
@@ -15,13 +17,14 @@ export function load({ cookies }) {
 }
 
 export const actions = {
-	signIn: async ({ cookies, request }) => {
+	signIn: async ({ cookies, request, url }) => {
 		const data = await request.formData();
         let name = data.get('name');
         let character = data.get('character');
         cookies.set('name', name, { path: '/' });
         cookies.set('visited',"true",{ path: '/' });
         cookies.set('character', character, { path: '/' });
-        console.log("SETTING DATA")
+        
+        throw redirect(303,'/level0')
 	}
 };
