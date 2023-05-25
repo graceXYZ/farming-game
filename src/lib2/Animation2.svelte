@@ -19,12 +19,13 @@
     let BOARD_SIZE_H = 2;
     let choiceChar = 0;
     let inRepeat = false;
-    let startRepeatIndex = [];
-    // let breakRepeat = [];
-    let currRepeatIndex = -1;
-    let repeatCountsLeft = [];
+    let startRepeatIndex = [0];
+    let repeatCounts = [0];
+    let breakRepeat = [false];
+    let currRepeatIndex = 0;
+
     let iterateTime = 750;
-    
+
     import {levelStore} from '../lib/stores.js';
     let level = 0;
     levelStore.subscribe(value => {
@@ -34,19 +35,16 @@
     let widthBoard = 250;
     let rowHeight = widthBoard / BOARD_SIZE_H;
 
-    // every cell in boardwill have a sapling, or be de-weeded successfully, or be dead. 
-    const WEED_CELL = 0;
-    const DEWEED_CELL = 1;
-    const DEAD_CELL = 2;
+    // every cell in boardwill be empty or have a sapling
+    const EMPTY_CELL = 0;
+    const SAPLING_CELL = 0;
 
     // every cell in boardWaterwill have dry or wet soil
-    const SAPLING_CELL = 0;
     const DRY_CELL = 0;
     const WET_CELL = 1;
     
     let board;
     let boardWater;
-    let boardWeed;
     let charPosition;
     let gameInterval;
 
@@ -60,16 +58,6 @@
         widthBoard = 250;
         iterateTime = 750;
       } else if (level==1){
-        BOARD_SIZE_W = 4;
-        BOARD_SIZE_H = 2;
-        widthBoard = 150;
-        iterateTime = 600;
-      } else if (level==2){
-        BOARD_SIZE_W = 6;
-        BOARD_SIZE_H = 4;
-        widthBoard = 200;
-        iterateTime = 500;
-      } else if (level==3){
         BOARD_SIZE_W = 4;
         BOARD_SIZE_H = 2;
         widthBoard = 150;
@@ -109,34 +97,22 @@
       indents = value;
     });
 
-    let repeatCounts = [];
-    repCountsStore.subscribe(value => {
-      repeatCounts = value;
-    });
+    // let repeatCounts = [];
+    // repCountsStore.subscribe(value => {
+    //   repeatCounts = value;
+    // });
 
     function newGame() {
       board = new Array(BOARD_SIZE_H).fill(0).map(() => new Array(BOARD_SIZE_W).fill(0));
       boardWater = new Array(BOARD_SIZE_H).fill(0).map(() => new Array(BOARD_SIZE_W).fill(0));
-      boardWeed = new Array(BOARD_SIZE_H).fill(0).map(() => new Array(BOARD_SIZE_W).fill(0));
-      // fill weed with random vals
-      for (let outer = 0; outer < BOARD_SIZE_H; outer ++){
-        for (let inner = 0; inner < BOARD_SIZE_W; inner ++){ 
-          boardWeed[outer][inner] = Math.floor(Math.random() * 2);
-        }
-      }
-      
       charPosition = [0, 0];
       updateFeedback('drag')
-      inRepeat = false;
-      startRepeatIndex = [];
-      // breakRepeat = [];
-      currRepeatIndex = -1;
-      repeatCountsLeft = [];
     }
 
 
     function updatePosition(position) {
       charPosition = position;
+      console.log(charPosition)
     }
 
     function updateFeedback(key){
@@ -209,30 +185,25 @@
             return checkForCollision([currX + 1, currY]);
           case 'w':
             return waterCell([currX, currY]);
-          case 'check weed':
-            return dealWithWeed(direction);
-          case 'if weed':
-            return dealWithWeed(direction);
-          case 'deweed':
-            return dealWithWeed(direction);
           case 'repeat':
-            // if we found a NEW repeat. add details. repeat behavior is handled when inRepeat above
-            // console.log(startRepeatIndex)
-            if (startRepeatIndex.length==0 || !startRepeatIndex.includes(stepIndex)) {
-              inRepeat = true;
-              console.log("FOUND NEW REPEAT")
-              currRepeatIndex += 1; 
-              // add # repeats left in repeatCounts. this will be iterated down until 0
-              repeatCountsLeft.push(parseInt(repeatCounts[stepIndex]))
+            // if (breakRepeat){
+            //   breakRepeat = false;
+            //   return;
+            // }
+            // if (breakRepeat){
+            //   // breakRepeat = false;
+            //   return;
+            // }
+            // if we found a NEW repeat!
+            if (!inRepeat) {
+              console.log("FOUND REPEAT")
+              currRepeatIndex += 1;
+              repeatCounts.push(stepIndex)
               startRepeatIndex.push(stepIndex);
-              // breakRepeat.push(false);
+              // inRepeat.push(true)
             }
+            return;
         }
-    }
-
-
-    function dealWithWeed(code){
-      let vals = ['check weed','if weed','deweed'];
     }
 
     
@@ -255,10 +226,9 @@
         stop()
         return
       }
-      // indent increases without REPEAT or CONDITIONAL block starting
+      // indent increases by more than 1 without block starting
       if (indents[stepIndex]==indents[stepIndex-1]+50){
-        console.log(stepsFormat[stepIndex])
-        if (stepsFormat[stepIndex-1]=='repeat' || stepsFormat[stepIndex-1]=='if') {
+        if (inRepeat) {
           return
         } else {
           updateFeedback('bad indent');
@@ -276,32 +246,23 @@
 
       // if repeat block reaches the end of the program
       //   OR if next line is in line or lower than repeat block
-      if (stepIndex == stepsFormat.length || indents[stepIndex]<=indents[startRepeatIndex[currRepeatIndex]]) {
-        repeatCountsLeft[currRepeatIndex] -= 1;
-        console.log(repeatCountsLeft)
-        console.log(currRepeatIndex)
-        // if we've repeated X number of times, stop! REMOVE repeat so if outer repeat, we will do it again.
-        if (repeatCountsLeft[currRepeatIndex] <= 0){
-          // breakRepeat[currRepeatIndex] = true;
-          console.log("break repeat")
-          currRepeatIndex -= 1;
-          startRepeatIndex.pop()
-          repeatCountsLeft.pop()
-          if (currRepeatIndex==-1){
-            inRepeat = false;
-          } else {
-            console.log("GOINT TO PREVIOUS REPEAT")
-            checkRepeat()
-          }
+      if (stepIndex == stepsFormat.length || indents[stepIndex]<=indents[startRepeatIndex]) {
+        repeatCount -= 1;
+        console.log(repeatCount)
+        // if we've repeated X number of times, stop!
+        if (repeatCount <= 0){
+          breakRepeat = true;
+          inRepeat = false;
           return;
         }
         // if more repeats to do, restart section
-        stepI.update(n => startRepeatIndex[currRepeatIndex])
+        stepI.update(n => startRepeatIndex)
       }
     }
 
 
     function checkSuccess() {
+      console.log("Success!")
       let watered;
       watered = allWatered()
       if (watered){
@@ -352,15 +313,13 @@
       {#each board as row, outerIndex}
         {#each row as cell, index}
           <div class="cell" class:character={charPosition[0]==outerIndex && charPosition[1]==index}
-          class:sapling={board[outerIndex][index] == SAPLING_CELL} class:watered={boardWater[outerIndex][index] == WET_CELL}
-          class:weed={level == 3 && boardWeed[outerIndex][index] == 1} class:dead={level == 3 && boardWeed[outerIndex][index] == DEAD_CELL}
-          >
+          class:sapling={board[outerIndex][index] == SAPLING_CELL} class:watered={boardWater[outerIndex][index] == WET_CELL}>
             <!-- {#if board[outerIndex][index] === 1}
               <Character {choiceChar}/>
             {:else if board[outerIndex][index] === 0}
               <Sapling {level}/>
             {/if} -->
-            {boardWeed[outerIndex][index]}
+            {outerIndex},{index}
             
             <div class="characterSVG" class:hideCell={charPosition[0]!=outerIndex || charPosition[1]!=index}>
               <Icon name={charSelect} width="{rowHeight}px" height="{rowHeight}px" class="large"/>
@@ -395,14 +354,6 @@
 
     .sapling {
       background-color: rgba(64, 160, 64, 1);
-    }
-
-    .dead {
-      background-color: rgb(127, 88, 63);
-    }
-
-    .weed {
-      background-color: rgb(160, 214, 60);
     }
 
     .watered {

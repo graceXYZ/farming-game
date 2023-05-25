@@ -6,7 +6,7 @@
 <nav>
     <ul>
       <li><a href="{base}/">Home</a></li>
-      <li><a href="{base}/level0/">Level 0</a></li>
+      <li><a href="{base}/game/">Game</a></li>
     </ul>
 </nav>
 
@@ -24,6 +24,7 @@
 
     li {
     display: inline;
+    padding: 3px 5px;
     }
 
 </style>

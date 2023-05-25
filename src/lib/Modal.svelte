@@ -25,7 +25,7 @@
       height: 350px;
       padding: 1rem;
       position: relative;
-      margin: 2em auto;
+      margin: 4em auto;
     }
     .close {
         float: right;

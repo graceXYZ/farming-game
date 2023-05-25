@@ -15,7 +15,40 @@
 	let toolboxItems, columnsData;
 	
 	
-	handleLevelUpdate()
+	toolboxItems = [
+		{id: 1, name: "move_left()", indent:0},
+		{id: 2, name: "move_right()", indent:0},
+		{id: 3, name: "move_up()", indent:0},
+		{id: 4, name: "move_down()", indent:0},
+		{id: 5, name: "water()", indent:0}
+	]
+	
+	columnsData = [
+		{
+			id: "c1",
+			name: "toolbox",
+			items: [
+				{id: 1, name: "move_left()", indent:0},
+				{id: 2, name: "move_right()", indent:0},
+				{id: 3, name: "move_up()", indent:0},
+				{id: 4, name: "move_down()", indent:0},
+				{id: 5, name: "water()", indent:0}
+			]
+		},
+		{
+			id: "c2",
+			name: "program",
+			items: [
+			]
+		}
+	];
+
+	if (level>0){
+		toolboxItems.push({id: 6, name: "repeat ____ times:", indent:0})
+	}
+	if (level>0){
+		columnsData[0].items.push({id: 6, name: "repeat ____ times:", indent:0})
+	}
 
 	levelStore.subscribe(value => {
 		level = value;
@@ -27,13 +60,15 @@
 	}
 
 	function handleLevelUpdate(){
-		
+		console.log(" LEVEL UPDATE")
+		console.log(level)
 		// reset options
 		toolboxItems = [
-			{id: 1, name: "move_left()", indent:0, repeat:0},
-			{id: 2, name: "move_right()", indent:0, repeat:0},
-			{id: 3, name: "move_up()", indent:0, repeat:0},
-			{id: 4, name: "move_down()", indent:0, repeat:0},
+			{id: 1, name: "move_left()", indent:0},
+			{id: 2, name: "move_right()", indent:0},
+			{id: 3, name: "move_up()", indent:0},
+			{id: 4, name: "move_down()", indent:0},
+			{id: 5, name: "water()", indent:0}
 		]
 		
 		columnsData = [
@@ -41,10 +76,11 @@
 				id: "c1",
 				name: "toolbox",
 				items: [
-					{id: 1, name: "move_left()", indent:0, repeat:0},
-					{id: 2, name: "move_right()", indent:0, repeat:0},
-					{id: 3, name: "move_up()", indent:0, repeat:0},
-					{id: 4, name: "move_down()", indent:0, repeat:0},
+					{id: 1, name: "move_left()", indent:0},
+					{id: 2, name: "move_right()", indent:0},
+					{id: 3, name: "move_up()", indent:0},
+					{id: 4, name: "move_down()", indent:0},
+					{id: 5, name: "water()", indent:0}
 				]
 			},
 			{
@@ -54,26 +90,15 @@
 				]
 			}
 		];
-		// add level-dependent commands
-		if (level<3){
-			toolboxItems.push({id: 5, name: "water()", indent:0, repeat:0})
-			columnsData[0].items.push({id: 5, name: "water()", indent:0, repeat:0})
+		// add repeat if level > 0
+		if (level>0){
+			toolboxItems.push({id: 6, name: "repeat ____ times:", indent:0})
 		}
-
-		if (level>=1){
-			toolboxItems.push({id: 6, name: "repeat ____ times:", indent:0, repeat:0})
-			columnsData[0].items.push({id: 6, name: "repeat ____ times:", indent:0, repeat:0})
-		}
-
-		if (level==3){
-			toolboxItems.push({id: 9, name: "weed = check()", indent:0, repeat:0})
-			columnsData[0].items.push({id: 9, name: "weed = check()", indent:0, repeat:0})
-			toolboxItems.push({id: 7, name: "if weed:", indent:0, repeat:0})
-			columnsData[0].items.push({id: 7, name: "if weed:", indent:0, repeat:0})
-			toolboxItems.push({id: 8, name: "remove_weeds()", indent:0, repeat:0})
-			columnsData[0].items.push({id: 8, name: "remove_weeds()", indent:0, repeat:0})
+		if (level>0){
+			columnsData[0].items.push({id: 6, name: "repeat ____ times:", indent:0})
 		}
 		
+
 	}
 
 

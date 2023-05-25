@@ -125,14 +125,14 @@
     .leftbutton {
       width: 90px;
       height: 3em;
-      padding: 0.5em 0.5em;
+      padding: 0.5em 1em;
       margin: 0;
       text-align: left;
     }
     .rightbutton {
       width: 90px;
       height: 3em;
-      padding: 0.5em 0.5em;
+      padding: 0.5em 1em;
       margin: 0;
       text-align: right;
     }
@@ -160,7 +160,7 @@
 
            <div class="card" animate:flip="{{duration: flipDurationMs}}" style="margin-left: {item.indent}px;" class:toolbox="{name==='toolbox'}" class:selected={stepIndex==i && name==='program'}>
             <div class="buttons">
-              <div class="leftbutton" style="font-weight: 900;" on:click={toggleIndentDown(item)} class:hide={level == 0 || (item.name=="repeat ____ times:" && level == 1)}>
+              <div class="leftbutton" style="font-weight: 900;" on:click={toggleIndentDown(item)} class:hide={level == 0 || item.name=="repeat ____ times:"}>
                 {'<'}
               </div>
               <div class="selectRepeat" class:hide={level == 0 || item.name!="repeat ____ times:"}>
@@ -182,7 +182,7 @@
                   </option>
                 </select>
               </div>
-              <div class="rightbutton" style="font-weight: 900;" on:click={toggleIndent(item)} class:hide={level == 0 || (item.name=="repeat ____ times:" && level == 1)}>
+              <div class="rightbutton" style="font-weight: 900;" on:click={toggleIndent(item)} class:hide={level == 0 || item.name=="repeat ____ times:"}>
                 {'>'}
               </div>
             </div>

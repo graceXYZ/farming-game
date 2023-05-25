@@ -8,6 +8,7 @@
     import {feedbackCodeS} from '../../lib/stores.js';
 
     import repeatImg from '../../lib/repeat.png';
+    import repeat2Img from '../../lib/nestRepeat.png';
   
     let modal;
     let programData;
@@ -71,7 +72,7 @@
 
         <!-- LEVEL 1 -->
         <h2 class:hide={level!=1}  style="margin-bottom: 0.1em">Level 1</h2>
-        <div class:hide={level!=1}  class="ModalText"> 
+        <div class:hide={level!=1}  class="ModalTextNarrow"> 
           <p style="margin-bottom: 15px">It's the next day. The farm has expanded and you need to water all the plants again!</p>
           <p>To communicate more easily with your character, you have a new toolbox option to allow repeated commands!
             Create a <strong>repeat block</strong> by adding a single indent to each of following commands to be repeated.</p>
@@ -81,6 +82,37 @@
           <p>Press <strong>Play</strong> to activate your program, and <strong>Reset</strong> to go back to the start. </p>
           
           <p>When all the plants are watered, you can move on to the next level!</p>
+        </div>
+
+
+        <!-- LEVEL 2 -->
+        <h2 class:hide={level!=2}  style="margin-bottom: 0.1em">Level 2</h2>
+        <div class:hide={level!=2}  class="ModalTextNarrow"> 
+          <p style="margin-bottom: 15px">It's the next day. The farm has expanded and you need to water all the plants again!</p>
+          <p>You can now use <strong>nested repeats</strong> by adding repeat blocks inside of repeat blocks!</p>
+          <br>
+          <br>
+          <img src={repeat2Img} alt="Repeat block example" width="200px" style="position:absolute; right:25px; top: 55px">
+          <p>Press <strong>Play</strong> to activate your program, and <strong>Reset</strong> to go back to the start. </p>
+          
+          <p>When all the plants are watered, you can move on to the next level!</p>
+        </div>
+
+        <button class="modalButton" on:click={() => modal.hide()}>Close</button>
+
+
+        <!-- LEVEL 3 -->
+        <h2 class:hide={level!=3}  style="margin-bottom: 0.1em">Level 3</h2>
+        <div class:hide={level!=3}  class="ModalTextNarrow"> 
+          <p style="margin-bottom: 15px"> WARNING! There are a lot of weeds growing among the beet seedlings. 
+            You must go around and de-weed the plants before the weeds! But be careful, 
+            You don't want to uproot the beet seedlings! 
+            If there are weeds in a block, de-weed them. </p>
+          <br>
+          <img src={repeatImg} alt="Repeat block example" width="200px" style="position:absolute; right:25px; top: 55px">
+          <p>Press <strong>Play</strong> to activate your program, and <strong>Reset</strong> to go back to the start. </p>
+          
+          <p>When all the weeds are removed, you can move on to the next level!</p>
         </div>
 
         <button class="modalButton" on:click={() => modal.hide()}>Close</button>
@@ -97,6 +129,12 @@
             </option>
             <option value=1>
               {1}
+            </option>
+            <option value=2>
+              {2}
+            </option>
+            <option value=3>
+              {3}
             </option>
           </select>
         
@@ -141,7 +179,11 @@
     .ModalText {
       text-align: left;
       padding: 0.5em;
-      width: 73%;
+    }
+    .ModalTextNarrow {
+      text-align: left;
+      padding: 0.5em;
+      width: 70%;
     }
     .modalButton {
           position:absolute;

@@ -27,6 +27,6 @@ export const actions = {
         cookies.set('visited',"true",{ path: '/' });
         cookies.set('character', character, { path: '/' });
         
-        throw redirect(303,'/level0')
+        throw redirect(303,'/game')
 	}
 };
