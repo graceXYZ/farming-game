@@ -17,10 +17,12 @@ export function load({ cookies }) {
 }
 
 export const actions = {
-	signIn: async ({ cookies, request, url }) => {
+
+    signIn: async ({ request, cookies }) => {
 		const data = await request.formData();
         let name = data.get('name');
         let character = data.get('character');
+        let visited = cookies.get('visited');
         cookies.set('name', name, { path: '/' });
         cookies.set('visited',"true",{ path: '/' });
         cookies.set('character', character, { path: '/' });
