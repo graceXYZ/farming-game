@@ -15,12 +15,14 @@
     });
 
     let x = 0
-    let BOARD_SIZE = 2;
+    let BOARD_SIZE_W = 2;
+    let BOARD_SIZE_H = 2;
     let choiceChar = 0;
     let inRepeat = false;
     let startRepeatIndex = 0;
     let repeatCount = 0;
     let breakRepeat = false;
+    let iterateTime = 750;
 
     import {levelStore} from '../lib/stores.js';
     let level = 0;
@@ -29,7 +31,7 @@
     });
 
     let widthBoard = 250;
-    let rowHeight = widthBoard / BOARD_SIZE;
+    let rowHeight = widthBoard / BOARD_SIZE_H;
 
     // every cell in boardwill be empty or have a sapling
     const EMPTY_CELL = 0;
@@ -49,12 +51,17 @@
       console.log("LEVEL CHANGED")
       console.log(level);
       if (level== 0){
-        BOARD_SIZE = 2;
+        BOARD_SIZE_W = 2;
+        BOARD_SIZE_H = 2;
+        widthBoard = 250;
+        iterateTime = 750;
       } else if (level==1){
-        BOARD_SIZE = 3;
+        BOARD_SIZE_W = 4;
+        BOARD_SIZE_H = 2;
+        widthBoard = 150;
+        iterateTime = 600;
       }
-      widthBoard = 250;
-      rowHeight = widthBoard / BOARD_SIZE;
+      rowHeight = widthBoard / BOARD_SIZE_H;
       newGame();
     }
 
@@ -63,7 +70,7 @@
 
     let feedbackItems = {'drag': 'Drag the toolbox commands into the program and press play!',
                           'incorrect': 'Make sure to water all the plants!',
-                          'correct': 'Great job! You completed Level 0!',
+                          'correct': 'Great job! You completed this level!',
                           'collision': 'You can\'t walk outside the field!',
                           'bad indent': 'Your indents are not correct!',
                           'start indent': 'Your first command should not be indented!'
@@ -94,19 +101,16 @@
     });
 
     function newGame() {
-        board = [...Array(BOARD_SIZE)].map(() => Array(BOARD_SIZE).fill(0));
-        boardWater = [...Array(BOARD_SIZE)].map(() => Array(BOARD_SIZE).fill(0));
-        charPosition = [0, 0];
+      board = new Array(BOARD_SIZE_H).fill(0).map(() => new Array(BOARD_SIZE_W).fill(0));
+      boardWater = new Array(BOARD_SIZE_H).fill(0).map(() => new Array(BOARD_SIZE_W).fill(0));
+      charPosition = [0, 0];
+      updateFeedback('drag')
     }
 
 
     function updatePosition(position) {
       charPosition = position;
-    }
-
-    function addSaplings(){
-      let pos = Math.floor(BOARD_SIZE / 2);
-      board[pos][pos] = SAPLING_CELL;
+      console.log(charPosition)
     }
 
     function updateFeedback(key){
@@ -125,7 +129,7 @@
     function checkForCollision(position) {
         const [x, y] = position;
 
-        if (x < 0 || x === BOARD_SIZE || y < 0 || y === BOARD_SIZE) return outOfBounds();
+        if (x < 0 || x === BOARD_SIZE_H || y < 0 || y === BOARD_SIZE_W) return outOfBounds();
         // if (board[x][y] === SNEK_CELL) return gameOver();
         // if (board[x][y] === FOOD_CELL) return eatFood(position);
 
@@ -253,7 +257,6 @@
     }
 
 
-
     function checkSuccess() {
       console.log("Success!")
       let watered;
@@ -266,8 +269,8 @@
     }
 
     function allWatered(){
-      for (let outer = 0; outer < BOARD_SIZE; outer ++){
-        for (let inner = 0; inner < BOARD_SIZE; inner ++){ 
+      for (let outer = 0; outer < BOARD_SIZE_H; outer ++){
+        for (let inner = 0; inner < BOARD_SIZE_W; inner ++){ 
           if (boardWater[outer][inner] == DRY_CELL) {
             console.log("NOT ALL WATERED!")
             return false;
@@ -285,7 +288,7 @@
         }
         started = true;
     
-        gameInterval = setInterval(move, 750);
+        gameInterval = setInterval(move, iterateTime);
     }
 
     function reset() {
@@ -302,7 +305,7 @@
   <h2>field</h2>
 
 
-  <div class="field" style="grid-template-columns: repeat({BOARD_SIZE}, 1fr); grid-auto-rows: {rowHeight};">
+  <div class="field" style="grid-template-columns: repeat({BOARD_SIZE_W}, 1fr); grid-auto-rows: {rowHeight}; width:{BOARD_SIZE_W*rowHeight}px; height:{BOARD_SIZE_H*rowHeight}px">
       {#each board as row, outerIndex}
         {#each row as cell, index}
           <div class="cell" class:character={charPosition[0]==outerIndex && charPosition[1]==index}
@@ -312,10 +315,12 @@
             {:else if board[outerIndex][index] === 0}
               <Sapling {level}/>
             {/if} -->
+            {outerIndex},{index}
             
             <div class="characterSVG" class:hideCell={charPosition[0]!=outerIndex || charPosition[1]!=index}>
-              <Icon name={charSelect} width="{widthBoard / BOARD_SIZE}px" height="{widthBoard / BOARD_SIZE}px" class="large"/>
+              <Icon name={charSelect} width="{rowHeight}px" height="{rowHeight}px" class="large"/>
             </div>
+
           </div>
         {/each}
       {/each}
@@ -364,28 +369,26 @@
       border: 0.1px black solid;
     }
     .controls {
-        margin: 1em auto;
+        margin: auto;
         display: flex;
         justify-content: center;
+        height: 40px;
     }
 
     .field {
-        width: 250px;
-        height: 250px;
-        margin: 0 auto;
+        margin: auto 0;
         background-color: rgb(245, 245, 245);        
-        position: relative;
+        /* position: relative; */
         display: grid;
     }
     .wrapper {
         position: relative;
-        padding: 0.5em;
+        padding: 1em;
         margin: 0.5em;
-        width: 280px;
+        min-width: 280px;
         border: solid black 1px;
-        display:flex;
-        flex-direction: column;
-        flex-wrap: wrap;
+        display:grid;
+        grid-template-rows: 50px 1fr 60px;
     }
 
     @font-face {
@@ -404,7 +407,7 @@
       align-items: center;
       font-size: 1.7em;
       user-select: none;
-      margin: 10px auto;
+      margin: 0px auto;
     }
 
     button {

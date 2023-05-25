@@ -6,6 +6,8 @@
   
     import {feedback} from '../../lib/stores.js';
     import {feedbackCodeS} from '../../lib/stores.js';
+
+    import repeatImg from '../../lib/repeat.png';
   
     let modal;
     let programData;
@@ -75,9 +77,7 @@
             Create a <strong>repeat block</strong> by adding a single indent to each of following commands to be repeated.</p>
           <br>
           <br>
-          <br>
-          
-          <img src="../../lib/repeat.png" alt="Repeat block example">
+          <img src={repeatImg} alt="Repeat block example" width="200px" style="position:absolute; right:25px; top: 55px">
           <p>Press <strong>Play</strong> to activate your program, and <strong>Reset</strong> to go back to the start. </p>
           
           <p>When all the plants are watered, you can move on to the next level!</p>
@@ -141,6 +141,7 @@
     .ModalText {
       text-align: left;
       padding: 0.5em;
+      width: 73%;
     }
     .modalButton {
           position:absolute;

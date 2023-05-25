@@ -55,7 +55,7 @@
     position: relative;
   }
     .column {
-        height: 400px;
+        height: 500px;
         width: 200px;
         padding: 0.5em;
         margin: 0.5em;

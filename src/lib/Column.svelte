@@ -73,7 +73,7 @@
 		overflow-y: hidden;
 	}
 	.column-content {
-        height: 350px;
+        height: 385px;
         /* Notice that the scroll container needs to be the dndzone if you want dragging near the edge to trigger scrolling */
         overflow-y: scroll;
     }
