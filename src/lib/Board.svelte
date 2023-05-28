@@ -1,6 +1,12 @@
 <script>
 	import { flip } from 'svelte/animate';
 	import Column from "./Column.svelte";
+  import {levelStore} from '../lib/stores.js';
+	let level=0;
+	levelStore.subscribe(value => {
+		level = value;
+  });
+
 
 	const flipDurationMs = 300;
 	
@@ -31,7 +37,7 @@
 
 <section class="board">
   {#each columns as {id, name,items,indents}, idx (id)}
-    <div class:program="{name==='program'}" class="column" animate:flip="{{duration: flipDurationMs}}" >    
+    <div  class:wideToolbox="{level==3}" class:program="{name==='program'}" class:wideProgram={level==3 && name==='program'} class="column" animate:flip="{{duration: flipDurationMs}}" >    
       <Column name={name} items={items} onDrop={(newItems) => handleItemFinalize(idx, name, newItems)}/>
     </div>
   {/each}
@@ -49,24 +55,36 @@
     border: 0.5px black solid;
     font-size: 15px;
   }
+
   .board {
     display:flex;
     /* width: 100%; */
     position: relative;
   }
-    .column {
-        height: 500px;
-        width: 200px;
-        padding: 0.5em;
-        margin: 0.5em;
-        float: left;
-        /* border: 1px solid #333333; */
-        background-color: rgb(245, 245, 245);
-    }
-    .program {
+
+  .column {
+      height: 500px;
+      min-width: 210px; 
+      padding: 0.5em;
+      margin: 0.5em;
+      float: left;
+      /* border: 1px solid #333333; */
+      background-color: rgb(245, 245, 245);
+  }
+
+  .program {
       width: 100%;
       min-width: 300px;
-      max-width: 350px !important;
+      /* max-width: 500px !important; */
+    }
+
+    .wideProgram {
+      min-width: 360px !important;
+      max-width: 690px !important;
+    }
+
+    .wideToolbox {
+      width: 260px !important;
     }
 
     @font-face {

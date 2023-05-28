@@ -9,10 +9,18 @@
     import { charSelectStore } from '../lib/stores.js';
     import Icon from "./Icon.svelte";
 
+    // let weedCheckPosition = 0;
+    let currentWeedVal = -1; // -1 if not set. 0 if sapling. 1 if weed. 2 if dead.
+    let nextStepIndexWeed = 0;
+    let executeSkipBlockWeed = false;
+    let resetPending = false;
+
     let charSelect;
     charSelectStore.subscribe(value => {
       charSelect = value;
     });
+
+    let startorPause = ["Start","Pause"]
 
     let x = 0
     let BOARD_SIZE_W = 2;
@@ -26,6 +34,7 @@
     let iterateTime = 750;
     
     import {levelStore} from '../lib/stores.js';
+    import { navigating } from '$app/stores';
     let level = 0;
     levelStore.subscribe(value => {
       level = value;
@@ -47,6 +56,7 @@
     let board;
     let boardWater;
     let boardWeed;
+    let blockedCells;
     let charPosition;
     let gameInterval;
 
@@ -70,24 +80,26 @@
         widthBoard = 200;
         iterateTime = 500;
       } else if (level==3){
-        BOARD_SIZE_W = 4;
-        BOARD_SIZE_H = 2;
-        widthBoard = 150;
+        BOARD_SIZE_W = 1;
+        BOARD_SIZE_H = 5;
+        widthBoard = 350;
         iterateTime = 600;
       }
       rowHeight = widthBoard / BOARD_SIZE_H;
       newGame();
     }
 
-
-    let started = false;
+    let started = 0;
 
     let feedbackItems = {'drag': 'Drag the toolbox commands into the program and press play!',
                           'incorrect': 'Make sure to water all the plants!',
                           'correct': 'Great job! You completed this level!',
                           'collision': 'You can\'t walk outside the field!',
                           'bad indent': 'Your indents are not correct!',
-                          'start indent': 'Your first command should not be indented!'
+                          'start indent': 'Your first command should not be indented!',
+                          'bad variable use': "You used a variable without setting its value!",
+                          'correctWeed': "You successfully removed all weeds without killing the beets!",
+                          'incorrectWeed': "There are weeds and/or dead beets :("
                         }; 
 
 
@@ -98,6 +110,7 @@
     stepI.subscribe(value => {
       stepIndex = value;
     });
+    let nextStepIndex = 0;
 
     let stepsFormat = [];
     steps.subscribe(value => {
@@ -118,6 +131,11 @@
       board = new Array(BOARD_SIZE_H).fill(0).map(() => new Array(BOARD_SIZE_W).fill(0));
       boardWater = new Array(BOARD_SIZE_H).fill(0).map(() => new Array(BOARD_SIZE_W).fill(0));
       boardWeed = new Array(BOARD_SIZE_H).fill(0).map(() => new Array(BOARD_SIZE_W).fill(0));
+      blockedCells = new Array(BOARD_SIZE_H).fill(0).map(() => new Array(BOARD_SIZE_W).fill(0));
+      if (level == 2){
+        blockedCells[1][1] = 1;
+      }
+      
       // fill weed with random vals
       for (let outer = 0; outer < BOARD_SIZE_H; outer ++){
         for (let inner = 0; inner < BOARD_SIZE_W; inner ++){ 
@@ -137,6 +155,7 @@
 
     function updatePosition(position) {
       charPosition = position;
+      nextStepIndex = stepIndex + 1;
     }
 
     function updateFeedback(key){
@@ -148,7 +167,8 @@
     function outOfBounds(){
       console.log("cant move that way!")
       updateFeedback("collision")
-      stop()
+      resetPending = true;
+      stop();
     }
 
 
@@ -165,16 +185,21 @@
     function waterCell(position){
       const [x, y] = position;
       boardWater[x][y] = WET_CELL;
-    }
-
-    function stop() {
-        clearInterval(gameInterval);
-        stepI.update(n => -1)
-        return
+      nextStepIndex = stepIndex + 1;
     }
 
     function move() {
-        stepI.update(n => n+1)
+
+
+        stepI.update(n => nextStepIndex)
+        console.log("STEP INDEX: " + stepIndex)
+
+        if (stepIndex > stepsFormat.length) {
+          checkSuccess();
+          resetPending = true;
+          stop();
+          return
+        }
 
         // if we are in a repeat section
         // check if we're at the end of the repeat section. if so, move back up.
@@ -184,11 +209,16 @@
 
         // check correct indent (if increase indent with no repeat, throw error)
         checkIndent()
-        
+
+        // if (executeSkipBlockWeed) {
+        //   executeSkipBlockWeed = false;
+        //   stepI.update(n => nextStepIndexWeed)
+        // }
 
         if (stepIndex >= stepsFormat.length) {
           checkSuccess();
-          stop()
+          resetPending = true;
+          stop();
           return
         }
         
@@ -210,11 +240,11 @@
           case 'w':
             return waterCell([currX, currY]);
           case 'check weed':
-            return dealWithWeed(direction);
+            return dealWithWeed([currX, currY, direction]);
           case 'if weed':
-            return dealWithWeed(direction);
+            return dealWithWeed([currX, currY, direction]);
           case 'deweed':
-            return dealWithWeed(direction);
+            return dealWithWeed([currX, currY, direction]);
           case 'repeat':
             // if we found a NEW repeat. add details. repeat behavior is handled when inRepeat above
             // console.log(startRepeatIndex)
@@ -227,12 +257,54 @@
               startRepeatIndex.push(stepIndex);
               // breakRepeat.push(false);
             }
+            nextStepIndex = stepIndex + 1;
         }
     }
 
 
-    function dealWithWeed(code){
+    function dealWithWeed([currX, currY, direction]){
       let vals = ['check weed','if weed','deweed'];
+
+      // check_weed()
+      if (direction == vals[0]) {
+        currentWeedVal = boardWeed[currX][currY]; 
+        nextStepIndex = stepIndex + 1;
+        console.log("update weed val:" + currentWeedVal)
+        
+      } else if (direction == vals[1]) { // if weed:
+        // if we haven't set 'weed' variable
+        if (currentWeedVal==-1){
+          console.log("currentWeedVal not set")
+          updateFeedback("bad variable use")
+          resetPending = true;
+          stop();
+        } else if (currentWeedVal==1) {
+          // if weed is true (has weed), continue and enter block
+          console.log("if weed true, continue")
+          nextStepIndex = stepIndex + 1;
+        } else {
+          console.log("if weed false, skip block")
+          // if weed is false (sapling or dead), skip block
+          // find next step index without this indent
+          nextStepIndexWeed = stepIndex+1;
+          while (nextStepIndexWeed < stepsFormat.length && indents[nextStepIndexWeed]==indents[stepIndex]+50){
+            nextStepIndexWeed += 1; 
+            executeSkipBlockWeed = true;
+          }
+          console.log("skipping to index: " + nextStepIndexWeed)
+          nextStepIndex = nextStepIndexWeed;
+        }
+
+      } else {
+        // remove_weed()
+        if (boardWeed[currX][currY]==1) {
+          boardWeed[currX][currY] = 0;
+        } else { // removed sapling!!
+          // updateFeedback("dead")
+          boardWeed[currX][currY] = 2;
+        }
+        nextStepIndex = stepIndex + 1;
+      }
     }
 
     
@@ -243,6 +315,7 @@
       // start with indent
       if (indents[0]!=0){
         updateFeedback('start indent');
+        resetPending = true;
         stop()
         return
       }
@@ -252,17 +325,19 @@
         console.log(indents[stepIndex])
         console.log(indents[stepIndex-1]+50)
         console.log("INDENT 1 CASE")
+        resetPending = true;
         stop()
         return
       }
       // indent increases without REPEAT or CONDITIONAL block starting
       if (indents[stepIndex]==indents[stepIndex-1]+50){
         console.log(stepsFormat[stepIndex])
-        if (stepsFormat[stepIndex-1]=='repeat' || stepsFormat[stepIndex-1]=='if') {
+        if (stepsFormat[stepIndex-1]=='repeat' || stepsFormat[stepIndex-1]=='if weed') {
           return
         } else {
           updateFeedback('bad indent');
           console.log("INDENT 2 CASE")
+          resetPending = true;
           stop()
           return 
         }
@@ -276,8 +351,18 @@
 
       // if repeat block reaches the end of the program
       //   OR if next line is in line or lower than repeat block
-      if (stepIndex == stepsFormat.length || indents[stepIndex]<=indents[startRepeatIndex[currRepeatIndex]]) {
+
+      //   OR if we are skipping an internal conditional block that ends a repeat
+      let internalConditionalBlockEnd = false;
+      if (executeSkipBlockWeed && nextStepIndexWeed == stepsFormat.length){
+        internalConditionalBlockEnd = true;
+        executeSkipBlockWeed = false;
+        console.log("SAVE REPEAT")
+      }
+      
+      if (stepIndex == stepsFormat.length || internalConditionalBlockEnd || indents[stepIndex]<=indents[startRepeatIndex[currRepeatIndex]]) {
         repeatCountsLeft[currRepeatIndex] -= 1;
+        console.log("WHOOOO")
         console.log(repeatCountsLeft)
         console.log(currRepeatIndex)
         // if we've repeated X number of times, stop! REMOVE repeat so if outer repeat, we will do it again.
@@ -289,6 +374,12 @@
           repeatCountsLeft.pop()
           if (currRepeatIndex==-1){
             inRepeat = false;
+            // if weed is true and block ends program,
+            // if ( boardWeed[weedCheckPosition[0]][weedCheckPosition[1]] &&  nextStepIndexWeed >= stepsFormat.length) {
+            //   executeSkipBlockWeed = true;
+            // }
+            // console.log(nextStepIndexWeed)
+            // console.log(weedCheckPosition)
           } else {
             console.log("GOINT TO PREVIOUS REPEAT")
             checkRepeat()
@@ -302,18 +393,50 @@
 
 
     function checkSuccess() {
-      let watered;
-      watered = allWatered()
-      if (watered){
-        updateFeedback('correct');
+      if (level < 3){
+        let watered;
+        watered = allWatered()
+        if (watered){
+          updateFeedback('correct');
+        } else {
+          updateFeedback('incorrect');
+        }
       } else {
-        updateFeedback('incorrect');
+        let weeded;
+        weeded = allWeeded();
+        if (weeded){
+          console.log("correct weed")
+          updateFeedback('correctWeed');
+        } else {
+          console.log("incorrect weed")
+          updateFeedback('incorrectWeed');
+        }
       }
+      
+    }
+
+    function allWeeded() {
+      for (let outer = 0; outer < BOARD_SIZE_H; outer ++){
+        for (let inner = 0; inner < BOARD_SIZE_W; inner ++){ 
+          if (level==3 && outer ==0 && inner==0){
+            continue;
+          }
+          if (boardWeed[outer][inner] != 0) { // if any are dead (2) or have weeds (1)
+            console.log("NOT ALL WEEDED!")
+            return false;
+          }
+        }
+      }
+      console.log("ALL WEEDED!")
+      return true;
     }
 
     function allWatered(){
       for (let outer = 0; outer < BOARD_SIZE_H; outer ++){
         for (let inner = 0; inner < BOARD_SIZE_W; inner ++){ 
+          if (level==3 && outer ==0 && inner==0){
+            continue;
+          }
           if (boardWater[outer][inner] == DRY_CELL) {
             console.log("NOT ALL WATERED!")
             return false;
@@ -324,19 +447,49 @@
       return true;
     }
 
+
     function start() {
-        stepI.update(n => -1)
-        if (started) {
+        if (stepIndex >= stepsFormat.length || resetPending) {
           reset();
         }
-        started = true;
-    
-        gameInterval = setInterval(move, iterateTime);
+        resetPending = false;
+        // start if we're not started
+        if (started==0) {
+          gameInterval = setInterval(move, iterateTime);
+          started = 1;
+        } else { // pause if we're started
+          started = 0;
+          clearInterval(gameInterval);
+        }
     }
 
+
+    function stop() {
+        clearInterval(gameInterval);
+        stepI.update(n => -1)
+        started = 0;
+        return
+    }
+
+
+    // function pause() {
+    //   if (started){
+    //     gameInterval = setInterval(move, iterateTime);
+    //   } else {
+    //     clearInterval(gameInterval);
+    //   }
+    // }
+
+
     function reset() {
+        clearInterval(gameInterval);
+        currentWeedVal = -1;
+        stepI.update(n => -1);
+        started = 0;
+        nextStepIndex = 0;
         newGame();
     }
+
 
     newGame();
     
@@ -354,13 +507,14 @@
           <div class="cell" class:character={charPosition[0]==outerIndex && charPosition[1]==index}
           class:sapling={board[outerIndex][index] == SAPLING_CELL} class:watered={boardWater[outerIndex][index] == WET_CELL}
           class:weed={level == 3 && boardWeed[outerIndex][index] == 1} class:dead={level == 3 && boardWeed[outerIndex][index] == DEAD_CELL}
-          >
+          class:startBox={level==3 && outerIndex==0 && index == 0}
+          class:blocked = {blockedCells[outerIndex][index]==1}>
             <!-- {#if board[outerIndex][index] === 1}
               <Character {choiceChar}/>
             {:else if board[outerIndex][index] === 0}
               <Sapling {level}/>
             {/if} -->
-            {boardWeed[outerIndex][index]}
+            {blockedCells[outerIndex][index]}
             
             <div class="characterSVG" class:hideCell={charPosition[0]!=outerIndex || charPosition[1]!=index}>
               <Icon name={charSelect} width="{rowHeight}px" height="{rowHeight}px" class="large"/>
@@ -372,8 +526,9 @@
   </div>
 
   <div class="controls">
-    <button on:click={start}> Play</button>
+    <button on:click={start}> {startorPause[started]}</button>
     <button on:click={reset}> Restart</button>
+    <!-- <button on:click={pause}>  </button> -->
   </div>
   
 
@@ -401,8 +556,16 @@
       background-color: rgb(127, 88, 63);
     }
 
+    .startBox {
+      background-color: rgb(203, 203, 203) !important;
+    }
+
     .weed {
       background-color: rgb(160, 214, 60);
+    }
+
+    .blocked {
+      background-color: black;
     }
 
     .watered {
@@ -429,7 +592,7 @@
     }
 
     .field {
-        margin: auto 0;
+        margin: auto auto;
         background-color: rgb(245, 245, 245);        
         /* position: relative; */
         display: grid;
@@ -442,6 +605,7 @@
         border: solid black 1px;
         display:grid;
         grid-template-rows: 50px 1fr 60px;
+        
     }
 
     @font-face {

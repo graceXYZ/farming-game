@@ -1,15 +1,15 @@
 <script>
 	import { flip } from 'svelte/animate';
-    import { dndzone } from 'svelte-dnd-action';
+  import { dndzone } from 'svelte-dnd-action';
 
-    import { repCountsStore} from '../lib/stores.js';
+  import { repCountsStore} from '../lib/stores.js';
 
   import { stepI } from '../lib/stores.js';
   let stepIndex = -1;
     stepI.subscribe(value => {
       stepIndex = value;
     });
-    
+  
   import {levelStore} from '../lib/stores.js';
 	let level=0;
 	levelStore.subscribe(value => {
@@ -18,19 +18,18 @@
 
   const flipDurationMs = 150;
 
-  repCountsStore
-
-  let repeatCounts = [];
-
   let answer = '';
 
 	export let name;
 	export let items;
 	export let onDrop;
 
-  function handleRepSelect(){
+  let repValues = [];
+
+  function handleRepSelect(i){
     console.log("CHANGE REP")
-    repCountsStore.update(contents => repeatCounts)
+    console.log(items[i])
+    onDrop(items);
   }
   
 	
@@ -98,7 +97,7 @@
     .card {
       position: relative;
       height: 2em;
-      width: 180px;
+      width: 190px;
       margin: 0.2em 0;
       padding: 1.5em 1em;
       display: flex;
@@ -110,9 +109,11 @@
       font-weight: 100;
       color: #000000;
     }
-    /* .program {
-      width: 400px !important;
-    } */
+
+    .wide {
+      width: 240px !important;
+    }
+    
     .toolbox {
       margin-left: 0px !important;
     }
@@ -120,32 +121,64 @@
       top: 0;
       left: 0;
       position: absolute;
-      display: flex;
+      width: 100%;
     }
     .leftbutton {
-      width: 90px;
+      width: 70px;
       height: 3em;
-      padding: 0.5em 0.5em;
-      margin: 0;
-      text-align: left;
+      position: absolute;
+      left:0;
+      top:0;
     }
     .rightbutton {
-      width: 90px;
+      width: 70px;
       height: 3em;
-      padding: 0.5em 0.5em;
-      margin: 0;
-      text-align: right;
+      position: absolute;
+      right:0;
+      top:0;
     }
+
+    .rightbutton button {
+      padding: 0;
+      width: 20px;
+      height: 60%;
+      position: absolute;
+      top: 20%;
+      right: 5%;
+      /* background-color: #dddddd;
+      border: 0.5px gray solid; */
+    }
+
+    .leftbutton button {
+      padding: 0;
+      width: 20px;
+      height: 60%;
+      position: absolute;
+      background-color: none;
+      top: 20%;
+      left: 5%;
+      /* background-color: #dddddd;
+      border: 0.5px gray solid; */
+    }
+
     .hide {
       display: none;
     }
     .selectRepeat {
       position: absolute;
       top: 12px;
-      left: 74px;
+      left: 78px;
     }
     .selectDirect {
       width: 34px;
+    }
+
+    .wideSelect {
+      left: 104px !important;
+    }
+
+    .smallText {
+      font-size: 15px;
     }
 
 </style>
@@ -158,13 +191,13 @@
 			 on:finalize={handleDndFinalizeCards}>
 				{#each items as item, i (item.id)}
 
-           <div class="card" animate:flip="{{duration: flipDurationMs}}" style="margin-left: {item.indent}px;" class:toolbox="{name==='toolbox'}" class:selected={stepIndex==i && name==='program'}>
+           <div class="card" animate:flip="{{duration: flipDurationMs}}" style="margin-left: {item.indent}px;" class:toolbox="{name==='toolbox'}" class:wide={level==3} class:selected={stepIndex==i && name==='program'}>
             <div class="buttons">
               <div class="leftbutton" style="font-weight: 900;" on:click={toggleIndentDown(item)} class:hide={level == 0 || (item.name=="repeat ____ times:" && level == 1)}>
-                {'<'}
+                <button> {'<'} </button>
               </div>
-              <div class="selectRepeat" class:hide={level == 0 || item.name!="repeat ____ times:"}>
-                <select class="selectDirect" bind:value={repeatCounts[i]} on:change="{handleRepSelect}">
+              <div class="selectRepeat" class:wideSelect={level==3} class:hide={level == 0 || item.name!="repeat ____ times:"}>
+                <select class="selectDirect" bind:value={item.repeat} on:change="{handleRepSelect(i)}">
                   <option value=1>
                     {1}
                   </option>
@@ -180,13 +213,28 @@
                   <option value=5>
                     {5}
                   </option>
+                  <option value=6>
+                    {6}
+                  </option>
+                  <option value=7>
+                    {7}
+                  </option>
+                  <option value=8>
+                    {8}
+                  </option>
+                  <option value=9>
+                    {9}
+                  </option>
+                  <option value=10>
+                    {10}
+                  </option>
                 </select>
               </div>
               <div class="rightbutton" style="font-weight: 900;" on:click={toggleIndent(item)} class:hide={level == 0 || (item.name=="repeat ____ times:" && level == 1)}>
-                {'>'}
+                <button> {'>'} </button>
               </div>
             </div>
-            <div class="name">
+            <div class="name" class:smallText="{level==3}">
               {item.name}
             </div>
               

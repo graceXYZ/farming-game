@@ -7,13 +7,15 @@
 	import {levelStore} from '../lib/stores.js';
 	let level=0;
 
-
 	import { indentsStore} from '../lib/stores.js';
-
 	import { repCountsStore} from '../lib/stores.js';
 
+	let repeatCounts = [];
+    repCountsStore.subscribe(value => {
+      repeatCounts = value;
+    });
+
 	let toolboxItems, columnsData;
-	
 	
 	handleLevelUpdate()
 
@@ -30,10 +32,10 @@
 		
 		// reset options
 		toolboxItems = [
-			{id: 1, name: "move_left()", indent:0, repeat:0},
-			{id: 2, name: "move_right()", indent:0, repeat:0},
-			{id: 3, name: "move_up()", indent:0, repeat:0},
-			{id: 4, name: "move_down()", indent:0, repeat:0},
+			{id: 1, name: "move_left()", indent:0, repeat:1},
+			{id: 2, name: "move_right()", indent:0, repeat:1},
+			{id: 3, name: "move_up()", indent:0, repeat:1},
+			{id: 4, name: "move_down()", indent:0, repeat:1},
 		]
 		
 		columnsData = [
@@ -41,10 +43,10 @@
 				id: "c1",
 				name: "toolbox",
 				items: [
-					{id: 1, name: "move_left()", indent:0, repeat:0},
-					{id: 2, name: "move_right()", indent:0, repeat:0},
-					{id: 3, name: "move_up()", indent:0, repeat:0},
-					{id: 4, name: "move_down()", indent:0, repeat:0},
+					{id: 1, name: "move_left()", indent:0, repeat:1},
+					{id: 2, name: "move_right()", indent:0, repeat:1},
+					{id: 3, name: "move_up()", indent:0, repeat:1},
+					{id: 4, name: "move_down()", indent:0, repeat:1},
 				]
 			},
 			{
@@ -56,23 +58,25 @@
 		];
 		// add level-dependent commands
 		if (level<3){
-			toolboxItems.push({id: 5, name: "water()", indent:0, repeat:0})
-			columnsData[0].items.push({id: 5, name: "water()", indent:0, repeat:0})
+			toolboxItems.push({id: 5, name: "water()", indent:0, repeat:1})
+			columnsData[0].items.push({id: 5, name: "water()", indent:0, repeat:1})
 		}
 
 		if (level>=1){
-			toolboxItems.push({id: 6, name: "repeat ____ times:", indent:0, repeat:0})
-			columnsData[0].items.push({id: 6, name: "repeat ____ times:", indent:0, repeat:0})
+			toolboxItems.push({id: 6, name: "repeat ____ times:", indent:0, repeat:1})
+			columnsData[0].items.push({id: 6, name: "repeat ____ times:", indent:0, repeat:1})
 		}
 
 		if (level==3){
-			toolboxItems.push({id: 9, name: "weed = check()", indent:0, repeat:0})
-			columnsData[0].items.push({id: 9, name: "weed = check()", indent:0, repeat:0})
-			toolboxItems.push({id: 7, name: "if weed:", indent:0, repeat:0})
-			columnsData[0].items.push({id: 7, name: "if weed:", indent:0, repeat:0})
-			toolboxItems.push({id: 8, name: "remove_weeds()", indent:0, repeat:0})
-			columnsData[0].items.push({id: 8, name: "remove_weeds()", indent:0, repeat:0})
+			toolboxItems.push({id: 9, name: "weed = check_for_weeds()", indent:0, repeat:1})
+			columnsData[0].items.push({id: 9, name: "weed = check_for_weeds()", indent:0, repeat:1})
+			toolboxItems.push({id: 7, name: "if weed:", indent:0, repeat:1})
+			columnsData[0].items.push({id: 7, name: "if weed:", indent:0, repeat:1})
+			toolboxItems.push({id: 8, name: "remove_weeds()", indent:0, repeat:1})
+			columnsData[0].items.push({id: 8, name: "remove_weeds()", indent:0, repeat:1})
 		}
+
+		handleBoardUpdated(columnsData);
 		
 	}
 
@@ -80,11 +84,10 @@
 	function handleBoardUpdated(newColumnsData) {
 		// regenerate toolbox values
 		console.log("HANDLE UPDATE")
-		console.log(newColumnsData)
 
 		for (let i=0; i<toolboxItems.length; i++) {
 			// check[colTool[i].id] = 1;
-			console.log(toolboxItems[i])
+			// console.log(toolboxItems[i])
 			toolboxItems[i].id += 10
 		};
 		// for (let i=0;i++;i<check.length) {
@@ -97,7 +100,9 @@
 		columnsData = newColumnsData;
 		let programData = formatSteps(columnsData[1].items);
 		let indentsF = formatIndents(columnsData[1].items);
+		let repCounts = formatRepeats(columnsData[1].items)
 		indentsStore.update(contents => indentsF)
+		repCountsStore.update(contents => repCounts)
 		steps.update(contents => programData)
 	}
 
@@ -105,6 +110,8 @@
 		let steps = [];
 		items.forEach(element => {
 			let key;
+			console.log(element)
+
 			
 			switch (element.name) {
 				case 'move_up()':
@@ -122,6 +129,15 @@
 				case "water()":
 					key = 'w';
 					break;
+				case "weed = check_for_weeds()":
+					key = 'check weed';
+					break;
+				case "if weed:":
+					key = 'if weed';
+					break;
+				case "remove_weeds()":
+					key = 'deweed';
+					break;
 				case "repeat ____ times:":
 					key = 'repeat';
 					break;
@@ -129,6 +145,14 @@
 			steps.push(key);
 		});
 		return steps;
+	}
+
+	function formatRepeats(items) {
+		let repCounts = [];
+		items.forEach(element => {
+			repCounts.push(element.repeat);
+		});
+		return repCounts;
 	}
 
 	function formatIndents(items) {
@@ -145,7 +169,6 @@
 <div class="together">
 	<Board columns={columnsData} onFinalUpdate={handleBoardUpdated}/>
 	<button class="resetButton" on:click={resetAll}> Clear All </button>
-
 </div>
 
 
