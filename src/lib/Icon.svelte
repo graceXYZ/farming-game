@@ -82,6 +82,11 @@
     
     let displayIcon = icons[name];
 
+    $:{
+        displayIcon = icons[name];
+    }
+
+
 </script>
 
 <svg

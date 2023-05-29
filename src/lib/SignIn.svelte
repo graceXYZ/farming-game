@@ -10,20 +10,20 @@
     let selected = data.character;
     let defaultName = data.name;
     let visited = data.visited;
-    
-    $:{
-        console.log(data.character)
-        charSelectStore.update(n => charOptions[data.character])
-    }
 
     import {charSelectStore} from '../lib/stores.js';
-    let charSelect = 0;
+    let charSelect = "";
     charSelectStore.subscribe(value => {
         charSelect = value;
     });
+    
+    $:{
+        console.log("SELECTED CHAR IS " + charOptions[selected])
+        charSelectStore.update(n => charOptions[selected])
+    }
 
     function playGame(){
-        goto("/level0")
+        goto("/game")
     }
 
 </script>

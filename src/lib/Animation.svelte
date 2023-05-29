@@ -489,8 +489,7 @@
         nextStepIndex = 0;
         newGame();
     }
-
-
+    
     newGame();
     
   </script>
@@ -519,7 +518,7 @@
             <div class="characterSVG" class:hideCell={charPosition[0]!=outerIndex || charPosition[1]!=index}>
               <Icon name={charSelect} width="{rowHeight}px" height="{rowHeight}px" class="large"/>
             </div>
-
+            
           </div>
         {/each}
       {/each}

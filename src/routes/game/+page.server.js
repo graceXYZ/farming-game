@@ -6,7 +6,7 @@ export function load({ cookies }) {
 	// cookies.set('visited', 'true', { path: '/' });
     // cookies.set('name', 'Name', { path: '/' });
     // cookies.set('character', '0', { path: '/' });
-
+    
 	return {
 		visited,
         name,
