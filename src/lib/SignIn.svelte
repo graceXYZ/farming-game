@@ -9,6 +9,13 @@
 
     let selected = data.character;
     let defaultName = data.name;
+
+    $: {
+        if (!defaultName){
+            defaultName = "";
+        }
+    }
+    
     let visited = data.visited;
 
     import {charSelectStore} from '../lib/stores.js';
@@ -46,8 +53,8 @@
 
 <form method="POST">
     <div style="display:flex">
-        <input style="margin-left: 5px; height:30px; font-size:20px" type="name" name="name"/>
-        <p class:hidden={!visited} style="margin-left:10px"> {defaultName}</p>
+        <input style="margin-left: 5px; height:30px; font-size:20px" type="name" name="name" value={defaultName}/>
+        <!-- <p class:hidden={!visited} style="margin-left:10px"> {defaultName}</p> -->
     </div>
     <input class="hidden" type="character" name="character" value={selected} />
     <button style="margin-top: 2em;" type="submit" on:click={playGame}>Let's Play!</button>
@@ -78,7 +85,7 @@
 
     .selected {
         border: 1px blue solid;
-        background-color: rgb(255, 0, 0) !important;
+        background-color: rgb(2, 138, 0) !important;
     }
 
     .selectOption {
@@ -88,7 +95,7 @@
         padding: 10px;
         width: 120px;
         height: 120px;
-        background-color: rgb(255, 99, 99);
+        background-color: rgb(146, 146, 146);
     }
 
     button {

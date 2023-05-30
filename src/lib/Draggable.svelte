@@ -2,7 +2,7 @@
     // import VerticalList from './VerticalList.svelte';
     import Board from '../lib/Board.svelte';
 
-	import {steps} from '../lib/stores.js';
+	import {stepI, steps} from '../lib/stores.js';
 
 	import {levelStore} from '../lib/stores.js';
 	let level=0;
@@ -15,9 +15,17 @@
       repeatCounts = value;
     });
 
+	let indentsThis = [];
+    indentsStore.subscribe(value => {
+		indentsThis = value;
+    });
+
 	let toolboxItems, columnsData;
+	let numSteps = 0;
+	let numCommands = 0;
+
 	
-	handleLevelUpdate()
+	handleLevelUpdate();
 
 	levelStore.subscribe(value => {
 		level = value;
@@ -56,6 +64,7 @@
 				]
 			}
 		];
+
 		// add level-dependent commands
 		if (level<3){
 			toolboxItems.push({id: 5, name: "water()", indent:0, repeat:1})
@@ -104,7 +113,58 @@
 		indentsStore.update(contents => indentsF)
 		repCountsStore.update(contents => repCounts)
 		steps.update(contents => programData)
+		let numC = getNumSteps(programData)
+		numCommands = repCounts.length;
+		numSteps = numC;
 	}
+
+
+	function getNumSteps(programData) {
+
+		// count all steps, including all as single steps, just iterating through repeats
+		let stepIndexHere = 0;
+		let countSteps = 0;
+		let repeatQueueCounts = [];
+		let repeatQueueStartIndices = [];
+		let currRepIndex = -1;
+
+		console.log("TRY COUNT STEPS")
+
+		while (currRepIndex > 0 || stepIndexHere < programData.length){
+			
+			// if found repeat that has not beed found, add
+			if (programData[stepIndexHere]=='repeat' && !repeatQueueStartIndices.includes(stepIndexHere)){
+				repeatQueueCounts.push(repeatCounts[stepIndexHere]-1);
+				repeatQueueStartIndices.push(stepIndexHere);
+				currRepIndex += 1;
+				console.log("found repeat with count " + repeatCounts[stepIndexHere] + ". rep index: " + currRepIndex)
+			}
+
+			countSteps += 1;
+			stepIndexHere += 1;
+
+			// check if current repeat ends or program ends
+			if (currRepIndex >=0 && (stepIndexHere == programData.length || indentsThis[stepIndexHere]<=indentsThis[repeatQueueStartIndices[currRepIndex]])) {
+				// if more repeats to do, go back to beginning of repeat 
+				if (repeatQueueCounts[currRepIndex] > 0){
+					repeatQueueCounts[currRepIndex] -= 1;
+					stepIndexHere = repeatQueueStartIndices[currRepIndex];
+				} else { // if done repeating, remove this repeat from queue
+					currRepIndex -= 1;
+				}
+				console.log("found end of repeat block. index:" + stepIndexHere)
+				console.log("back to start." + repeatQueueCounts[currRepIndex] + " more times.")
+			} 
+
+			
+			
+		}
+
+		return countSteps;
+	}
+
+
+	
 
 	function formatSteps(items) {
 		let steps = [];
@@ -169,19 +229,39 @@
 <div class="together">
 	<Board columns={columnsData} onFinalUpdate={handleBoardUpdated}/>
 	<button class="resetButton" on:click={resetAll}> Clear All </button>
+	<div class="numSteps"> #Steps: {numSteps} </div>
+	<div class="numCommands"> #Commands: {numCommands} </div>
 </div>
 
 
 <style>
-.resetButton {
-    position: absolute;
-    right: 15px;
-    bottom: 15px;
-    background-color: white;
-    padding: 5px;
-    /* border: 0.5px black solid; */
-    font-size: 15px;
-  }
+
+	.numSteps {
+		position: absolute;
+		right: 105px;
+		bottom: 11px;
+		padding: 5px;
+		
+	}
+
+	.numCommands {
+		position: absolute;
+		right: 185px;
+		bottom: 11px;
+		padding: 5px;
+		
+	}
+	
+
+	.resetButton {
+		position: absolute;
+		right: 15px;
+		bottom: 15px;
+		background-color: white;
+		padding: 5px;
+		/* border: 0.5px black solid; */
+		font-size: 15px;
+	}
 
 .together {
 	display: flex;

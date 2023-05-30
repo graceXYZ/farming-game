@@ -46,15 +46,6 @@
 
 
 <style>
-  .resetButton {
-    position: absolute;
-    right: 15px;
-    bottom: 15px;
-    /* background-color: white; */
-    padding: 5px;
-    border: 0.5px black solid;
-    font-size: 15px;
-  }
 
   .board {
     display:flex;
