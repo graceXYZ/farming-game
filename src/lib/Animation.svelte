@@ -20,7 +20,7 @@
       charSelect = value;
     });
 
-    let startorPause = ["Start","Pause"]
+    let startorPause = ["Play","Pause"]
 
     let x = 0
     let BOARD_SIZE_W = 2;
@@ -75,9 +75,9 @@
         widthBoard = 150;
         iterateTime = 600;
       } else if (level==2){
-        BOARD_SIZE_W = 6;
-        BOARD_SIZE_H = 4;
-        widthBoard = 200;
+        BOARD_SIZE_W = 3;
+        BOARD_SIZE_H = 7;
+        widthBoard = 350;
         iterateTime = 500;
       } else if (level==3){
         BOARD_SIZE_W = 1;
@@ -99,7 +99,8 @@
                           'start indent': 'Your first command should not be indented!',
                           'bad variable use': "You used a variable without setting its value!",
                           'correctWeed': "You successfully removed all weeds without killing the beets!",
-                          'incorrectWeed': "There are weeds and/or dead beets :("
+                          'incorrectWeed': "There are weeds and/or dead beets :(",
+                          'overwatered': "Oh no! A beet plant died from overwatering!"
                         }; 
 
 
@@ -132,8 +133,13 @@
       boardWater = new Array(BOARD_SIZE_H).fill(0).map(() => new Array(BOARD_SIZE_W).fill(0));
       boardWeed = new Array(BOARD_SIZE_H).fill(0).map(() => new Array(BOARD_SIZE_W).fill(0));
       blockedCells = new Array(BOARD_SIZE_H).fill(0).map(() => new Array(BOARD_SIZE_W).fill(0));
+      
       if (level == 2){
-        blockedCells[1][1] = 1;
+        let blockedOuter = [0,1,1,2,2,3,4,4,5,5,6,6];
+        let blockedInner = [2,0,2,0,2,0,0,1,0,1,0,1];
+        for (let j=0; j < blockedOuter.length; j++){
+          blockedCells[blockedOuter[j]][blockedInner[j]] = 1;
+        }
       }
       
       // fill weed with random vals
@@ -175,7 +181,14 @@
     function checkForCollision(position) {
         const [x, y] = position;
 
-        if (x < 0 || x === BOARD_SIZE_H || y < 0 || y === BOARD_SIZE_W) return outOfBounds();
+        // is out of range
+        if (x < 0 || x === BOARD_SIZE_H || y < 0 || y === BOARD_SIZE_W)  {
+          return outOfBounds();
+        }
+        // is blocked
+        // if (blockedCells[x][y]==1){
+        //   return outOfBounds();
+        // }
         // if (board[x][y] === SNEK_CELL) return gameOver();
         // if (board[x][y] === FOOD_CELL) return eatFood(position);
 
@@ -184,7 +197,15 @@
 
     function waterCell(position){
       const [x, y] = position;
-      boardWater[x][y] = WET_CELL;
+      // if cell is blocked (over watered), stop and update feedback
+      if (blockedCells[x][y]==1) {
+        updateFeedback("overwatered")
+        boardWeed[x][y] = 2;
+        resetPending = true;
+        stop();
+      } else {
+        boardWater[x][y] = WET_CELL;
+      }
       nextStepIndex = stepIndex + 1;
     }
 
@@ -421,7 +442,7 @@
           if (level==3 && outer ==0 && inner==0){
             continue;
           }
-          if (boardWeed[outer][inner] != 0) { // if any are dead (2) or have weeds (1)
+          if (boardWeed[outer][inner] != 0 && blockedCells[outer][inner] != 1) { // if any are dead (2) or have weeds (1) AND not blocked
             console.log("NOT ALL WEEDED!")
             return false;
           }
@@ -437,7 +458,7 @@
           if (level==3 && outer ==0 && inner==0){
             continue;
           }
-          if (boardWater[outer][inner] == DRY_CELL) {
+          if (boardWater[outer][inner] == DRY_CELL && blockedCells[outer][inner] != 1) {
             console.log("NOT ALL WATERED!")
             return false;
           }
@@ -489,7 +510,7 @@
         nextStepIndex = 0;
         newGame();
     }
-    
+
     newGame();
     
   </script>
@@ -505,15 +526,17 @@
         {#each row as cell, index}
           <div class="cell" class:character={charPosition[0]==outerIndex && charPosition[1]==index}
           class:sapling={board[outerIndex][index] == SAPLING_CELL} class:watered={boardWater[outerIndex][index] == WET_CELL}
-          class:weed={level == 3 && boardWeed[outerIndex][index] == 1} class:dead={level == 3 && boardWeed[outerIndex][index] == DEAD_CELL}
+          class:weed={level == 3 && boardWeed[outerIndex][index] == 1} 
           class:startBox={level==3 && outerIndex==0 && index == 0}
-          class:blocked = {blockedCells[outerIndex][index]==1}>
+          class:dead={boardWeed[outerIndex][index] == 2}
+          class:blocked = {blockedCells[outerIndex][index]==1}
+          >
             <!-- {#if board[outerIndex][index] === 1}
               <Character {choiceChar}/>
             {:else if board[outerIndex][index] === 0}
               <Sapling {level}/>
             {/if} -->
-            {blockedCells[outerIndex][index]}
+            <!-- {boardWeed[outerIndex][index]} -->
             
             <div class="characterSVG" class:hideCell={charPosition[0]!=outerIndex || charPosition[1]!=index}>
               <Icon name={charSelect} width="{rowHeight}px" height="{rowHeight}px" class="large"/>
@@ -526,7 +549,7 @@
 
   <div class="controls">
     <button on:click={start}> {startorPause[started]}</button>
-    <button on:click={reset}> Restart</button>
+    <button on:click={reset}>Reset</button>
     <!-- <button on:click={pause}>  </button> -->
   </div>
   
@@ -551,10 +574,6 @@
       background-color: rgba(64, 160, 64, 1);
     }
 
-    .dead {
-      background-color: rgb(127, 88, 63);
-    }
-
     .startBox {
       background-color: rgb(203, 203, 203) !important;
     }
@@ -564,7 +583,11 @@
     }
 
     .blocked {
-      background-color: black;
+      background-color: rgb(30, 51, 66);
+    }
+
+    .dead {
+      background-color: rgb(127, 88, 63) !important;
     }
 
     .watered {
@@ -582,6 +605,7 @@
       justify-content: center;
       align-items: center;
       border: 0.1px black solid;
+      color: white;
     }
     .controls {
         margin: auto;

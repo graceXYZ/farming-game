@@ -257,7 +257,7 @@
 
 	.numSteps {
 		position: absolute;
-		right: 105px;
+		right: 95px;
 		bottom: 11px;
 		padding: 5px;
 		
@@ -265,7 +265,7 @@
 
 	.numCommands {
 		position: absolute;
-		right: 185px;
+		right: 179px;
 		bottom: 11px;
 		padding: 5px;
 		
