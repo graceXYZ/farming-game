@@ -130,35 +130,54 @@
 
 		console.log("TRY COUNT STEPS")
 
-		while (currRepIndex > 0 || stepIndexHere < programData.length){
-			
-			// if found repeat that has not beed found, add
-			if (programData[stepIndexHere]=='repeat' && !repeatQueueStartIndices.includes(stepIndexHere)){
-				repeatQueueCounts.push(repeatCounts[stepIndexHere]-1);
-				repeatQueueStartIndices.push(stepIndexHere);
-				currRepIndex += 1;
-				console.log("found repeat with count " + repeatCounts[stepIndexHere] + ". rep index: " + currRepIndex)
+		while (currRepIndex >= 0 || stepIndexHere < programData.length+1){
+
+			// check if current repeat ends or program ends
+			if (currRepIndex >=0 && ((stepIndexHere) >= programData.length || indentsThis[stepIndexHere]<=indentsThis[repeatQueueStartIndices[currRepIndex]])) {
+				// if more repeats to do, go back to beginning of repeat (after repeat command)
+				console.log("found end of repeat block. index:" + stepIndexHere)
+				console.log("back to start." + repeatQueueCounts + " more times." + currRepIndex)
+
+				if (repeatQueueCounts[currRepIndex] > 0){
+					repeatQueueCounts[currRepIndex] -= 1;
+					countSteps += 1;
+					stepIndexHere = repeatQueueStartIndices[currRepIndex]+1;
+
+				} else { // if done repeating, remove this repeat from queue
+					currRepIndex -= 1;
+					continue;
+					// countSteps += 1;
+					// repeatQueueStartIndices.pop();
+					// repeatQueueCounts.pop();
+					// check if this is ALSO the end of another repeat block
+					// countSteps -= 1;
+					// stepIndexHere -= 1;
+				}
+				
+			} 
+
+			// if found repeat, add
+			if (stepIndexHere < programData.length && programData[stepIndexHere]=='repeat'){ //  && !repeatQueueStartIndices.includes(stepIndexHere)
+
+				// if repeat is just one command (repeat command), add manually
+				if ((stepIndexHere+1) >= programData.length || indentsThis[stepIndexHere+1]<=indentsThis[stepIndexHere]) {
+					countSteps += repeatCounts[stepIndexHere]-1;
+					console.log("MANUAL. found repeat with count " + repeatCounts[stepIndexHere] + ". rep index: " + currRepIndex)
+				} else {
+					repeatQueueCounts.push(repeatCounts[stepIndexHere]-1);
+					repeatQueueStartIndices.push(stepIndexHere);
+					currRepIndex += repeatQueueCounts.length;
+					console.log("found repeat with count " + repeatCounts[stepIndexHere] + ". rep index: " + currRepIndex)
+				}
+				
 			}
 
 			countSteps += 1;
 			stepIndexHere += 1;
-
-			// check if current repeat ends or program ends
-			if (currRepIndex >=0 && (stepIndexHere == programData.length || indentsThis[stepIndexHere]<=indentsThis[repeatQueueStartIndices[currRepIndex]])) {
-				// if more repeats to do, go back to beginning of repeat 
-				if (repeatQueueCounts[currRepIndex] > 0){
-					repeatQueueCounts[currRepIndex] -= 1;
-					stepIndexHere = repeatQueueStartIndices[currRepIndex];
-				} else { // if done repeating, remove this repeat from queue
-					currRepIndex -= 1;
-				}
-				console.log("found end of repeat block. index:" + stepIndexHere)
-				console.log("back to start." + repeatQueueCounts[currRepIndex] + " more times.")
-			} 
-
-			
 			
 		}
+
+		countSteps -= 1;
 
 		return countSteps;
 	}
