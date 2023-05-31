@@ -10,9 +10,16 @@
     import repeatImg from '../../lib/repeat.png';
     import repeat2Img from '../../lib/nestRepeat.png';
     import conditionalImg from '../../lib/conditionalBlock.png';
+    import forloopImg from '../../lib/forloop.png';
+    import ifbadImg from '../../lib/ifbad.png';
   
     let modal;
     let programData;
+    let level4Modalpage = true;
+
+    function toggleLevel4Modal(){
+      level4Modalpage = !level4Modalpage;
+    }
 
     export let data;
     import {charSelectStore} from '../../lib/stores.js';
@@ -108,7 +115,7 @@
             Create a <strong>repeat block</strong> by adding a single indent to each of following commands to be repeated.</p>
           <br>
           <!-- <br> -->
-          <img src={repeatImg} alt="Repeat block example" width="200px" style="position:absolute; right:25px; top: 55px">
+          <img src={repeatImg} alt="Repeat block example" width="200px" style="position:absolute; right:25px; top: 85px">
           <p>Press <strong>Play</strong> to activate your program, and <strong>Reset</strong> to go back to the start. </p>
           
           <p>When all the plants are watered, you can move on to the next level!</p>
@@ -123,7 +130,7 @@
           <br>
           <p>You can now use <strong>nested repeats</strong> by adding repeat blocks inside of repeat blocks!</p>
           <br>
-          <img src={repeat2Img} alt="Repeat block example" width="200px" style="position:absolute; right:25px; top: 55px">
+          <img src={repeat2Img} alt="Repeat block example" width="200px" style="position:absolute; right:25px; top: 85px">
           <p>Press <strong>Play</strong> to activate your program, and <strong>Reset</strong> to go back to the start. </p>
           
           <p>When all the plants are watered, you can move on to the next level!</p>
@@ -140,16 +147,52 @@
             You must <strong>check</strong> each block for weeds (light green blocks) using the <em>check_for_weeds()</em> function, which stores the output status (true or false) in the variable <em>weed</em>.
           <strong>If there are weeds, remove them</strong> by calling the <em>remove_weeds()</em> function. Make sure you create an <em>if-statement block</em> with indentations to indicate which commands should be run if <em>weed</em> is currently true.</p>
 
-          <img src={conditionalImg} alt="Conditional block example" width="200px" style="position:absolute; right:25px; top: 55px">
+          <img src={conditionalImg} alt="Conditional block example" width="200px" style="position:absolute; right:25px; top: 85px">
           <p>When the weeds are removed and the beet plants are still alive, you can move on to the next level!</p>
         </div>
 
 
-        <!-- LEVEL 4 -->
-        <h2 class:hide={level!=4  || successFullGame}  style="margin-bottom: 0.1em">Level 4</h2>
-        <div class:hide={level!=4 || successFullGame}  class="ModalTextNarrow"> 
+        <!-- LEVEL 4 PAGE 1-->
+        <h2 class:hide={level!=4  || successFullGame || !level4Modalpage}  style="margin-bottom: 0.1em">Level 4</h2>
+        <div class:hide={level!=4 || successFullGame || !level4Modalpage}  class="ModalTextNarrow"> 
+          <p style="margin-bottom: 15px"> You spent so much time carefully watering the plants, making sure not to over-water them. 
+            You diligently checked the field for weeds and removed them. Still, the beet leaves are yellowing and you are quickly loosing yield! 
+            <em>What is the problem??? </em> </p>
+          <p style="margin-bottom: 15px"> The only way forward is to study the beet symptoms more. You must <strong>inspect every plant and collect data</strong> on which locations of beets show these mysterious symptoms. </p>
+
+          <p style="margin-bottom: 15px">
+            To go through every block in the field, you will use a new method called a <strong>for loop</strong>. 
+            For each index or numbered location in the field [ <em>for position in index_list:</em> ], you will go to the next location [ <em>go_to(position)</em> ] and perform some actions.
+            All commands included in the for loop must be intended one degree more than the for loop header.
+          </p>
+
+          <img src={forloopImg} alt="For loop block example" width="200px" style="position:absolute; right:25px; top: 125px">
           
         </div>
+
+
+        <!-- LEVEL 4 PAGE 2-->
+        <h2 class:hide={level!=4  || successFullGame || level4Modalpage}  style="margin-bottom: 0.1em">Level 4 </h2>
+        <div class:hide={level!=4 || successFullGame || level4Modalpage}  class="ModalTextNarrow"> 
+          <p style="margin-bottom: 15px"><strong>How can we store the locations of the beets that show symptoms?? </strong> 
+             For each location, you will check for symptoms and store the locations of the bad beets in a list!</p>
+          <p>
+          </p>
+
+          <p style="margin-bottom: 10px">
+            To store the locations of the bad beets, you will first create an empty <strong>list</strong> of positions called <em>infected_list</em> at the beginning of the program <br>[ <em>infected_list = []</em> ].
+          </p>
+          <p style="margin-bottom: 10px">
+            To check each block for symptoms, you will run the [ <em>bad = check_for_infection()</em> ] command at every position.
+            <strong>If</strong> the current position is infected, you will <strong>add the current index</strong> to the list [ <em>add position to infected_list</em> ]. 
+          </p>
+
+          <p>Once you successfully record all infected locations, we can figure out what is wrong with these beets and restore sugar to the world!</p>
+
+          <img src={ifbadImg} alt="If bad block example" width="200px" style="position:absolute; right:25px; top: 125px">
+          
+        </div>
+
 
         <!-- SUCCESS FULL GAME -->
         <h2 class:hide={!successFullGame}  style="margin-bottom: 0.1em">Congratuations!!!</h2>
@@ -158,7 +201,10 @@
         </div>
 
 
-        <button class="modalButton" on:click={() => modal.hide()}>Close</button>
+
+        <button class="nextModalButton" class:hide={level!=4} style="{level4Modalpage ? '' : 'right: 110px;'}"  on:click={toggleLevel4Modal}>{level4Modalpage ? '->' : '<-'} Page {level4Modalpage ? 2 : 1}</button>
+
+        <button class="modalButton" class:hide={level==4 && level4Modalpage} on:click={() => modal.hide()}>Close</button>
       </Modal>
 
 
@@ -245,6 +291,12 @@
       text-align: left;
       padding: 0.5em;
       width: 70%;
+    }
+    .nextModalButton{
+      position:absolute;
+          bottom: 0;
+          right: 30px;
+          margin: 1em;
     }
     .modalButton {
           position:absolute;
