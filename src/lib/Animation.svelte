@@ -5,6 +5,7 @@
     import { repCountsStore} from '../lib/stores.js';
     import { stepI } from '../lib/stores.js';
     import { feedback } from '../lib/stores.js';
+    import { successStatusStore } from '../lib/stores.js';
     import { numStepsStore } from '../lib/stores.js';
     import { feedbackCodeS } from '../lib/stores.js';
     import { charSelectStore } from '../lib/stores.js';
@@ -15,6 +16,7 @@
     let nextStepIndexWeed = 0;
     let executeSkipBlockWeed = false;
     let resetPending = false;
+    let finishedFirstIndexRep = false;
 
     let charSelect;
     charSelectStore.subscribe(value => {
@@ -24,6 +26,11 @@
     let numSteps = 0;
     numStepsStore.subscribe(value => {
       numSteps = value;
+    });
+
+    let successStatus = false;
+    successStatusStore.subscribe(value => {
+      successStatus = value;
     });
 
     let startorPause = ["Play","Pause"]
@@ -61,13 +68,30 @@
     
     let board;
     let boardWater;
+    let boardInfected;
     let boardWeed;
     let blockedCells;
     let charPosition;
     let gameInterval;
+    let boardCheckAllWeed;
+    let boardRemoveAllWeed;
+
+    let infectedPositions = [2,4,5,6,8];
+    // badStatus -1 means not initialized, 0 means good, 1 means bad
+    let level4Steps = {'initIndex_list': false, 
+                        'initInfected_list': false, 
+                        'iteratingThroughPositions': false, 
+                        'badStatus': -1, 
+                        'infectedList': [],
+                        'currPositionVal': [0,0],
+                        'forPositionStartIndex': -1
+                        }
 
     let thresholdCommands = [100,12,10,10,10];
     
+    let positionString = "undefined";
+    let infectedListString = "undefined";
+    let badString = "undefined";
 
     $: {
       console.log("LEVEL CHANGED")
@@ -92,6 +116,11 @@
         BOARD_SIZE_H = 5;
         widthBoard = 350;
         iterateTime = 600;
+      } else if (level==4){
+        BOARD_SIZE_W = 3;
+        BOARD_SIZE_H = 3;
+        widthBoard = 250;
+        iterateTime = 600;
       }
       rowHeight = widthBoard / BOARD_SIZE_H;
       newGame();
@@ -109,7 +138,8 @@
                           'correctWeed': "You successfully removed all weeds without killing the beets!",
                           'incorrectWeed': "There are weeds and/or dead beets :(",
                           'overwatered': "Oh no! A beet plant died from overwatering!",
-                          'correctButTooLong': "Good, but you're code is too long (#Commands). Use repeats!"
+                          'correctButTooLong': "Good, but you're code is too long (#Commands). Use repeats!",
+                          'correctWeedButNotUniversal': "Good, but you're code won't work if the weeds are in other locations. Check every block!"
                         }; 
 
 
@@ -140,8 +170,13 @@
     function newGame() {
       board = new Array(BOARD_SIZE_H).fill(0).map(() => new Array(BOARD_SIZE_W).fill(0));
       boardWater = new Array(BOARD_SIZE_H).fill(0).map(() => new Array(BOARD_SIZE_W).fill(0));
+      boardInfected = new Array(BOARD_SIZE_H).fill(0).map(() => new Array(BOARD_SIZE_W).fill(0));
       boardWeed = new Array(BOARD_SIZE_H).fill(0).map(() => new Array(BOARD_SIZE_W).fill(0));
+      boardCheckAllWeed = new Array(BOARD_SIZE_H).fill(0).map(() => new Array(BOARD_SIZE_W).fill(0));
+      boardRemoveAllWeed = new Array(BOARD_SIZE_H).fill(0).map(() => new Array(BOARD_SIZE_W).fill(0));
       blockedCells = new Array(BOARD_SIZE_H).fill(0).map(() => new Array(BOARD_SIZE_W).fill(0));
+
+      successStatusStore.update(n=> false);
       
       if (level == 2){
         let blockedOuter = [0,1,1,2,2,3,4,4,5,5,6,6];
@@ -151,6 +186,19 @@
         }
       }
       
+      // set infected blocks for level 4. 0 means not infected. 1 means infected.
+      if (level == 4){
+        for (let outer=0; outer < BOARD_SIZE_H; outer++){
+          for (let inner=0; inner < BOARD_SIZE_W; inner++){
+            let linInd = outer * BOARD_SIZE_W + inner;
+            if (infectedPositions.includes(linInd)) {
+              boardInfected[outer][inner] = 1;
+            }
+          }
+        }
+      }
+
+
       // fill weed with random vals
       let weedCheck = 0;
       let weedVal = 0;
@@ -186,6 +234,15 @@
       // breakRepeat = [];
       currRepeatIndex = -1;
       repeatCountsLeft = [];
+      finishedFirstIndexRep = false;
+      level4Steps = {'initIndex_list': false, 
+                        'initInfected_list': false, 
+                        'iteratingThroughPositions': false, 
+                        'badStatus': -1, 
+                        'infectedList': [],
+                        'currPositionVal': [-1,-1],
+                        'forPositionStartIndex': -1
+                        }
     }
 
 
@@ -195,7 +252,13 @@
     }
 
     function updateFeedback(key){
-      let newItem = feedbackItems[key]
+      let newItem = ""
+      if (feedbackItems[key]){ 
+        newItem = feedbackItems[key]
+      } else {
+        console.log("feedback value not found. using key")
+        newItem = key
+      }
       feedback.update(n => newItem)
       feedbackCodeS.update(n=> key)
     }
@@ -309,7 +372,201 @@
               // breakRepeat.push(false);
             }
             nextStepIndex = stepIndex + 1;
+            return;
+
+          case "index_list":
+            dealWithLevel4([currX, currY, direction]);
+            return;
+
+          case "go_to":
+            dealWithLevel4([currX, currY, direction]);
+            return;
+
+          case "for_position":
+            dealWithLevel4([currX, currY, direction]);
+            return;
+
+          case "check_infection":
+            dealWithLevel4([currX, currY, direction]);
+            return;
+
+          case "add_position":
+            dealWithLevel4([currX, currY, direction]);
+            return;
+
+          case "infected_list":
+            dealWithLevel4([currX, currY, direction]);
+            return;
+
+          case "if_bad":
+            dealWithLevel4([currX, currY, direction]);
+            return;
+            
         }
+        console.log("CASE NOT FOUND: " + direction);
+    }
+
+    function dealWithLevel4([currX, currY, direction]) {
+      console.log("level4 activated")
+
+      // let level4Steps = {'initIndex_list': false, 
+      //             'initInfected_list': false, 
+      //             'iteratingThroughPositions': false, 
+      //             'badStatus': -1, 
+      //             'infectedList': []
+      //             }
+      
+      switch (direction) {
+
+          case "index_list":
+            level4Steps['initIndex_list'] = true;
+            nextStepIndex = stepIndex + 1;
+            break;
+
+          case "go_to":
+            // check curr position val
+            if (level4Steps["currPositionVal"][0]==-1){
+              resetPending = true;
+              updateFeedback("position variable is not initialized!")
+              stop();
+              break;
+            }
+            charPosition = level4Steps["currPositionVal"]
+            nextStepIndex = stepIndex + 1;
+            break;
+            
+          case "for_position":
+            console.log("for position");
+            // if index_list not init, stop
+            if (!level4Steps['initIndex_list']){
+              resetPending = true;
+              updateFeedback("'index_list' variable is not initialized!")
+              stop();
+              break;
+            }
+            // if more than one found!
+            if (level4Steps['iteratingThroughPositions'] && stepIndex!=level4Steps['forPositionStartIndex']) {
+              resetPending = true;
+              updateFeedback("You can only iterate through the positions once!")
+              stop();
+              break;
+            }
+
+            // if not already started:
+            if (!level4Steps['iteratingThroughPositions']) {
+              level4Steps['iteratingThroughPositions'] = true;
+              level4Steps["currPositionVal"] = [0,0]
+              level4Steps['forPositionStartIndex'] = stepIndex;
+            }
+            
+            positionString = level4Steps["currPositionVal"][0]*BOARD_SIZE_W + level4Steps["currPositionVal"][1];
+            nextStepIndex = stepIndex + 1;
+            return;
+
+          case "check_infection":
+            level4Steps['badStatus'] = boardInfected[currX][currY];
+            badString = level4Steps['badStatus']==1; // 0 is not infected. 1 is infected
+            nextStepIndex = stepIndex + 1;
+            break;
+            
+          case "add_position":
+            // if infected_list not init, stop
+            if (!level4Steps['initInfected_list']){
+              resetPending = true;
+              updateFeedback("'infected_list' variable is not initialized!")
+              stop();
+              break;
+            }
+            // if we're iterating aka position is initialized
+            if (level4Steps['iteratingThroughPositions']) {
+              level4Steps['infectedList'].push(currX * BOARD_SIZE_W + currY);
+              console.log("ADDING INDEX :" + level4Steps['infectedList'])
+              infectedListString = '['+level4Steps['infectedList']+']';
+              nextStepIndex = stepIndex + 1;
+            } else {
+              // if we havent started
+              if (level4Steps['forPositionStartIndex']==-1) {
+                console.log("'position' variable is not initialized!")
+                updateFeedback("'position' variable is not initialized!")
+                resetPending = true;
+                stop();
+              }
+            }
+            nextStepIndex = stepIndex + 1;
+            break;
+            
+          case "infected_list":
+            level4Steps['initInfected_list'] = true;
+            infectedListString = '[]';
+            nextStepIndex = stepIndex + 1;
+            break;
+            
+          case "if_bad":
+            // if bad not init, stop
+            if (level4Steps['badStatus']==-1){
+              resetPending = true;
+              updateFeedback("'bad' variable is not initialized!")
+              stop();
+              break;
+            }
+            // if bad status is currently 1, continue into block
+            if (level4Steps['badStatus']==1){
+              nextStepIndex = stepIndex + 1;
+              break;
+            } else { // else, skip block
+              // find next step index without this indent
+              let nextStepIndexBad = stepIndex+1;
+              while (nextStepIndexBad < stepsFormat.length && indents[nextStepIndexBad]>indents[stepIndex]){
+                nextStepIndexBad += 1;                 
+              }
+              nextStepIndex = nextStepIndexBad;
+              // if block goes to end of program and we are inside for loop, go back to beginning
+              // if (nextStepIndexBad == stepsFormat.length && level4Steps['iteratingThroughPositions']) {
+              //   nextStepIndex = level4Steps['forPositionStartIndex']
+              // }
+              break;
+            }
+      }
+
+      // if in position iteration block, make sure it doesn't end
+      if (level4Steps['iteratingThroughPositions'] && indents[stepIndex]<=indents[level4Steps['forPositionStartIndex']]) {
+        let pos = level4Steps['currPositionVal'];
+        let posLin = pos[0]*BOARD_SIZE_W + pos[1];
+        if (posLin < BOARD_SIZE_W*BOARD_SIZE_H-1) {
+          updateFeedback("Make sure you indent the commands inside the 'for' block")
+          resetPending = true;
+          stop();
+          return;
+        }
+      }
+
+      // if in position iteration block and it ends, restart block and go to next position
+      if (level4Steps['iteratingThroughPositions'] && (nextStepIndex>=indents.length || indents[stepIndex+1]<=indents[level4Steps['forPositionStartIndex']])){
+        // if at last index, break
+        if (level4Steps['currPositionVal'][0]==2 && level4Steps['currPositionVal'][1]==2) {
+          console.log("STOP ITERATION POSITION")
+          level4Steps['iteratingThroughPositions'] = false;
+          if (nextStepIndex < indents.length){
+            nextStepIndex = stepIndex+1;
+          }
+          return;
+        }
+        nextStepIndex = level4Steps['forPositionStartIndex'];
+        console.log("trying to update position")
+        // if at position 0, go to same position
+        // if (!finishedFirstIndexRep) {
+        //   level4Steps['currPositionVal']= [0,0]
+        //   finishedFirstIndexRep = true;
+        //   return;
+        // }
+        // else, go to next
+        let currCharPositionIndex = charPosition[0]*BOARD_SIZE_W + charPosition[1];
+        let thisNextPosition = currCharPositionIndex+1;
+        let thisNextY = thisNextPosition % BOARD_SIZE_W;
+        let thisNextX = (thisNextPosition - thisNextY)/BOARD_SIZE_W;
+        level4Steps['currPositionVal']= [thisNextX,thisNextY]
+      }
+
     }
 
 
@@ -318,6 +575,9 @@
 
       // check_weed()
       if (direction == vals[0]) {
+        // universal solution if all weeds are gone and for each block there is a check AND if statement with remove_weeds 
+        boardCheckAllWeed[currX][currY] = 1; 
+        // set current weed val
         currentWeedVal = boardWeed[currX][currY]; 
         nextStepIndex = stepIndex + 1;
         console.log("update weed val:" + currentWeedVal)
@@ -341,6 +601,11 @@
           while (nextStepIndexWeed < stepsFormat.length && indents[nextStepIndexWeed]==indents[stepIndex]+50){
             nextStepIndexWeed += 1; 
             executeSkipBlockWeed = true;
+            // universal solution if all weeds are gone and for each block there is a check AND if statement with remove_weeds 
+            console.log("SKIPPING STEPS CODES:" + stepsFormat[nextStepIndexWeed-1])
+            if (stepsFormat[nextStepIndexWeed-1] == vals[2]) {
+              boardRemoveAllWeed[currX][currY] = 1; 
+            }
           }
           console.log("skipping to index: " + nextStepIndexWeed)
           nextStepIndex = nextStepIndexWeed;
@@ -348,6 +613,8 @@
 
       } else {
         // remove_weed()
+        // universal solution if all weeds are gone and for each block there is a check AND if statement with remove_weeds 
+        boardRemoveAllWeed[currX][currY] = 1; 
         if (boardWeed[currX][currY]==1) {
           boardWeed[currX][currY] = 0;
         } else { // removed sapling!!
@@ -388,7 +655,7 @@
       // indent increases without REPEAT or CONDITIONAL block starting
       if (indents[stepIndex]==indents[stepIndex-1]+50){
         console.log(stepsFormat[stepIndex])
-        if (stepsFormat[stepIndex-1]=='repeat' || stepsFormat[stepIndex-1]=='if weed') {
+        if (stepsFormat[stepIndex-1]=='repeat' || stepsFormat[stepIndex-1]=='if weed' || stepsFormat[stepIndex-1]=='for_position' || stepsFormat[stepIndex-1]=='if_bad') {
           return
         } else {
           updateFeedback('bad indent');
@@ -456,7 +723,7 @@
         if (watered){
           console.log("CORRECT. NUM STEPS: " + numSteps)
           if (indents.length < thresholdCommands[level]){
-            
+            successStatusStore.update(n=> true);
             updateFeedback('correct');
           } else {
             updateFeedback('correctButTooLong');
@@ -465,30 +732,62 @@
         } else {
           updateFeedback('incorrect');
         }
-      } else {
+      } else if (level == 3) {
         let weeded;
         weeded = allWeeded();
         let universalSolution = checkUniversalWeedSolution();
 
         if (weeded && universalSolution){
           if (indents.length < thresholdCommands[level]){
+            successStatusStore.update(n=> true);
             updateFeedback('correctWeed');
           } else {
             updateFeedback('correctButTooLong');
           }
           console.log("correct weed")
         } else if (weeded) {
-          updateFeedback('correctWeedButNotUniversal');
+            console.log(boardCheckAllWeed)
+            console.log(boardRemoveAllWeed)
+            updateFeedback('correctWeedButNotUniversal');
         } else {
-          console.log("incorrect weed")
-          updateFeedback('incorrectWeed');
+            console.log("incorrect weed")
+            updateFeedback('incorrectWeed');
+        }
+      } else { // level 4
+        let includesAllPos = true;
+        for (let i = 0; i < infectedPositions.length; i++){
+          if (!level4Steps['infectedList'].includes(infectedPositions[i])) {
+            includesAllPos = false;
+            break;
+          }
+        }
+        if (includesAllPos) {
+          if (infectedPositions.length == level4Steps['infectedList'].length) {
+            updateFeedback('Awesome job! You successfully recorded all infected beets!');
+            successStatusStore.update(n=> true);
+          } else {
+            updateFeedback('You successfully recorded all infected beets but somehow have duplicates..');
+          }
+          
+        } else {
+          updateFeedback('You did not successfully record all infected beets :(');
         }
       }
       
     }
 
     function checkUniversalWeedSolution() {
-      
+      for (let outer = 0; outer < BOARD_SIZE_H; outer ++){
+        for (let inner = 0; inner < BOARD_SIZE_W; inner ++){ 
+          if (outer==0 && inner == 0) {
+            continue;
+          }
+          if (boardCheckAllWeed[outer][inner]==0 || boardRemoveAllWeed[outer][inner]==0) {
+            return false;
+          }
+        }
+      }
+      return true;
     }
 
     function allWeeded() {
@@ -585,6 +884,7 @@
           class:startBox={level==3 && outerIndex==0 && index == 0}
           class:dead={boardWeed[outerIndex][index] == 2}
           class:blocked = {blockedCells[outerIndex][index]==1}
+          class:infected = {boardInfected[outerIndex][index]==1}
           >
             <!-- {#if board[outerIndex][index] === 1}
               <Character {choiceChar}/>
@@ -592,6 +892,7 @@
               <Sapling {level}/>
             {/if} -->
             <!-- {boardWeed[outerIndex][index]} -->
+            <div class:hideCell={level!=4} class="indexText"> {outerIndex*BOARD_SIZE_W+index} </div>
             
             <div class="characterSVG" class:hideCell={charPosition[0]!=outerIndex || charPosition[1]!=index}>
               <Icon name={charSelect} width="{rowHeight}px" height="{rowHeight}px" class="large"/>
@@ -600,6 +901,14 @@
           </div>
         {/each}
       {/each}
+  </div>
+
+  <div class="level4vars" class:hideCell={level!=4}>
+    position = {positionString}
+    <br>
+    infectedList = {infectedListString}
+    <br>
+    bad = {badString}
   </div>
 
   <div class="controls">
@@ -613,6 +922,16 @@
 
   
   <style>
+    .level4vars {
+     
+    }
+    .indexText {
+      font-size: 16px;
+      position: absolute;
+      top: 0px;
+      left: 5px;
+      color:lightgray;
+    }
     .hideCell {
       display: none;
     }
@@ -650,6 +969,10 @@
       background-color: rgb(37, 86, 37);
     }
 
+    .infected {
+      background-color: rgb(241, 73, 50);
+    }
+
     :root {
       --ratioA: 1;
       --ratioB: 1;
@@ -683,8 +1006,7 @@
         min-width: 280px;
         border: solid black 1px;
         display:grid;
-        grid-template-rows: 50px 1fr 60px;
-        
+        grid-template-rows: 50px 1 1 1;
     }
 
     @font-face {

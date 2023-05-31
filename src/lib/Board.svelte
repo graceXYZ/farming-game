@@ -37,7 +37,7 @@
 
 <section class="board">
   {#each columns as {id, name,items,indents}, idx (id)}
-    <div  class:wideToolbox="{level==3}" class:program="{name==='program'}" class:wideProgram={level==3 && name==='program'} class="column" animate:flip="{{duration: flipDurationMs}}" >    
+    <div  class:wideToolbox="{level>=3}" class:program="{name==='program'}" class:wideProgram={level>=3 && name==='program'} class="column" animate:flip="{{duration: flipDurationMs}}" >    
       <Column name={name} items={items} onDrop={(newItems) => handleItemFinalize(idx, name, newItems)}/>
     </div>
   {/each}
@@ -70,12 +70,12 @@
     }
 
     .wideProgram {
-      min-width: 360px !important;
-      max-width: 690px !important;
+      min-width: 375px !important;
+      max-width: 790px !important;
     }
 
     .wideToolbox {
-      width: 260px !important;
+      width: 275px !important;
     }
 
     @font-face {

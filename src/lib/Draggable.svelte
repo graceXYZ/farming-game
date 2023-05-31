@@ -43,23 +43,13 @@
 	function handleLevelUpdate(){
 		
 		// reset options
-		toolboxItems = [
-			{id: 1, name: "move_left()", indent:0, repeat:1},
-			{id: 2, name: "move_right()", indent:0, repeat:1},
-			{id: 3, name: "move_up()", indent:0, repeat:1},
-			{id: 4, name: "move_down()", indent:0, repeat:1},
-		]
+		toolboxItems = []
 		
 		columnsData = [
 			{
 				id: "c1",
 				name: "toolbox",
-				items: [
-					{id: 1, name: "move_left()", indent:0, repeat:1},
-					{id: 2, name: "move_right()", indent:0, repeat:1},
-					{id: 3, name: "move_up()", indent:0, repeat:1},
-					{id: 4, name: "move_down()", indent:0, repeat:1},
-				]
+				items: []
 			},
 			{
 				id: "c2",
@@ -68,6 +58,16 @@
 				]
 			}
 		];
+		if (level<4){
+			toolboxItems.push({id: 1, name: "move_left()", indent:0, repeat:1})
+			columnsData[0].items.push({id: 1, name: "move_left()", indent:0, repeat:1})
+			toolboxItems.push({id: 2, name: "move_right()", indent:0, repeat:1})
+			columnsData[0].items.push({id: 2, name: "move_right()", indent:0, repeat:1})
+			toolboxItems.push({id: 3, name: "move_up()", indent:0, repeat:1})
+			columnsData[0].items.push({id: 3, name: "move_up()", indent:0, repeat:1})
+			toolboxItems.push({id: 4, name: "move_down()", indent:0, repeat:1})
+			columnsData[0].items.push({id: 4, name: "move_down()", indent:0, repeat:1})
+		}
 
 		// add level-dependent commands
 		if (level<3){
@@ -75,7 +75,7 @@
 			columnsData[0].items.push({id: 5, name: "water()", indent:0, repeat:1})
 		}
 
-		if (level>=1){
+		if (level>=1 && level<4){
 			toolboxItems.push({id: 6, name: "repeat ____ times:", indent:0, repeat:1})
 			columnsData[0].items.push({id: 6, name: "repeat ____ times:", indent:0, repeat:1})
 		}
@@ -87,6 +87,24 @@
 			columnsData[0].items.push({id: 7, name: "if weed:", indent:0, repeat:1})
 			toolboxItems.push({id: 8, name: "remove_weeds()", indent:0, repeat:1})
 			columnsData[0].items.push({id: 8, name: "remove_weeds()", indent:0, repeat:1})
+		}
+
+		if (level==4){
+			toolboxItems.push({id: 1, name: "index_list = [0,1,...,24]", indent:0, repeat:1})
+			columnsData[0].items.push({id: 1, name: "index_list = [0,1,...,24]", indent:0, repeat:1})
+			toolboxItems.push({id: 2, name: "go_to(position)", indent:0, repeat:1})
+			columnsData[0].items.push({id: 2, name: "go_to(position)", indent:0, repeat:1})
+			toolboxItems.push({id: 3, name: "for position in index_list:", indent:0, repeat:1})
+			columnsData[0].items.push({id: 3, name: "for position in index_list:", indent:0, repeat:1})
+			toolboxItems.push({id: 7, name: "bad = check_infection()", indent:0, repeat:1})
+			columnsData[0].items.push({id: 7, name: "bad = check_infection()", indent:0, repeat:1})
+			toolboxItems.push({id: 4, name: "add position to infected_list", indent:0, repeat:1})
+			columnsData[0].items.push({id: 4, name: "add position to infected_list", indent:0, repeat:1})
+			toolboxItems.push({id: 5, name: "infected_list = []", indent:0, repeat:1})
+			columnsData[0].items.push({id: 5, name: "infected_list = []", indent:0, repeat:1})
+			toolboxItems.push({id: 6, name: "if bad:", indent:0, repeat:1})
+			columnsData[0].items.push({id: 6, name: "if bad:", indent:0, repeat:1})
+
 		}
 
 		handleBoardUpdated(columnsData);
@@ -224,6 +242,27 @@
 				case "repeat ____ times:":
 					key = 'repeat';
 					break;
+				case "index_list = [0,1,...,24]":
+					key = 'index_list';
+					break;
+				case "go_to(position)":
+					key = 'go_to';
+					break;
+				case "for position in index_list:":
+					key = 'for_position';
+					break;
+				case "bad = check_infection()":
+					key = 'check_infection';
+					break;
+				case "add position to infected_list":
+					key = 'add_position';
+					break;
+				case "infected_list = []":
+					key = 'infected_list';
+					break;
+				case "if bad:":
+					key = 'if_bad';
+					break;
 			}
 			steps.push(key);
 		});
@@ -252,7 +291,7 @@
 <div class="together">
 	<Board columns={columnsData} onFinalUpdate={handleBoardUpdated}/>
 	<button class="resetButton" on:click={resetAll}> Clear All </button>
-	<div class:hide={level==0} class="numSteps"> #Steps: {numSteps} </div>
+	<div class:hide={level==0 || level==4} class="numSteps"> #Steps: {numSteps} </div>
 	<div class="numCommands"> #Commands: {numCommands} </div>
 </div>
 

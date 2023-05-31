@@ -111,7 +111,7 @@
     }
 
     .wide {
-      width: 240px !important;
+      width: 255px !important;
     }
     
     .toolbox {
@@ -174,7 +174,7 @@
     }
 
     .wideSelect {
-      left: 104px !important;
+      left: 111px !important;
     }
 
     .smallText {
@@ -191,12 +191,12 @@
 			 on:finalize={handleDndFinalizeCards}>
 				{#each items as item, i (item.id)}
 
-           <div class="card" animate:flip="{{duration: flipDurationMs}}" style="margin-left: {item.indent}px;" class:toolbox="{name==='toolbox'}" class:wide={level==3} class:selected={stepIndex==i && name==='program'}>
+           <div class="card" animate:flip="{{duration: flipDurationMs}}" style="margin-left: {item.indent}px;" class:toolbox="{name==='toolbox'}" class:wide={level>=3} class:selected={stepIndex==i && name==='program'}>
             <div class="buttons">
               <div class="leftbutton" style="font-weight: 900;" on:click={toggleIndentDown(item)} class:hide={level == 0 || (item.name=="repeat ____ times:" && level == 1)}>
                 <button> {'<'} </button>
               </div>
-              <div class="selectRepeat" class:wideSelect={level==3} class:hide={level == 0 || item.name!="repeat ____ times:"}>
+              <div class="selectRepeat" class:wideSelect={level>=3} class:hide={level == 0 || item.name!="repeat ____ times:"}>
                 <select class="selectDirect" bind:value={item.repeat} on:change="{handleRepSelect(i)}">
                   <option value=1>
                     {1}

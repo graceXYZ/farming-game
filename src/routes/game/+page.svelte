@@ -25,8 +25,16 @@
     charSelectStore.update(n => charOptions[data.character])
 
   
+    import {successStatusStore} from '../../lib/stores.js';
     import {levelStore} from '../../lib/stores.js';
+
     import { dataset_dev } from 'svelte/internal';
+
+
+    let successStatus = false;
+    successStatusStore.subscribe(value => {
+      successStatus = value;
+    });
     
     let level = 0;
   
@@ -53,6 +61,13 @@
       console.log("next level")
       level = parseInt(level)+1;
       changeLevel()
+    }
+
+    let successFullGame = false;
+
+    function successFullGameFunction() {
+      successFullGame = true;
+      modal.show()
     }
   
   </script>
@@ -114,8 +129,6 @@
           <p>When all the plants are watered, you can move on to the next level!</p>
         </div>
 
-        <button class="modalButton" on:click={() => modal.hide()}>Close</button>
-
 
         <!-- LEVEL 3 -->
         <h2 class:hide={level!=3}  style="margin-bottom: 0.1em">Level 3</h2>
@@ -124,12 +137,26 @@
             You must de-weed the field to see if this solves our problem! But be careful, don't uproot the beet seedlings!  </p>
 
           <p style="margin-bottom: 15px">
-            You must <strong>check</strong> each block for weeds using the <em>check_for_weeds()</em> function, which stores the output status (true or false) in the variable <em>weed</em>.
+            You must <strong>check</strong> each block for weeds (light green blocks) using the <em>check_for_weeds()</em> function, which stores the output status (true or false) in the variable <em>weed</em>.
           <strong>If there are weeds, remove them</strong> by calling the <em>remove_weeds()</em> function. Make sure you create an <em>if-statement block</em> with indentations to indicate which commands should be run if <em>weed</em> is currently true.</p>
 
           <img src={conditionalImg} alt="Conditional block example" width="200px" style="position:absolute; right:25px; top: 55px">
           <p>When the weeds are removed and the beet plants are still alive, you can move on to the next level!</p>
         </div>
+
+
+        <!-- LEVEL 4 -->
+        <h2 class:hide={level!=4  || successFullGame}  style="margin-bottom: 0.1em">Level 4</h2>
+        <div class:hide={level!=4 || successFullGame}  class="ModalTextNarrow"> 
+          
+        </div>
+
+        <!-- SUCCESS FULL GAME -->
+        <h2 class:hide={!successFullGame}  style="margin-bottom: 0.1em">Congratuations!!!</h2>
+        <div class:hide={!successFullGame}  class="ModalTextNarrow"> 
+          <p>You successfully passed all levels of the Sugar Beet Shortage Farming Game!</p>
+        </div>
+
 
         <button class="modalButton" on:click={() => modal.hide()}>Close</button>
       </Modal>
@@ -152,12 +179,16 @@
             <option value=3>
               {3}
             </option>
+            <option value=4>
+              {4}
+            </option>
           </select>
         
         </div>
         <div class="feedback"> 
           <div> {feedbackThis}  </div>
-          <button class="buttonNext" class:hide={feedbackCode!="correct"} on:click={nextLevel}> Next Level</button>
+          <button class="buttonNext" class:hide={!successStatus || level==4} on:click={nextLevel}> Next Level</button>
+          <button class="buttonSuccess" class:hide={!successStatus || level<4} on:click={successFullGameFunction}> Click me! </button>
         </div>
       </div>
 
@@ -170,6 +201,17 @@
   <style>
     .buttonNext {
       /* position: absolute;
+      right:0;
+      margin: 0px 10px; */
+      margin-left: 10px;
+      padding: 2px !important;
+      width: 130px !important;
+      grid-row: 0;
+      grid-column: 1;
+    }
+
+    .buttonSuccess{
+       /* position: absolute;
       right:0;
       margin: 0px 10px; */
       margin-left: 10px;
