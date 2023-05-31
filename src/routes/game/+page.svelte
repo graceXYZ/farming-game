@@ -153,8 +153,8 @@
 
 
         <!-- LEVEL 4 PAGE 1-->
-        <h2 class:hide={level!=4  || successFullGame || !level4Modalpage}  style="margin-bottom: 0.1em">Level 4</h2>
-        <div class:hide={level!=4 || successFullGame || !level4Modalpage}  class="ModalTextNarrow"> 
+        <h2 class:hide={level!=4  || successFullGame || !level4Modalpage  || successFullGame}  style="margin-bottom: 0.1em">Level 4</h2>
+        <div class:hide={level!=4 || successFullGame || !level4Modalpage  || successFullGame}  class="ModalTextNarrow"> 
           <p style="margin-bottom: 15px"> You spent so much time carefully watering the plants, making sure not to over-water them. 
             You diligently checked the field for weeds and removed them. Still, the beet leaves are yellowing and you are quickly loosing yield! 
             <em>What is the problem??? </em> </p>
@@ -172,8 +172,8 @@
 
 
         <!-- LEVEL 4 PAGE 2-->
-        <h2 class:hide={level!=4  || successFullGame || level4Modalpage}  style="margin-bottom: 0.1em">Level 4 </h2>
-        <div class:hide={level!=4 || successFullGame || level4Modalpage}  class="ModalTextNarrow"> 
+        <h2 class:hide={level!=4  || successFullGame || level4Modalpage || successFullGame}  style="margin-bottom: 0.1em">Level 4 </h2>
+        <div class:hide={level!=4 || successFullGame || level4Modalpage  || successFullGame}  class="ModalTextNarrow"> 
           <p style="margin-bottom: 15px"><strong>How can we store the locations of the beets that show symptoms?? </strong> 
              For each location, you will check for symptoms and store the locations of the bad beets in a list!</p>
           <p>
@@ -202,7 +202,7 @@
 
 
 
-        <button class="nextModalButton" class:hide={level!=4} style="{level4Modalpage ? '' : 'right: 110px;'}"  on:click={toggleLevel4Modal}>{level4Modalpage ? '->' : '<-'} Page {level4Modalpage ? 2 : 1}</button>
+        <button class="nextModalButton" class:hide={level!=4 || successFullGame} style="{level4Modalpage ? '' : 'right: 110px;'}"  on:click={toggleLevel4Modal}>{level4Modalpage ? '->' : '<-'} Page {level4Modalpage ? 2 : 1}</button>
 
         <button class="modalButton" class:hide={level==4 && level4Modalpage} on:click={() => modal.hide()}>Close</button>
       </Modal>
