@@ -9,6 +9,7 @@
 
     import repeatImg from '../../lib/repeat.png';
     import repeat2Img from '../../lib/nestRepeat.png';
+    import conditionalImg from '../../lib/conditionalBlock.png';
   
     let modal;
     let programData;
@@ -77,7 +78,7 @@
           <br>
           <p>Using the toolbox commands on the left, construct a program to move your character around the field and water the plants.</p>
           <br>
-          <p>Press <strong>Start</strong> to activate your program, and <strong>Reset</strong> to try again. </p>
+          <p>Press <strong>Play</strong> to activate your program, and <strong>Reset</strong> to try again. </p>
           <br>
           <p>When all the plants are watered, you can move on to the next level!</p>
         </div>
@@ -102,8 +103,9 @@
         <!-- LEVEL 2 -->
         <h2 class:hide={level!=2}  style="margin-bottom: 0.1em">Level 2</h2>
         <div class:hide={level!=2}  class="ModalTextNarrow"> 
-          <p style="margin-bottom: 15px">Uh oh! Even with the careful watering, the beet leaves are turning more yellow and their roots look thin and hairy. Maybe we are watering them too much?</p>
+          <p style="margin-bottom: 15px">Uh oh! The beet leaves are turning even more yellow and their roots look thin and hairy. Maybe we are watering them too much?</p>
           <p>Avoid the areas that have already been watered (dark blue squares) and water only the plants that need them!</p>
+          <br>
           <p>You can now use <strong>nested repeats</strong> by adding repeat blocks inside of repeat blocks!</p>
           <br>
           <img src={repeat2Img} alt="Repeat block example" width="200px" style="position:absolute; right:25px; top: 55px">
@@ -119,14 +121,14 @@
         <h2 class:hide={level!=3}  style="margin-bottom: 0.1em">Level 3</h2>
         <div class:hide={level!=3}  class="ModalTextNarrow"> 
           <p style="margin-bottom: 15px"> Uh oh! There are a lot of weeds growing among the beet seedlings. Maybe this is what is killing them!
-            You must go around and de-weed the plants before all the beet plants die! But be careful, 
-            You don't want to uproot the beet seedlings! 
-            If there are weeds in a block, de-weed them. </p>
-          <br>
-          <img src={repeatImg} alt="Repeat block example" width="200px" style="position:absolute; right:25px; top: 55px">
-          <p>Press <strong>Play</strong> to activate your program, and <strong>Reset</strong> to go back to the start. </p>
-          
-          <p>When all the weeds are removed, you can move on to the next level!</p>
+            You must de-weed the field to see if this solves our problem! But be careful, don't uproot the beet seedlings!  </p>
+
+          <p style="margin-bottom: 15px">
+            You must <strong>check</strong> each block for weeds using the <em>check_for_weeds()</em> function, which stores the output status (true or false) in the variable <em>weed</em>.
+          <strong>If there are weeds, remove them</strong> by calling the <em>remove_weeds()</em> function. Make sure you create an <em>if-statement block</em> with indentations to indicate which commands should be run if <em>weed</em> is currently true.</p>
+
+          <img src={conditionalImg} alt="Conditional block example" width="200px" style="position:absolute; right:25px; top: 55px">
+          <p>When the weeds are removed and the beet plants are still alive, you can move on to the next level!</p>
         </div>
 
         <button class="modalButton" on:click={() => modal.hide()}>Close</button>
@@ -154,7 +156,7 @@
         
         </div>
         <div class="feedback"> 
-          {feedbackThis} 
+          <div> {feedbackThis}  </div>
           <button class="buttonNext" class:hide={feedbackCode!="correct"} on:click={nextLevel}> Next Level</button>
         </div>
       </div>
@@ -167,11 +169,14 @@
   
   <style>
     .buttonNext {
-      position: absolute;
+      /* position: absolute;
       right:0;
-      margin: 0px 10px;
+      margin: 0px 10px; */
+      margin-left: 10px;
       padding: 2px !important;
       width: 130px !important;
+      grid-row: 0;
+      grid-column: 1;
     }
 
     .hide {
@@ -240,6 +245,8 @@
   
     .feedback {
       display: flex;
+      min-width: 500px;
+      /* display: block; */
       text-align: right;
       position: relative;
     }
@@ -247,8 +254,8 @@
   
     .footerWrap {
         margin: 0.5em auto;
-        width: 800px;
-        max-width: 90%;
+        /* width: 800px; */
+        max-width: 95%;
         min-width: 500px;
         height: 100px;
         display: grid;    

@@ -5,6 +5,7 @@
     import { repCountsStore} from '../lib/stores.js';
     import { stepI } from '../lib/stores.js';
     import { feedback } from '../lib/stores.js';
+    import { numStepsStore } from '../lib/stores.js';
     import { feedbackCodeS } from '../lib/stores.js';
     import { charSelectStore } from '../lib/stores.js';
     import Icon from "./Icon.svelte";
@@ -18,6 +19,11 @@
     let charSelect;
     charSelectStore.subscribe(value => {
       charSelect = value;
+    });
+
+    let numSteps = 0;
+    numStepsStore.subscribe(value => {
+      numSteps = value;
     });
 
     let startorPause = ["Play","Pause"]
@@ -60,6 +66,8 @@
     let charPosition;
     let gameInterval;
 
+    let thresholdCommands = [100,12,10,10,10];
+    
 
     $: {
       console.log("LEVEL CHANGED")
@@ -100,7 +108,8 @@
                           'bad variable use': "You used a variable without setting its value!",
                           'correctWeed': "You successfully removed all weeds without killing the beets!",
                           'incorrectWeed': "There are weeds and/or dead beets :(",
-                          'overwatered': "Oh no! A beet plant died from overwatering!"
+                          'overwatered': "Oh no! A beet plant died from overwatering!",
+                          'correctButTooLong': "Good, but you're code is too long (#Commands). Use repeats!"
                         }; 
 
 
@@ -143,10 +152,31 @@
       }
       
       // fill weed with random vals
+      let weedCheck = 0;
+      let weedVal = 0;
+      let healthyCheck = 0;
       for (let outer = 0; outer < BOARD_SIZE_H; outer ++){
         for (let inner = 0; inner < BOARD_SIZE_W; inner ++){ 
-          boardWeed[outer][inner] = Math.floor(Math.random() * 2);
+          // skip first block bc it may be inactivated 
+          if (outer == 0 && inner == 0){
+            continue;
+          }
+          weedVal = Math.floor(Math.random() * 2);
+          boardWeed[outer][inner] = weedVal;
+          if (weedVal == 1){ // make sure there is at least one weed and one healthy plant
+            weedCheck = 1;
+          }
+          if (weedVal == 0) {
+            healthyCheck = 1;
+          }
         }
+      }
+      // make sure there is at least one weed and one healthy plant
+      if (weedCheck == 0){
+        boardWeed[BOARD_SIZE_H-1][BOARD_SIZE_W-1] = 1;
+      }
+      if (healthyCheck == 0){
+        boardWeed[BOARD_SIZE_H-1][BOARD_SIZE_W-1] = 0;
       }
       
       charPosition = [0, 0];
@@ -334,10 +364,15 @@
       // remember indents are multiples of 50 
 
       // start with indent
+      if (indents.length == 0){
+        resetPending = true;
+        stop();
+        return;
+      }
       if (indents[0]!=0){
         updateFeedback('start indent');
         resetPending = true;
-        stop()
+        stop();
         return
       }
       // indent increases by more than 1
@@ -417,22 +452,42 @@
       if (level < 3){
         let watered;
         watered = allWatered()
+        
         if (watered){
-          updateFeedback('correct');
+          console.log("CORRECT. NUM STEPS: " + numSteps)
+          if (indents.length < thresholdCommands[level]){
+            
+            updateFeedback('correct');
+          } else {
+            updateFeedback('correctButTooLong');
+          }
+          
         } else {
           updateFeedback('incorrect');
         }
       } else {
         let weeded;
         weeded = allWeeded();
-        if (weeded){
+        let universalSolution = checkUniversalWeedSolution();
+
+        if (weeded && universalSolution){
+          if (indents.length < thresholdCommands[level]){
+            updateFeedback('correctWeed');
+          } else {
+            updateFeedback('correctButTooLong');
+          }
           console.log("correct weed")
-          updateFeedback('correctWeed');
+        } else if (weeded) {
+          updateFeedback('correctWeedButNotUniversal');
         } else {
           console.log("incorrect weed")
           updateFeedback('incorrectWeed');
         }
       }
+      
+    }
+
+    function checkUniversalWeedSolution() {
       
     }
 
@@ -575,7 +630,8 @@
     }
 
     .startBox {
-      background-color: rgb(203, 203, 203) !important;
+      background-color: rgb(240, 240, 240) !important;
+      border: none !important;
     }
 
     .weed {

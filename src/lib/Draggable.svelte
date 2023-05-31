@@ -5,6 +5,7 @@
 	import {stepI, steps} from '../lib/stores.js';
 
 	import {levelStore} from '../lib/stores.js';
+	import {numStepsStore} from '../lib/stores.js';
 	let level=0;
 
 	import { indentsStore} from '../lib/stores.js';
@@ -20,10 +21,13 @@
 		indentsThis = value;
     });
 
+	let numCommands = 0;
+    // numCommandsStore.subscribe(value => {
+	// 	numCommands = value;
+    // });
+
 	let toolboxItems, columnsData;
 	let numSteps = 0;
-	let numCommands = 0;
-
 	
 	handleLevelUpdate();
 
@@ -109,13 +113,13 @@
 		columnsData = newColumnsData;
 		let programData = formatSteps(columnsData[1].items);
 		let indentsF = formatIndents(columnsData[1].items);
-		let repCounts = formatRepeats(columnsData[1].items)
-		indentsStore.update(contents => indentsF)
-		repCountsStore.update(contents => repCounts)
-		steps.update(contents => programData)
-		let numC = getNumSteps(programData)
+		let repCounts = formatRepeats(columnsData[1].items);
+		indentsStore.update(contents => indentsF);
+		repCountsStore.update(contents => repCounts);
+		steps.update(contents => programData);
+		let numC = getNumSteps(programData);
+		numStepsStore.update(contents => numC);
 		numCommands = repCounts.length;
-		numSteps = numC;
 	}
 
 
@@ -248,12 +252,15 @@
 <div class="together">
 	<Board columns={columnsData} onFinalUpdate={handleBoardUpdated}/>
 	<button class="resetButton" on:click={resetAll}> Clear All </button>
-	<div class="numSteps"> #Steps: {numSteps} </div>
+	<div class:hide={level==0} class="numSteps"> #Steps: {numSteps} </div>
 	<div class="numCommands"> #Commands: {numCommands} </div>
 </div>
 
 
 <style>
+	.hide {
+		display: none;
+	}
 
 	.numSteps {
 		position: absolute;
