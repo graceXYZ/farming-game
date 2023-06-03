@@ -101,7 +101,8 @@
       margin: 0.2em 0;
       padding: 1.5em 1em;
       display: flex;
-      justify-content: center;
+      padding-left: 35px;
+      justify-content: left;
       align-items: center;
       background-color: #dddddd;
       border: 1px solid #333333 ;
@@ -167,18 +168,27 @@
     .selectRepeat {
       position: absolute;
       top: 12px;
-      left: 78px;
+      left: 83px;
     }
     .selectDirect {
-      width: 34px;
+      width: 44px;
     }
 
     .wideSelect {
-      left: 111px !important;
+      left: 81px !important;
     }
 
     .smallText {
       font-size: 15px;
+    }
+
+    .colon {
+      position: absolute;
+      top: -4px;
+      right: -11px;
+      font-size: 35px;
+      font-weight: 900;
+      color: gray;
     }
 
 </style>
@@ -193,10 +203,10 @@
 
            <div class="card" animate:flip="{{duration: flipDurationMs}}" style="margin-left: {item.indent}px;" class:toolbox="{name==='toolbox'}" class:wide={level>=3} class:selected={stepIndex==i && name==='program'}>
             <div class="buttons">
-              <div class="leftbutton" style="font-weight: 900;" on:click={toggleIndentDown(item)} class:hide={level == 0 || (item.name=="repeat ____ times:" && level == 1)}>
+              <div class="leftbutton" style="font-weight: 900;" on:click={toggleIndentDown(item)} class:hide={level == 0 || (item.name.includes("repeat") && level == 1)}>
                 <button> {'<'} </button>
               </div>
-              <div class="selectRepeat" class:wideSelect={level>=3} class:hide={level == 0 || item.name!="repeat ____ times:"}>
+              <div class="selectRepeat" class:wideSelect={level>=3} class:hide={level == 0 || !item.name.includes("repeat")}>
                 <select class="selectDirect" bind:value={item.repeat} on:change="{handleRepSelect(i)}">
                   <option value=1>
                     {1}
@@ -230,10 +240,11 @@
                   </option>
                 </select>
               </div>
-              <div class="rightbutton" style="font-weight: 900;" on:click={toggleIndent(item)} class:hide={level == 0 || (item.name=="repeat ____ times:" && level == 1)}>
+              <div class="rightbutton" style="font-weight: 900;" on:click={toggleIndent(item)} class:hide={level == 0 || (item.name.includes("repeat") && level == 1)}>
                 <button> {'>'} </button>
               </div>
             </div>
+            <div class="colon" class:hide={!(item.name.includes("repeat")||item.name.startsWith("for")||item.name.includes("if"))}> : </div>
             <div class="name" class:smallText="{level==3}">
               {item.name}
             </div>

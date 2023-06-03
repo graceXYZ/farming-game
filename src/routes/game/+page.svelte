@@ -1,4 +1,6 @@
 <script>
+    import '../../styles.css';
+
     import Draggable from '../../lib/Draggable.svelte';
     import Animation from '../../lib/Animation.svelte';
   
@@ -16,6 +18,7 @@
     let modal;
     let programData;
     let level4Modalpage = true;
+
 
     function toggleLevel4Modal(){
       level4Modalpage = !level4Modalpage;
@@ -38,10 +41,26 @@
     import { dataset_dev } from 'svelte/internal';
 
 
+    import {nameStore} from '../../lib/stores.js';
+    let name = "";
+    nameStore.subscribe(value => {
+        name = value;
+    });
+    nameStore.update(n => data.name)
+
+
     let successStatus = false;
     successStatusStore.subscribe(value => {
       successStatus = value;
     });
+
+    import {successStore} from '../../lib/stores.js';
+    let success = [0,0,0,0,0];
+    successStore.subscribe(value => {
+        success = value;
+    });
+
+    let totalSuccess = 0;
     
     let level = 0;
   
@@ -60,12 +79,15 @@
       });
   
     function changeLevel(){
+      console.log(success)
       levelStore.update(n => level)
       modal.show()
     }
 
     function nextLevel(){
-      console.log("next level")
+      success[level]=1;
+      successStatusStore.update(n=>success);
+      console.log("next level. UPDATED STORE"+ success)
       level = parseInt(level)+1;
       changeLevel()
     }
@@ -73,8 +95,33 @@
     let successFullGame = false;
 
     function successFullGameFunction() {
+      success[4]=1;
+      successStatusStore.update(n=>success);
       successFullGame = true;
       modal.show()
+    }
+
+
+    import { afterUpdate } from 'svelte';
+    let element;
+    afterUpdate(() => {
+        console.log(element.textContent)
+        if (element.textContent!="Drag the toolbox commands into the program and press play!"){
+          flash(element);
+        }
+    });
+    function flash(element) {
+      requestAnimationFrame(() => { // instant red bg flash in
+        element.style.transition = 'none';
+        element.style.color = 'rgba(255,62,0,1)';
+        element.style.backgroundColor = 'rgba(255,62,0,0.2)';
+
+        setTimeout(() => {  // slow 1s fade out
+          element.style.transition = 'color 4s, background 4s';
+          element.style.color = '';
+          element.style.backgroundColor = '';
+        });
+      });
     }
   
   </script>
@@ -98,7 +145,7 @@
           <p>You are visiting a sugar beet farm to help figure out why all the beet plants are dying!</p>
           <p>Your first task is to make sure all the plants are watered.</p>
           <br>
-          <p>Using the toolbox commands on the left, construct a program to move your character around the field and water the plants.</p>
+          <p>Using the toolbox commands on the left, construct a program to move your character around the field and water the plants. <strong>Drag the commands into the program</strong> in the desired order.</p>
           <br>
           <p>Press <strong>Play</strong> to activate your program, and <strong>Reset</strong> to try again. </p>
           <br>
@@ -156,14 +203,14 @@
         <h2 class:hide={level!=4  || successFullGame || !level4Modalpage  || successFullGame}  style="margin-bottom: 0.1em">Level 4</h2>
         <div class:hide={level!=4 || successFullGame || !level4Modalpage  || successFullGame}  class="ModalTextNarrow"> 
           <p style="margin-bottom: 15px"> You spent so much time carefully watering the plants, making sure not to over-water them. 
-            You diligently checked the field for weeds and removed them. Still, the beet leaves are yellowing and you are quickly loosing yield! 
+            You diligently checked the field for weeds and removed them. Still, the beet leaves are yellowing and you are quickly losing yield! 
             <em>What is the problem??? </em> </p>
           <p style="margin-bottom: 15px"> The only way forward is to study the beet symptoms more. You must <strong>inspect every plant and collect data</strong> on which locations of beets show these mysterious symptoms. </p>
 
           <p style="margin-bottom: 15px">
             To go through every block in the field, you will use a new method called a <strong>for loop</strong>. 
             For each index or numbered location in the field [ <em>for position in index_list:</em> ], you will go to the next location [ <em>go_to(position)</em> ] and perform some actions.
-            All commands included in the for loop must be intended one degree more than the for loop header.
+            All commands included in the for loop must be indended one degree more than the for loop header.
           </p>
 
           <img src={forloopImg} alt="For loop block example" width="200px" style="position:absolute; right:25px; top: 125px">
@@ -195,9 +242,15 @@
 
 
         <!-- SUCCESS FULL GAME -->
-        <h2 class:hide={!successFullGame}  style="margin-bottom: 0.1em">Congratuations!!!</h2>
+        <h2 class:hide={!successFullGame}  style="margin-bottom: 0.1em">Congratualions!!!</h2>
         <div class:hide={!successFullGame}  class="ModalTextNarrow"> 
           <p>You successfully passed all levels of the Sugar Beet Shortage Farming Game!</p>
+          <p>
+            You checked so many things - overwatering, underwatering, weeding, and collected the infected beets. 
+            <br>
+            <br>
+            So far, these experiments haven't told us what's going on exactly, 
+            but they helped us eliminate some causes that aren't making the beets die.</p>
         </div>
 
 
@@ -210,7 +263,7 @@
 
       <div class="footerWrap">
         <button on:click={() => modal.show()}>Show instructions</button>
-        <div class="levelMessage"> Level
+        <div class="levelMessage"> 
     
           <select class="levelSelect" bind:value={level} on:change="{changeLevel}">
             <option value=0>
@@ -229,10 +282,12 @@
               {4}
             </option>
           </select>
+
+          Level {level}
         
         </div>
         <div class="feedback"> 
-          <div> {feedbackThis}  </div>
+          <div bind:this={element}> {feedbackThis}  </div>
           <button class="buttonNext" class:hide={!successStatus || level==4} on:click={nextLevel}> Next Level</button>
           <button class="buttonSuccess" class:hide={!successStatus || level<4} on:click={successFullGameFunction}> Click me! </button>
         </div>
@@ -328,13 +383,16 @@
       margin: 0;
       border: 0.5px black solid;
     }
-  
+    .levelMessage {
+      font-weight: bold;
+    }
     .levelMessage, .feedback {
       padding: 0.5em;
       text-align: center;
-      min-width: 100px;
+      min-width: 130px;
       background-color: rgb(245, 245, 245);
       border-radius: 6px;
+      
     }
   
     .feedback {
@@ -355,7 +413,7 @@
         display: grid;    
         gap: 15px;
         align-items: start;
-        grid-template-columns: 175px 100px 1fr;
+        grid-template-columns: 175px 130px 1fr;
     }
   
     .footerWrap button {

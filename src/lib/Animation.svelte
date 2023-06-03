@@ -665,6 +665,24 @@
           return 
         }
       }
+      // repeat, for ,or if header WITHOUT a repeated command next
+      if (stepsFormat[stepIndex-1]=='repeat' || stepsFormat[stepIndex-1]=='if weed' || stepsFormat[stepIndex-1]=='for_position' || stepsFormat[stepIndex-1]=='if_bad') {
+        if (indents[stepIndex-1]==indents[stepIndex]){
+          let caseName = "";
+          if (stepsFormat[stepIndex-1]=='repeat'){
+            caseName = " repeat block"
+          } else if (stepsFormat[stepIndex-1]=='for_position') {
+            caseName = " for loop"
+          } else {
+            caseName = "n if statement block"
+          }
+          updateFeedback('You need to indent your commands in a' + caseName +"!");
+          console.log("INDENT 3 CASE")
+          resetPending = true;
+          stop()
+          return
+        }
+      }
       
     }
 
@@ -879,7 +897,8 @@
       {#each board as row, outerIndex}
         {#each row as cell, index}
           <div class="cell" class:character={charPosition[0]==outerIndex && charPosition[1]==index}
-          class:sapling={board[outerIndex][index] == SAPLING_CELL} class:watered={boardWater[outerIndex][index] == WET_CELL}
+          class:sapling={board[outerIndex][index] == SAPLING_CELL} 
+          class:watered={boardWater[outerIndex][index] == WET_CELL}
           class:weed={level == 3 && boardWeed[outerIndex][index] == 1} 
           class:startBox={level==3 && outerIndex==0 && index == 0}
           class:dead={boardWeed[outerIndex][index] == 2}

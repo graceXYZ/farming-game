@@ -55,7 +55,7 @@
 
   .column {
       height: 500px;
-      min-width: 210px; 
+      min-width: 215px; 
       padding: 0.5em;
       margin: 0.5em;
       float: left;
@@ -70,12 +70,12 @@
     }
 
     .wideProgram {
-      min-width: 375px !important;
-      max-width: 790px !important;
+      min-width: 380px !important;
+      max-width: 795px !important;
     }
 
     .wideToolbox {
-      width: 275px !important;
+      width: 280px !important;
     }
 
     @font-face {

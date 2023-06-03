@@ -23,6 +23,12 @@
     charSelectStore.subscribe(value => {
         charSelect = value;
     });
+
+    import {successStore} from '../lib/stores.js';
+    let success = [];
+    successStore.subscribe(value => {
+        success = value;
+    });
     
     $:{
         console.log("SELECTED CHAR IS " + charOptions[selected])
@@ -57,6 +63,7 @@
         <!-- <p class:hidden={!visited} style="margin-left:10px"> {defaultName}</p> -->
     </div>
     <input class="hidden" type="character" name="character" value={selected} />
+    <input class="hidden" type="success" name="success" value={success} />
     <button style="margin-top: 2em;" type="submit" on:click={playGame}>Let's Play!</button>
 </form>
 

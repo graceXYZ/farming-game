@@ -58,6 +58,11 @@
 				]
 			}
 		];
+		if (level<3){
+			toolboxItems.push({id: 5, name: "water()", indent:0, repeat:1})
+			columnsData[0].items.push({id: 5, name: "water()", indent:0, repeat:1})
+		}
+
 		if (level<4){
 			toolboxItems.push({id: 1, name: "move_left()", indent:0, repeat:1})
 			columnsData[0].items.push({id: 1, name: "move_left()", indent:0, repeat:1})
@@ -70,40 +75,36 @@
 		}
 
 		// add level-dependent commands
-		if (level<3){
-			toolboxItems.push({id: 5, name: "water()", indent:0, repeat:1})
-			columnsData[0].items.push({id: 5, name: "water()", indent:0, repeat:1})
-		}
 
 		if (level>=1 && level<4){
-			toolboxItems.push({id: 6, name: "repeat ____ times:", indent:0, repeat:1})
-			columnsData[0].items.push({id: 6, name: "repeat ____ times:", indent:0, repeat:1})
+			toolboxItems.push({id: 6, name: "repeat ____", indent:0, repeat:1})
+			columnsData[0].items.push({id: 6, name: "repeat ____", indent:0, repeat:1})
 		}
 
 		if (level==3){
-			toolboxItems.push({id: 9, name: "weed = check_for_weeds()", indent:0, repeat:1})
-			columnsData[0].items.push({id: 9, name: "weed = check_for_weeds()", indent:0, repeat:1})
-			toolboxItems.push({id: 7, name: "if weed:", indent:0, repeat:1})
-			columnsData[0].items.push({id: 7, name: "if weed:", indent:0, repeat:1})
+			toolboxItems.push({id: 9, name: "is_weed = check_weeds()", indent:0, repeat:1})
+			columnsData[0].items.push({id: 9, name: "is_weed = check_weeds()", indent:0, repeat:1})
+			toolboxItems.push({id: 7, name: "if is_weed", indent:0, repeat:1})
+			columnsData[0].items.push({id: 7, name: "if is_weed", indent:0, repeat:1})
 			toolboxItems.push({id: 8, name: "remove_weeds()", indent:0, repeat:1})
 			columnsData[0].items.push({id: 8, name: "remove_weeds()", indent:0, repeat:1})
 		}
 
 		if (level==4){
-			toolboxItems.push({id: 1, name: "index_list = [0,1,...,24]", indent:0, repeat:1})
-			columnsData[0].items.push({id: 1, name: "index_list = [0,1,...,24]", indent:0, repeat:1})
+			toolboxItems.push({id: 1, name: "index_list = [0,1,...,8]", indent:0, repeat:1})
+			columnsData[0].items.push({id: 1, name: "index_list = [0,1,...,8]", indent:0, repeat:1})
 			toolboxItems.push({id: 2, name: "go_to(position)", indent:0, repeat:1})
 			columnsData[0].items.push({id: 2, name: "go_to(position)", indent:0, repeat:1})
-			toolboxItems.push({id: 3, name: "for position in index_list:", indent:0, repeat:1})
-			columnsData[0].items.push({id: 3, name: "for position in index_list:", indent:0, repeat:1})
-			toolboxItems.push({id: 7, name: "bad = check_infection()", indent:0, repeat:1})
-			columnsData[0].items.push({id: 7, name: "bad = check_infection()", indent:0, repeat:1})
+			toolboxItems.push({id: 3, name: "for position in index_list", indent:0, repeat:1})
+			columnsData[0].items.push({id: 3, name: "for position in index_list", indent:0, repeat:1})
+			toolboxItems.push({id: 7, name: "is_bad = check_status()", indent:0, repeat:1})
+			columnsData[0].items.push({id: 7, name: "is_bad = check_status()", indent:0, repeat:1})
 			toolboxItems.push({id: 4, name: "add position to infected_list", indent:0, repeat:1})
 			columnsData[0].items.push({id: 4, name: "add position to infected_list", indent:0, repeat:1})
-			toolboxItems.push({id: 5, name: "infected_list = []", indent:0, repeat:1})
-			columnsData[0].items.push({id: 5, name: "infected_list = []", indent:0, repeat:1})
-			toolboxItems.push({id: 6, name: "if bad:", indent:0, repeat:1})
-			columnsData[0].items.push({id: 6, name: "if bad:", indent:0, repeat:1})
+			toolboxItems.push({id: 5, name: "bad_list = []", indent:0, repeat:1})
+			columnsData[0].items.push({id: 5, name: "bad_list = []", indent:0, repeat:1})
+			toolboxItems.push({id: 6, name: "if is_bad", indent:0, repeat:1})
+			columnsData[0].items.push({id: 6, name: "if is_bad", indent:0, repeat:1})
 
 		}
 
@@ -230,37 +231,37 @@
 				case "water()":
 					key = 'w';
 					break;
-				case "weed = check_for_weeds()":
+				case "is_weed = check_weeds()":
 					key = 'check weed';
 					break;
-				case "if weed:":
+				case "if is_weed":
 					key = 'if weed';
 					break;
 				case "remove_weeds()":
 					key = 'deweed';
 					break;
-				case "repeat ____ times:":
+				case "repeat ____":
 					key = 'repeat';
 					break;
-				case "index_list = [0,1,...,24]":
+				case "index_list = [0,1,...,8]":
 					key = 'index_list';
 					break;
 				case "go_to(position)":
 					key = 'go_to';
 					break;
-				case "for position in index_list:":
+				case "for position in index_list":
 					key = 'for_position';
 					break;
-				case "bad = check_infection()":
+				case "is_bad = check_status()":
 					key = 'check_infection';
 					break;
 				case "add position to infected_list":
 					key = 'add_position';
 					break;
-				case "infected_list = []":
+				case "bad_list = []":
 					key = 'infected_list';
 					break;
-				case "if bad:":
+				case "if is_bad":
 					key = 'if_bad';
 					break;
 			}
