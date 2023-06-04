@@ -70,6 +70,7 @@
     
     levelStore.subscribe(value => {
       level = value;
+      modal = true;
     });
     
     let feedbackThis = "";
@@ -250,10 +251,9 @@
           <br>
           <p>
             You checked so many factors - overwatering, underwatering, weeding - and collected the dying beets. 
+            These experiments have not told us exactly what's going on, but they have helped us eliminate factors and given us clues to the real reason... </p>
             <br>
-            <br>
-            So far, these experiments haven't told us what's going on exactly, 
-            but they helped us eliminate some causes that aren't making the beets die.</p>
+            Now, head back to the course to finish solving this mystery and restore sugar to the world!
         </div>
 
         <button class="modalButton" on:click={hideModalS}>Close</button>
