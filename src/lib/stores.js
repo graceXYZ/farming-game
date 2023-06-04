@@ -20,7 +20,7 @@ if (typeof localStorage !== 'undefined') {
     nameStoreS = localStorage.name;
 }
 // Set the stored value or a sane default.
-export const nameStore = writable(nameStoreS || "0")
+export const nameStore = writable(nameStoreS || "")
 
 // Anytime the store changes, update the local storage value.
 if (typeof localStorage !== 'undefined') {

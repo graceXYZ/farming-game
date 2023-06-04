@@ -797,6 +797,8 @@
         }
         if (includesAllPos) {
           if (infectedPositions.length == level4Steps['infectedList'].length) {
+            success[level]=1;
+            successLOCAL.update(n=> JSON.stringify(success))
             updateFeedback('Awesome job! You successfully recorded all infected beets!');
             successStatusStore.update(n=> true);
           } else {

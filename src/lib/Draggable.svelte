@@ -99,8 +99,8 @@
 			columnsData[0].items.push({id: 3, name: "for position in index_list", indent:0, repeat:1})
 			toolboxItems.push({id: 7, name: "is_bad = check_status()", indent:0, repeat:1})
 			columnsData[0].items.push({id: 7, name: "is_bad = check_status()", indent:0, repeat:1})
-			toolboxItems.push({id: 4, name: "add position to infected_list", indent:0, repeat:1})
-			columnsData[0].items.push({id: 4, name: "add position to infected_list", indent:0, repeat:1})
+			toolboxItems.push({id: 4, name: "add position to bad_list", indent:0, repeat:1})
+			columnsData[0].items.push({id: 4, name: "add position to bad_list", indent:0, repeat:1})
 			toolboxItems.push({id: 5, name: "bad_list = []", indent:0, repeat:1})
 			columnsData[0].items.push({id: 5, name: "bad_list = []", indent:0, repeat:1})
 			toolboxItems.push({id: 6, name: "if is_bad", indent:0, repeat:1})
@@ -255,7 +255,7 @@
 				case "is_bad = check_status()":
 					key = 'check_infection';
 					break;
-				case "add position to infected_list":
+				case "add position to bad_list":
 					key = 'add_position';
 					break;
 				case "bad_list = []":

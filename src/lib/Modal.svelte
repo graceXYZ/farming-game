@@ -1,5 +1,5 @@
 <script>
-    let shown = true;
+    export let shown = false;
     export function show() {
       shown = true;
     }
@@ -47,7 +47,7 @@
   {#if shown}
     <div class="modal-wrapper">
       <div class="modal">
-        <span class="close" on:click={() => hide()}>&times;</span>
+        <span class="close" on:click={hide}>&times;</span>
         <slot />
       </div>
     </div>

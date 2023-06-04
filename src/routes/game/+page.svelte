@@ -17,10 +17,22 @@
     import forloopImg from '../../lib/forloop.png';
     import ifbadImg from '../../lib/ifbad.png';
   
-    let modal;
+    let modal = true;
+    let modalSuccess = false;
     let programData;
     let level4Modalpage = true;
 
+    function showModal(){
+      modal = true;
+    }
+
+    function hideModal(){
+      modal = false;
+    }
+
+    function hideModalS(){
+      modalSuccess = false;
+    }
 
     function toggleLevel4Modal(){
       level4Modalpage = !level4Modalpage;
@@ -52,17 +64,14 @@
       success = JSON.parse(value);
     });
 
-
     console.log("SUCCESS DEFINED"+ success)
-
-    let totalSuccess = 0;
     
     let level = 0;
-  
+    
     levelStore.subscribe(value => {
       level = value;
     });
-  
+    
     let feedbackThis = "";
     feedback.subscribe(value => {
           feedbackThis = value;
@@ -76,7 +85,8 @@
     function changeLevel(){
       console.log(success)
       levelStore.update(n => level)
-      modal.show()
+      // modal.hide()
+      // modalSuccess.hide()
     }
 
     function nextLevel(){
@@ -84,11 +94,8 @@
       changeLevel()
     }
 
-    let successFullGame = false;
-
     function successFullGameFunction() {
-      successFullGame = true;
-      modal.show()
+      modalSuccess = true;
     }
 
     import { afterUpdate } from 'svelte';
@@ -125,9 +132,8 @@
             <Animation/>
         </div>
     
-      <Modal bind:this={modal}>
+      <Modal shown={modal}>
         
-
         <!-- LEVEL 0 -->
         <h2 class:hide={level!=0}  style="margin-bottom: 0.1em">Welcome to The Sugar Shortage</h2>
         <div class:hide={level!=0} class="ModalText"> 
@@ -189,8 +195,8 @@
 
 
         <!-- LEVEL 4 PAGE 1-->
-        <h2 class:hide={level!=4  || successFullGame || !level4Modalpage  || successFullGame}  style="margin-bottom: 0.1em">Level 4</h2>
-        <div class:hide={level!=4 || successFullGame || !level4Modalpage  || successFullGame}  class="ModalTextNarrow"> 
+        <h2 class:hide={level!=4  || !level4Modalpage}  style="margin-bottom: 0.1em">Level 4</h2>
+        <div class:hide={level!=4 || !level4Modalpage}  class="ModalTextNarrow"> 
           <p style="margin-bottom: 15px"> You spent so much time carefully watering the plants, making sure not to over-water them. 
             You diligently checked the field for weeds and removed them. Still, the beet leaves are yellowing and you are quickly losing yield! 
             <em>What is the problem??? </em> </p>
@@ -208,8 +214,8 @@
 
 
         <!-- LEVEL 4 PAGE 2-->
-        <h2 class:hide={level!=4  || successFullGame || level4Modalpage || successFullGame}  style="margin-bottom: 0.1em">Level 4 </h2>
-        <div class:hide={level!=4 || successFullGame || level4Modalpage  || successFullGame}  class="ModalTextNarrow"> 
+        <h2 class:hide={level!=4 || level4Modalpage}  style="margin-bottom: 0.1em">Level 4 </h2>
+        <div class:hide={level!=4 || level4Modalpage}  class="ModalTextNarrow"> 
           <p style="margin-bottom: 15px"><strong>How can we store the locations of the beets that show symptoms?? </strong> 
              For each location, you will check for symptoms and store the locations of the bad beets in a list!</p>
           <p>
@@ -228,30 +234,35 @@
           <img src={ifbadImg} alt="If bad block example" width="200px" style="position:absolute; right:25px; top: 125px">
           
         </div>
+        <button class="nextModalButton" class:hide={level!=4} style="{level4Modalpage ? '' : 'right: 110px;'}"  on:click={toggleLevel4Modal}>{level4Modalpage ? '->' : '<-'} Page {level4Modalpage ? 2 : 1}</button>
 
+        <button class="modalButton" class:hide={level==4 && level4Modalpage} on:click={hideModal}>Close</button>
+
+      </Modal>
+
+
+      <Modal shown={modalSuccess}>
 
         <!-- SUCCESS FULL GAME -->
-        <h2 class:hide={!successFullGame}  style="margin-bottom: 0.1em">Congratualions!!!</h2>
-        <div class:hide={!successFullGame}  class="ModalTextNarrow"> 
+        <h2 class:hide={!success[4]}  style="margin-bottom: 0.1em">Congratulaions!!!</h2>
+        <div class:hide={!success[4]}  class="ModalTextNarrow"> 
           <p>You successfully passed all levels of the Sugar Beet Shortage Farming Game!</p>
+          <br>
           <p>
-            You checked so many things - overwatering, underwatering, weeding, and collected the infected beets. 
+            You checked so many factors - overwatering, underwatering, weeding - and collected the dying beets. 
             <br>
             <br>
             So far, these experiments haven't told us what's going on exactly, 
             but they helped us eliminate some causes that aren't making the beets die.</p>
         </div>
 
-
-
-        <button class="nextModalButton" class:hide={level!=4 || successFullGame} style="{level4Modalpage ? '' : 'right: 110px;'}"  on:click={toggleLevel4Modal}>{level4Modalpage ? '->' : '<-'} Page {level4Modalpage ? 2 : 1}</button>
-
-        <button class="modalButton" class:hide={level==4 && level4Modalpage} on:click={() => modal.hide()}>Close</button>
+        <button class="modalButton" on:click={hideModalS}>Close</button>
+        
       </Modal>
 
 
       <div class="footerWrap">
-        <button on:click={() => modal.show()}>Show instructions</button>
+        <button on:click={showModal}>Show instructions</button>
         <div class="levelMessage"> 
     
           <select class="levelSelect" bind:value={level} on:change="{changeLevel}">
@@ -277,17 +288,8 @@
         </div>
         <div class="feedback"> 
           <div bind:this={element}> {feedbackThis}  </div>
-          <!-- <button class="buttonNext" class:hide={!successStatus || level==4} on:click={nextLevel}> Next Level</button> -->
-          
-          <!-- <form method="POST"> -->
-            <!-- <input class="hidden" style="margin-left: 5px; height:30px; font-size:20px" type="success" name="success" value={JSON.stringify(successStore)}/> -->
-            <!-- <input class="hidden" type="character" name="character" value="test" />
-            <input class="hidden" type="success" name="success" value="test" /> -->
-            <!-- <button type="submit" on:click={submistPOst}>SET COOKIE</button> -->
-            <!-- <button class="buttonNext" type="submit" class:hide={!successStatus || level==4} on:click={nextLevel}> Next Level</button> -->
-        <!-- </form> -->
-        <button class="buttonNext" class:hide={!successStatus || level==4} on:click={nextLevel}> Next Level</button>
-          <button class="buttonSuccess" class:hide={!successStatus || level<4} on:click={successFullGameFunction}> Click me! </button>
+        <button class="buttonNext" class:hide={!success[level] || level==4} on:click={nextLevel}> Next Level</button>
+          <button class="buttonSuccess" class:hide={!success[level] || level<4} on:click={successFullGameFunction}> Click me! </button>
         </div>
       </div>
 
