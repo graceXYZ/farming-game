@@ -6,6 +6,13 @@
 
     let totalSuccess = 0;
 
+    import {nameStore} from '../../lib/stores.js';
+    let name = "";
+    nameStore.subscribe(value => {
+        name = value;
+    });
+
+
     import {successLOCAL} from '../../lib/stores.js';
     let success = [0,0,0,0,0];
     successLOCAL.subscribe(value => {
@@ -17,7 +24,7 @@
     var simpleCrypto = new SimpleCrypto("codeiscool")
 
     // version 1: encrypted code for every level
-    let plainText = data.name;
+    let plainText = name;
     // let encryptedCodes = [];
     // let plainTextCodes = [];
     // for (let i = 0; i < 5; i++){
@@ -37,7 +44,7 @@
     // console.log(encryptedCodes)
 
     // version 2: single encrypted code communicating success at each level
-    plainText = data.name + success.toString();
+    plainText = name + success.toString();
     const cipherText = simpleCrypto.encrypt(plainText)
     console.log("Encryption process...")
     console.log("Plain Text    : " + plainText)
@@ -48,7 +55,7 @@
     console.log("... done.")
 
     $: {
-        plainText = data.name + success.toString();
+        plainText = name + success.toString();
         const cipherText = simpleCrypto.encrypt(plainText)
         console.log("Encryption process...")
         console.log("Plain Text    : " + plainText)
@@ -87,7 +94,7 @@
     <table class="unfixed-table">
       <thead>
         <tr>
-            <th colspan="2" style="font-size: 30px">{data.name}</th>
+            <th colspan="2" style="font-size: 30px">{name}</th>
         </tr>
       </thead>
       <tbody>

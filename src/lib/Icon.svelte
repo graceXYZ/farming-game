@@ -4,6 +4,8 @@
     export let width = "1rem";
     export let height = "1rem";
 
+    let charOptions = ["femaleWhite","teacher","maleBrown"]
+
     let icons = {
         "femaleWhite": {
             boxW: 245,
@@ -80,10 +82,11 @@
         }
     };
     
-    let displayIcon = icons[name];
+    console.log("CHARACTER KEY IS: "+name)
+    let displayIcon = icons[charOptions[name]];
 
     $:{
-        displayIcon = icons[name];
+        displayIcon =  icons[charOptions[name]];
     }
 
 

@@ -1,41 +1,27 @@
 <script lang="ts">
-    export let data;
-
     let charOptions = ["femaleWhite","teacher","maleBrown"]
 
     import Icon from "./Icon.svelte";
     import {goto} from "$app/navigation"
     import {page} from "$app/stores"
 
-    let selected = data.character;
-    let defaultName = data.name;
-
-    $: {
-        if (!defaultName){
-            defaultName = "";
-        }
-    }
+    import {nameStore} from '../lib/stores.js';
+    let name = "";
+    nameStore.subscribe(value => {
+        name = value;
+    });
+    let nameNew = name;
     
-    let visited = data.visited;
-
     import {charSelectStore} from '../lib/stores.js';
-    let charSelect = "";
+    let selected = 0;
     charSelectStore.subscribe(value => {
-        charSelect = value;
-    });
-
-    import {successStore} from '../lib/stores.js';
-    let success = [];
-    successStore.subscribe(value => {
-        success = value;
+        selected = parseInt(value);
     });
     
-    $:{
-        console.log("SELECTED CHAR IS " + charOptions[selected])
-        charSelectStore.update(n => charOptions[selected])
-    }
-
     function playGame(){
+        console.log("SELECT NAME: "+nameNew)
+        nameStore.update(n => nameNew)
+        charSelectStore.update(n => selected)
         goto("/game")
     }
 
@@ -49,7 +35,7 @@
     {#each charOptions as val,idx}
         <button on:click={()=>selected=idx} class="selectOption" class:selected="{selected==idx}">
             <div class="iconWrap">
-                <Icon name={val} width="100px" height="100px" class="large"/>
+                <Icon name={idx} width="100px" height="100px" class="large"/>
             </div>
         </button>
     {/each}
@@ -57,15 +43,11 @@
 
 <h2 style="margin-top:1em; margin-bottom: 1em;">Type your name!</h2>
 
-<form method="POST">
     <div style="display:flex">
-        <input style="margin-left: 5px; height:30px; font-size:20px" type="name" name="name" value={defaultName}/>
-        <!-- <p class:hidden={!visited} style="margin-left:10px"> {defaultName}</p> -->
+        <input style="margin-left: 5px; height:30px; font-size:20px" bind:value={nameNew}/>
     </div>
     <input class="hidden" type="character" name="character" value={selected} />
-    <input class="hidden" type="success" name="success" value={success} />
     <button style="margin-top: 2em;" type="submit" on:click={playGame}>Let's Play!</button>
-</form>
 
 
 </div>

@@ -26,18 +26,6 @@
       level4Modalpage = !level4Modalpage;
     }
 
-    export let data;
-
-    import {charSelectStore} from '../../lib/stores.js';
-    let charSelect = "";
-    charSelectStore.subscribe(value => {
-        charSelect = value;
-    });
-    let charOptions = ["femaleWhite","teacher","maleBrown"]
-    console.log("GETTING CHAR "+ charOptions[data.character])
-    charSelectStore.update(n => charOptions[data.character])
-
-  
     import {successStatusStore} from '../../lib/stores.js';
     import {levelStore} from '../../lib/stores.js';
 
@@ -49,7 +37,7 @@
     nameStore.subscribe(value => {
         name = value;
     });
-    nameStore.update(n => data.name)
+    // nameStore.update(n => data.name)
 
     let successStatus = false;
     successStatusStore.subscribe(value => {

@@ -3,23 +3,11 @@
     export let data;
     import SignIn from '../lib/SignIn.svelte';
 
-    import {nameStore} from '../lib/stores.js';
-    let name = "";
-    nameStore.subscribe(value => {
-        name = value;
-    });
-
-    nameStore.update(n => data.name)
-
-    $:{
-        nameStore.update(n => data.name)
-    }
-
 </script>
 
 <!-- <h1 style="margin:1em; text-align: center" class:hide={data.visited!="true"}>Hello {data.name}! You chose character {data.character}</h1> -->
 
-<SignIn {data}/>
+<SignIn/>
 
 <style>
     .hide {
