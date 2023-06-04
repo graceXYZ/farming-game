@@ -24,7 +24,7 @@
 		columns[columnIdx].items = newItems;
     // reset all toolbox items to 0 indent
     let column;
-    if (name == "toolbox") {
+    if (name == "Toolbox") {
       column = columns[columnIdx].items;
       column.forEach(item => {
         item.indent = 0;
@@ -37,7 +37,7 @@
 
 <section class="board">
   {#each columns as {id, name,items,indents}, idx (id)}
-    <div  class:wideToolbox="{level>=3}" class:program="{name==='program'}" class:wideProgram={level>=3 && name==='program'} class="column" animate:flip="{{duration: flipDurationMs}}" >    
+    <div  class:wideToolbox="{level>=3}" class:program="{name==='Program'}" class:wideProgram={level>=3 && name==='Program'} class="column" animate:flip="{{duration: flipDurationMs}}" >    
       <Column name={name} items={items} onDrop={(newItems) => handleItemFinalize(idx, name, newItems)}/>
     </div>
   {/each}
@@ -48,39 +48,54 @@
 <style>
 
   .board {
-    display:flex;
-    /* width: 100%; */
     position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 0px;
+    gap: 10px;
   }
 
   .column {
-      height: 500px;
-      min-width: 215px; 
-      padding: 0.5em;
-      margin: 0.5em;
-      float: left;
-      /* border: 1px solid #333333; */
-      background-color: rgb(245, 245, 245);
+      
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 10px;
+      gap: 10px;
+
+      min-width: 250px;
+      height: 558px;
+
+      /* Translucent/Grayscale/Black/5% */
+
+      background: rgba(0, 0, 0, 0.05);
+      border-radius: 10px;
+      
+
+      /* Inside auto layout */
+
+      flex: none;
+      order: 1;
+      align-self: stretch;
+      flex-grow: 1;
+
   }
 
   .program {
-      width: 100%;
-      min-width: 300px;
+      /* width: 100%; */
+      min-width: 314px;
       /* max-width: 500px !important; */
     }
 
-    .wideProgram {
+    /* .wideProgram {
       min-width: 380px !important;
       max-width: 795px !important;
-    }
+    } */
 
-    .wideToolbox {
+    /* .wideToolbox {
       width: 280px !important;
-    }
+    } */
 
-    @font-face {
-      font-family: 'Roboto';
-      src: url("https://fonts.googleapis.com/css2?family=Roboto&display=swap") format("woff");
-    }
     
 </style>

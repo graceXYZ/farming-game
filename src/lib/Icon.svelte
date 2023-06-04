@@ -4,7 +4,7 @@
     export let width = "1rem";
     export let height = "1rem";
 
-    let charOptions = ["femaleWhite","teacher","maleBrown"]
+    let charOptions = ["femaleWhite","teacher","maleBrown","arrowLeftSmall","arrowRightSmall","playButton"]
 
     let icons = {
         "femaleWhite": {
@@ -79,7 +79,29 @@
                 <path d="M150.572 658.9C150.572 653.378 155.049 648.9 160.572 648.9H209.772C215.295 648.9 219.772 653.378 219.772 658.9V682.5C219.772 682.777 219.548 683 219.272 683H151.072C150.796 683 150.572 682.777 150.572 682.5V658.9Z" fill="#E5E5E5"/>
                 <path d="M150.572 679C150.572 678.724 150.796 678.5 151.072 678.5H219.272C219.548 678.5 219.772 678.724 219.772 679V682.5C219.772 682.776 219.548 683 219.272 683H151.072C150.796 683 150.572 682.776 150.572 682.5V679Z" fill="#C4C4C4"/>
                `
+        },
+        "arrowLeftSmall": {
+            boxW: 12,
+            boxH: 12,
+            svg:  `<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2.5 6L6.25 8.16506L6.25 3.83494L2.5 6ZM8.5 6.375C8.70711 6.375 8.875 6.20711 8.875 6C8.875 5.79289 8.70711 5.625 8.5 5.625L8.5 6.375ZM5.875 6.375L8.5 6.375L8.5 5.625L5.875 5.625L5.875 6.375Z" fill="black"/>
+                    </svg>`
+        },
+        "arrowRightSmall": {
+            boxW: 20,
+            boxH: 21,
+            svg:  `<svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M16.5 10.5L9 14.8301L9 6.16988L16.5 10.5ZM4.5 11.25C4.08579 11.25 3.75 10.9142 3.75 10.5C3.75 10.0858 4.08579 9.75001 4.5 9.75001L4.5 11.25ZM9.75 11.25L4.5 11.25L4.5 9.75001L9.75 9.75001L9.75 11.25Z" fill="black"/>
+                    </svg> `
+        },
+        "playButton": {
+            boxW: 12,
+            boxH: 13,
+            svg: `<svg width="12" height="13" viewBox="0 0 12 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10.6211 5.62891C11.0039 5.875 11.25 6.3125 11.25 6.75C11.25 7.21484 11.0039 7.65234 10.6211 7.87109L2.74609 12.6836C2.33594 12.9297 1.81641 12.957 1.40625 12.7109C0.996094 12.4922 0.75 12.0547 0.75 11.5625V1.9375C0.75 1.47266 0.996094 1.03516 1.40625 0.816406C1.81641 0.570312 2.33594 0.570312 2.74609 0.84375L10.6211 5.62891Z" fill="black"/>
+                </svg>`
         }
+
     };
     
     console.log("CHARACTER KEY IS: "+name)
@@ -102,6 +124,9 @@
 <style>
     svg {
         margin: 0 auto;
+        position: absolute;
+        top: 0;
+        left:0;
     }
 
 </style>

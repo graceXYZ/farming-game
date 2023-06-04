@@ -1,11 +1,13 @@
 <script>
     // import VerticalList from './VerticalList.svelte';
     import Board from '../lib/Board.svelte';
+	import Icon from '../lib/Icon.svelte';
 
 	import {stepI, steps} from '../lib/stores.js';
 
 	import {levelStore} from '../lib/stores.js';
 	import {numStepsStore} from '../lib/stores.js';
+	import {numCommandsStore} from '../lib/stores.js';
 	let level=0;
 
 	import { indentsStore} from '../lib/stores.js';
@@ -22,12 +24,15 @@
     });
 
 	let numCommands = 0;
-    // numCommandsStore.subscribe(value => {
-	// 	numCommands = value;
-    // });
+    numCommandsStore.subscribe(value => {
+		numCommands = value;
+    });
 
 	let toolboxItems, columnsData;
 	let numSteps = 0;
+	numStepsStore.subscribe(value => {
+		numSteps = value;
+    });
 	
 	handleLevelUpdate();
 
@@ -48,12 +53,12 @@
 		columnsData = [
 			{
 				id: "c1",
-				name: "toolbox",
+				name: "Toolbox",
 				items: []
 			},
 			{
 				id: "c2",
-				name: "program",
+				name: "Program",
 				items: [
 				]
 			}
@@ -77,15 +82,15 @@
 		// add level-dependent commands
 
 		if (level>=1 && level<4){
-			toolboxItems.push({id: 6, name: "repeat ____", indent:0, repeat:1})
-			columnsData[0].items.push({id: 6, name: "repeat ____", indent:0, repeat:1})
+			toolboxItems.push({id: 6, name: "repeat ____ times :", indent:0, repeat:1})
+			columnsData[0].items.push({id: 6, name: "repeat ____ times :", indent:0, repeat:1})
 		}
 
 		if (level==3){
 			toolboxItems.push({id: 9, name: "is_weed = check_weeds()", indent:0, repeat:1})
 			columnsData[0].items.push({id: 9, name: "is_weed = check_weeds()", indent:0, repeat:1})
-			toolboxItems.push({id: 7, name: "if is_weed", indent:0, repeat:1})
-			columnsData[0].items.push({id: 7, name: "if is_weed", indent:0, repeat:1})
+			toolboxItems.push({id: 7, name: "if is_weed :", indent:0, repeat:1})
+			columnsData[0].items.push({id: 7, name: "if is_weed :", indent:0, repeat:1})
 			toolboxItems.push({id: 8, name: "remove_weeds()", indent:0, repeat:1})
 			columnsData[0].items.push({id: 8, name: "remove_weeds()", indent:0, repeat:1})
 		}
@@ -95,16 +100,16 @@
 			columnsData[0].items.push({id: 1, name: "index_list = [0,1,...,8]", indent:0, repeat:1})
 			toolboxItems.push({id: 2, name: "go_to(position)", indent:0, repeat:1})
 			columnsData[0].items.push({id: 2, name: "go_to(position)", indent:0, repeat:1})
-			toolboxItems.push({id: 3, name: "for position in index_list", indent:0, repeat:1})
-			columnsData[0].items.push({id: 3, name: "for position in index_list", indent:0, repeat:1})
+			toolboxItems.push({id: 3, name: "for position in bad_list :", indent:0, repeat:1})
+			columnsData[0].items.push({id: 3, name: "for position in bad_list :", indent:0, repeat:1})
 			toolboxItems.push({id: 7, name: "is_bad = check_status()", indent:0, repeat:1})
 			columnsData[0].items.push({id: 7, name: "is_bad = check_status()", indent:0, repeat:1})
 			toolboxItems.push({id: 4, name: "add position to bad_list", indent:0, repeat:1})
 			columnsData[0].items.push({id: 4, name: "add position to bad_list", indent:0, repeat:1})
 			toolboxItems.push({id: 5, name: "bad_list = []", indent:0, repeat:1})
 			columnsData[0].items.push({id: 5, name: "bad_list = []", indent:0, repeat:1})
-			toolboxItems.push({id: 6, name: "if is_bad", indent:0, repeat:1})
-			columnsData[0].items.push({id: 6, name: "if is_bad", indent:0, repeat:1})
+			toolboxItems.push({id: 6, name: "if is_bad :", indent:0, repeat:1})
+			columnsData[0].items.push({id: 6, name: "if is_bad :", indent:0, repeat:1})
 
 		}
 
@@ -139,6 +144,7 @@
 		let numC = getNumSteps(programData);
 		numStepsStore.update(contents => numC);
 		numCommands = repCounts.length;
+		numCommandsStore.update(contents => numCommands);
 	}
 
 
@@ -150,8 +156,6 @@
 		let repeatQueueCounts = [];
 		let repeatQueueStartIndices = [];
 		let currRepIndex = -1;
-
-		console.log("TRY COUNT STEPS")
 
 		while (currRepIndex >= 0 || stepIndexHere < programData.length+1){
 
@@ -202,6 +206,8 @@
 
 		countSteps -= 1;
 
+		console.log("TRY COUNT STEPS" + countSteps)
+
 		return countSteps;
 	}
 
@@ -234,13 +240,13 @@
 				case "is_weed = check_weeds()":
 					key = 'check weed';
 					break;
-				case "if is_weed":
+				case "if is_weed :":
 					key = 'if weed';
 					break;
 				case "remove_weeds()":
 					key = 'deweed';
 					break;
-				case "repeat ____":
+				case "repeat ____ times :":
 					key = 'repeat';
 					break;
 				case "index_list = [0,1,...,8]":
@@ -249,7 +255,7 @@
 				case "go_to(position)":
 					key = 'go_to';
 					break;
-				case "for position in index_list":
+				case "for position in bad_list :":
 					key = 'for_position';
 					break;
 				case "is_bad = check_status()":
@@ -261,7 +267,7 @@
 				case "bad_list = []":
 					key = 'infected_list';
 					break;
-				case "if is_bad":
+				case "if is_bad :":
 					key = 'if_bad';
 					break;
 			}
@@ -291,13 +297,35 @@
 
 <div class="together">
 	<Board columns={columnsData} onFinalUpdate={handleBoardUpdated}/>
-	<button class="resetButton" on:click={resetAll}> Clear All </button>
-	<div class:hide={level==0 || level==4} class="numSteps"> #Steps: {numSteps} </div>
-	<div class="numCommands"> #Commands: {numCommands} </div>
+	<button class="resetButton" on:click={resetAll}> 
+		<div class="playButton">
+			<Icon name=5 width="12px" height="13px"/>
+		</div>
+		<div class="clearAll">
+			Clear All 
+		</div>
+	</button>
+	<!-- <div class:hide={level==0 || level==4} class="numSteps"> #Steps: {numSteps} </div> -->
+	<!-- <div class="numCommands"> #Commands: {numCommands} </div> -->
 </div>
 
 
 <style>
+	.playButton {
+		position: relative;
+		width: 6px;
+		height: 14px;
+		font-family: 'Font Awesome 6 Free';
+		font-style: normal;
+		font-weight: 900;
+		font-size: 14px;
+		line-height: 14px;
+		display: flex;
+		align-items: center;
+		text-align: center;
+
+	}
+
 	.hide {
 		display: none;
 	}
@@ -321,12 +349,45 @@
 
 	.resetButton {
 		position: absolute;
-		right: 15px;
-		bottom: 15px;
-		background-color: white;
-		padding: 5px;
-		/* border: 0.5px black solid; */
-		font-size: 15px;
+		right: 10px;
+		bottom: 10px;
+
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
+		padding: 5px 6px;
+		gap: 15px;
+
+		width: 88px;
+		height: 26px;
+
+		/* Grayscale/White */
+		background: #FFFFFF;
+		border-radius: 2.5px;
+
+		/* Inside auto layout */
+
+		flex: none;
+		order: 2;
+		flex-grow: 0
+	}
+
+	.clearAll {
+		font-family: 'Roboto', sans-serif;
+		font-weight: 700;
+		font-size: 14px;
+		line-height: 16px;
+
+		/* Grayscale/Black */
+		color: #000000;
+
+
+		/* Inside auto layout */
+
+		flex: none;
+		order: 1;
+		flex-grow: 0;
 	}
 
 .together {
