@@ -3,14 +3,16 @@
     export let data;
 
     import SimpleCrypto from "simple-crypto-js"
-    
-    import {successStore} from '../../lib/stores.js';
-    let success = [];
-    successStore.subscribe(value => {
-        success = value;
-    });
 
     let totalSuccess = 0;
+
+    import {successLOCAL} from '../../lib/stores.js';
+    let success = [0,0,0,0,0];
+    successLOCAL.subscribe(value => {
+      let readVal = value;
+      success = JSON.parse(value);
+      console.log("SUCC VAL RECEIVED " + success);
+    });
 
     var simpleCrypto = new SimpleCrypto("codeiscool")
 
@@ -59,7 +61,6 @@
         totalSuccess = 0;
         success.forEach( num => {
             totalSuccess += num;
-            console.log("SUCCESS STORE:" + success);
         });
     }
 

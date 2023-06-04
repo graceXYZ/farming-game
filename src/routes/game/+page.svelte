@@ -1,6 +1,8 @@
 <script>
     import '../../styles.css';
 
+    import { writable } from "svelte/store";
+
     import Draggable from '../../lib/Draggable.svelte';
     import Animation from '../../lib/Animation.svelte';
   
@@ -25,6 +27,7 @@
     }
 
     export let data;
+
     import {charSelectStore} from '../../lib/stores.js';
     let charSelect = "";
     charSelectStore.subscribe(value => {
@@ -48,17 +51,21 @@
     });
     nameStore.update(n => data.name)
 
-
     let successStatus = false;
     successStatusStore.subscribe(value => {
       successStatus = value;
     });
 
-    import {successStore} from '../../lib/stores.js';
+
+    import {successLOCAL} from '../../lib/stores.js';
     let success = [0,0,0,0,0];
-    successStore.subscribe(value => {
-        success = value;
+    successLOCAL.subscribe(value => {
+      let readVal = value;
+      success = JSON.parse(value);
     });
+
+
+    console.log("SUCCESS DEFINED"+ success)
 
     let totalSuccess = 0;
     
@@ -85,9 +92,6 @@
     }
 
     function nextLevel(){
-      success[level]=1;
-      successStatusStore.update(n=>success);
-      console.log("next level. UPDATED STORE"+ success)
       level = parseInt(level)+1;
       changeLevel()
     }
@@ -95,12 +99,9 @@
     let successFullGame = false;
 
     function successFullGameFunction() {
-      success[4]=1;
-      successStatusStore.update(n=>success);
       successFullGame = true;
       modal.show()
     }
-
 
     import { afterUpdate } from 'svelte';
     let element;
@@ -288,7 +289,16 @@
         </div>
         <div class="feedback"> 
           <div bind:this={element}> {feedbackThis}  </div>
-          <button class="buttonNext" class:hide={!successStatus || level==4} on:click={nextLevel}> Next Level</button>
+          <!-- <button class="buttonNext" class:hide={!successStatus || level==4} on:click={nextLevel}> Next Level</button> -->
+          
+          <!-- <form method="POST"> -->
+            <!-- <input class="hidden" style="margin-left: 5px; height:30px; font-size:20px" type="success" name="success" value={JSON.stringify(successStore)}/> -->
+            <!-- <input class="hidden" type="character" name="character" value="test" />
+            <input class="hidden" type="success" name="success" value="test" /> -->
+            <!-- <button type="submit" on:click={submistPOst}>SET COOKIE</button> -->
+            <!-- <button class="buttonNext" type="submit" class:hide={!successStatus || level==4} on:click={nextLevel}> Next Level</button> -->
+        <!-- </form> -->
+        <button class="buttonNext" class:hide={!successStatus || level==4} on:click={nextLevel}> Next Level</button>
           <button class="buttonSuccess" class:hide={!successStatus || level<4} on:click={successFullGameFunction}> Click me! </button>
         </div>
       </div>
@@ -300,6 +310,9 @@
   </main>
   
   <style>
+    .hidden {
+      display: none;
+    }
     .buttonNext {
       /* position: absolute;
       right:0;

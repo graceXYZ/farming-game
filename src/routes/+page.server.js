@@ -24,8 +24,8 @@ export const actions = {
 		const data = await request.formData();
         let name = data.get('name');
         let character = data.get('character');
-        let visited = cookies.get('visited');
-        let success = cookies.get('success');
+        let visited = data.get('visited');
+        let success = data.get('success');
         cookies.set('name', name, { path: '/' });
         cookies.set('visited',"true",{ path: '/' });
         cookies.set('character', character, { path: '/' });
@@ -33,4 +33,4 @@ export const actions = {
         
         throw redirect(303,'/game')
 	}
-};
+}

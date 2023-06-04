@@ -14,5 +14,15 @@ export const successStatusStore = writable(false);
 export const successStore = writable([0,0,0,0,0]);
 
 
+let successLocalStore = '';
+if (typeof localStorage !== 'undefined') {
+    successLocalStore = localStorage.success;
+}
+// Set the stored value or a sane default.
+export const successLOCAL = writable(successLocalStore || JSON.stringify([0,0,0,0,0]))
 
+// Anytime the store changes, update the local storage value.
+if (typeof localStorage !== 'undefined') {
+    successLOCAL.subscribe((value) => localStorage.success = value);
+}
 

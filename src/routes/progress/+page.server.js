@@ -13,6 +13,7 @@ export function load({ cookies }) {
 	return {
 		visited,
         name,
-        character
+        character,
+        success
 	};
 }

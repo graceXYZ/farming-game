@@ -9,6 +9,7 @@
     import { numStepsStore } from '../lib/stores.js';
     import { feedbackCodeS } from '../lib/stores.js';
     import { charSelectStore } from '../lib/stores.js';
+    import {successStore} from '../lib/stores.js';
     import Icon from "./Icon.svelte";
 
     // let weedCheckPosition = 0;
@@ -32,6 +33,15 @@
     successStatusStore.subscribe(value => {
       successStatus = value;
     });
+
+    import {successLOCAL} from '../lib/stores.js';
+    let success = [0,0,0,0,0];
+    successLOCAL.subscribe(value => {
+      let readVal = value;
+      success = JSON.parse(value);
+      console.log("SUCC VAL RECEIVED " + success);
+    });
+
 
     let startorPause = ["Play","Pause"]
 
@@ -741,7 +751,10 @@
         if (watered){
           console.log("CORRECT. NUM STEPS: " + numSteps)
           if (indents.length < thresholdCommands[level]){
+            success[level]=1;
+            successLOCAL.update(n=> JSON.stringify(success))
             successStatusStore.update(n=> true);
+            console.log("UPDATE SUCCESS " + success);
             updateFeedback('correct');
           } else {
             updateFeedback('correctButTooLong');
@@ -757,6 +770,9 @@
 
         if (weeded && universalSolution){
           if (indents.length < thresholdCommands[level]){
+            success[level]=1;
+            successLOCAL.update(n=> JSON.stringify(success))
+            console.log("UPDATE SUCCESS " + success)
             successStatusStore.update(n=> true);
             updateFeedback('correctWeed');
           } else {
