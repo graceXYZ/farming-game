@@ -102,24 +102,64 @@
     }
 
     import { afterUpdate } from 'svelte';
+    let currFeedbackInd = 0;
+    let feedbackColors = ['rgba(255, 152, 20, 1)','rgba(255, 64, 64, 1)','rgba(64, 160, 64, 1)'];
+    let feedbackBGColors = ['rgba(255, 152, 20, 0.1)','rgba(255, 64, 64, 0.1)','rgba(64, 160, 64, 0.1)'];
+    let feedbackBGFLASHColors = ['rgba(255, 152, 20, 0.3)','rgba(255, 64, 64, 0.3','rgba(64, 160, 64, 0.3)'];
+    let feedbackColorCodes = {"You can't walk outside the field!": 1,
+                              "Drag the toolbox commands into the program and press play!": 0,
+                              "You need to indent your commands in a repeat block!":1,
+                              'Make sure to water all the plants!':1,
+                              'Great job! You completed this level!':2,
+                              'Your indents are not correct!':1,
+                              'Your first command should not be indented!':1,
+                              "You used a variable without setting its value!":1,
+                              "You successfully removed all weeds without killing the beets!":2,
+                              "There are weeds and/or dead beets :(":1,
+                              "Oh no! A beet plant died from overwatering!":1,
+                              "Good, but your code is too long. Use repeats!":0,
+                              "Good, but your code won't work if the weeds are in other locations. Check every block!":0,
+                              "position variable is not initialized!":1,
+                              "'index_list' variable is not initialized!":1,
+                              "You can only iterate through the positions once!":1,
+                              "'bad_list' variable is not initialized!":1,
+                              "'position' variable is not initialized!":1,
+                              "'is_bad' variable is not initialized!":1,
+                              "Make sure you indent the commands inside the 'for' block":1,
+                              "bad variable use":1,
+                              "You need to indent your commands in an if statement block!":1,
+                              "You need to indent your commands in a for loop!":1,
+                              'Awesome job! You successfully recorded all dying beets!':2,
+                              'You successfully recorded all dying beets but somehow have duplicates..':0,
+                              'You did not successfully record all dying beets :(':1
+                            }; 
+
     let element;
     afterUpdate(() => {
-        console.log(element.textContent)
-        if (element.textContent!="Drag the toolbox commands into the program and press play!"){
-          flash(element);
-        }
+        console.log(feedbackThis)
+        flash(element);
+        
     });
     function flash(element) {
-      requestAnimationFrame(() => { // instant red bg flash in
-        element.style.transition = 'none';
-        element.style.color = 'rgba(255,62,0,1)';
-        element.style.backgroundColor = 'rgba(255,62,0,0.2)';
+      requestAnimationFrame(() => {
+        let colorInd = feedbackColorCodes[feedbackThis];
+        console.log(colorInd)
+        element.style.transition = '';
+
+        if (!(feedbackThis=="Drag the toolbox commands into the program and press play!")) {
+          element.style.background = feedbackBGFLASHColors[colorInd];
+          console.log("yeah" + colorInd)
+        } else {
+          element.style.background = feedbackBGColors[colorInd];
+        }
 
         setTimeout(() => {  // slow 1s fade out
-          element.style.transition = 'color 4s, background 4s';
-          element.style.color = '';
-          element.style.backgroundColor = '';
+          
+          element.style.background = feedbackBGColors[colorInd];
+          element.style.transition = 'background 1s';
         });
+        currFeedbackInd = colorInd;
+        
       });
     }
   
@@ -129,6 +169,13 @@
   <main>
   
         <div class="wrap">
+          <div class="headerTitle">
+            <div class="XYZlogo">
+              <Icon name=9 width="40px" height="34px"/>
+            </div>
+            <div class="titleXYZ">The Sugar Shortage</div>
+          </div>
+
             <div class="draggable">
               <Draggable/>
             </div>
@@ -164,11 +211,11 @@
                     <div class="nextText">Show Instructions</div>
                   </button>
 
-                  <div class="feedback"> 
-                    <div class='feedbackName'>
+                  <div class="feedback" bind:this={element} style="background-color: {feedbackBGColors[currFeedbackInd]}"> 
+                    <div class='feedbackName' style="color: {feedbackColors[currFeedbackInd]}">
                       Feedback:
                     </div>
-                    <div class='feedbackText' bind:this={element}> {feedbackThis}  </div>
+                    <div class='feedbackText' style="color: {feedbackColors[currFeedbackInd]}"> {feedbackThis}  </div>
                     <button class="buttonNext" class:hide={!success[level] || level==4} on:click={nextLevel}> 
                       <div class="nextButton">
                         <Icon name=6 width="15px" height="12px"/>
@@ -176,7 +223,15 @@
                       <div class="nextText">Next Level </div>
                     </button>
 
-                    <button class="buttonSuccess" class:hide={!success[level] || level<4} on:click={successFullGameFunction}> Click me! </button>
+
+                    <button class="buttonNext" class:hide={!success[level] || level<4} on:click={successFullGameFunction}> 
+                      <div class="nextButton">
+                        <Icon name=6 width="15px" height="12px"/>
+                      </div>
+                      <div class="nextText">Continue!</div>
+                    </button>
+
+                    <!-- <button class="buttonSuccess" class:hide={!success[level] || level<4} on:click={successFullGameFunction}> Click me! </button> -->
                   </div>
             </div>
 
@@ -218,7 +273,7 @@
           <p style="margin-bottom: 15px">Uh oh! The beet leaves are turning even more yellow and their roots look thin and hairy. Maybe we are watering them too much?</p>
           <p>Avoid the areas that have already been watered (dark blue squares) and water only the plants that need them!</p>
           <br>
-          <p>You can now use <strong>nested repeats</strong> by adding repeat blocks inside of repeat blocks!</p>
+          <p>You can now add a repeat block inside of another repeat block!</p>
           <br>
           <img src={repeat2Img} alt="Repeat block example" width="200px" style="position:absolute; right:25px; top: 85px">
           <p>Press <strong>Play</strong> to activate your program, and <strong>Reset</strong> to go back to the start. </p>
@@ -237,7 +292,7 @@
             You must <strong>check</strong> each block for weeds (light green blocks) using the <em>check_for_weeds()</em> function, which stores the output status (true or false) in the variable <em>weed</em>.
           <strong>If there are weeds, remove them</strong> by calling the <em>remove_weeds()</em> function. Make sure you create an <em>if-statement block</em> with indentations to indicate which commands should be run if <em>weed</em> is currently true.</p>
 
-          <img src={conditionalImg} alt="Conditional block example" width="200px" style="position:absolute; right:25px; top: 85px">
+          <img src={ifbadImg} alt="Conditional block example" width="200px" style="position:absolute; right:25px; top: 85px">
           <p>When the weeds are removed and the beet plants are still alive, you can move on to the next level!</p>
         </div>
 
@@ -248,7 +303,7 @@
           <p style="margin-bottom: 15px"> You spent so much time carefully watering the plants, making sure not to over-water them. 
             You diligently checked the field for weeds and removed them. Still, the beet leaves are yellowing and you are quickly losing yield! 
             <em>What is the problem??? </em> </p>
-          <p style="margin-bottom: 15px"> The only way forward is to study the beet symptoms more. You must <strong>inspect every plant and collect data</strong> on which locations of beets show these mysterious symptoms. </p>
+          <p style="margin-bottom: 15px"> The only way forward is to study the beet symptoms. You must <strong>inspect every plant and collect data</strong> on which locations of beets are dying. </p>
 
           <p style="margin-bottom: 15px">
             To go through every block in the field, you will use a new method called a <strong>for loop</strong>. 
@@ -270,21 +325,27 @@
           </p>
 
           <p style="margin-bottom: 10px">
-            To store the locations of the bad beets, you will first create an empty <strong>list</strong> of positions called <em>infected_list</em> at the beginning of the program <br>[ <em>infected_list = []</em> ].
+            To store the locations of the bad beets, you will first create an empty <strong>list</strong> of positions called <em>bad_list</em> at the beginning of the program.
           </p>
           <p style="margin-bottom: 10px">
-            To check each block for symptoms, you will run the [ <em>bad = check_for_infection()</em> ] command at every position.
-            <strong>If</strong> the current position is infected, you will <strong>add the current index</strong> to the list [ <em>add position to infected_list</em> ]. 
+            To check each block for symptoms, you will run the [ <em>is_bad = check_status()</em> ] command at every position.
+            <strong>If</strong> the current position is bad, you will <strong>add the current index</strong> to the list. 
           </p>
 
-          <p>Once you successfully record all infected locations, we can figure out what is wrong with these beets and restore sugar to the world!</p>
+          <p>Once you successfully record all locations of dying beets, we can figure out what is wrong and restore sugar to the world!</p>
 
-          <img src={ifbadImg} alt="If bad block example" width="200px" style="position:absolute; right:25px; top: 125px">
+          <img src={conditionalImg} alt="If bad block example" width="200px" style="position:absolute; right:25px; top: 125px">
           
         </div>
-        <button class="nextModalButton" class:hide={level!=4} style="{level4Modalpage ? '' : 'right: 110px;'}"  on:click={toggleLevel4Modal}>{level4Modalpage ? '->' : '<-'} Page {level4Modalpage ? 2 : 1}</button>
+        <!-- <button class="nextModalButton" class:hide={level!=4} style="{level4Modalpage ? '' : 'right: 110px;'}"  on:click={toggleLevel4Modal}>{level4Modalpage ? '->' : '<-'} Page {level4Modalpage ? 2 : 1}</button> -->
 
-        <button class="modalButton" class:hide={level==4 && level4Modalpage} on:click={hideModal}>Close</button>
+        <button class="modalButton" style="{level4Modalpage ? 'right: 0px;' : 'right: 100px;'}" class:hide={level!=4} on:click={toggleLevel4Modal}>
+          {level4Modalpage ? "Next" : "Previous"}
+        </button>
+
+        <button class="modalButton" class:hide={level==4 && level4Modalpage} on:click={hideModal}>
+          Close
+        </button>
 
       </Modal>
 
@@ -313,17 +374,43 @@
   </main>
   
   <style>
-
-    .feedbackText{
-      /* width: 100%; */
-      height: 12px;
-
+    .XYZlogo {
+      position: relative;
+      width: 40px;
+      height: 40px;
+    }
+    .headerTitle {
+      grid-area: a;
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      padding: 10px 20px;
+      padding-top: 30px;
+      gap: 10px;
+      /* width: 800px; */
+      /* height: 122px; */
+    }
+    .titleXYZ {
       font-family: 'Roboto Flex Variable';
       font-style: normal;
       font-weight: 500;
+      font-size: 32px;
+      line-height: 40px;
+      display: flex;
+      align-items: center;
 
-      font-size: 10px;
-      line-height: 12px;
+      /* Grayscale/Black */
+
+      color: #000000;
+    }
+
+    .feedbackText{
+      font-family: 'Roboto Flex Variable';
+      font-style: normal;
+      font-weight: 500;
+      font-size: 14px;
+
+      line-height: 18px;
       /* identical to box height */
 
       display: flex;
@@ -331,7 +418,7 @@
 
       /* Secondary/Orange */
 
-      color: #FF9814;
+      /* color: #FF9814;  */
 
 
       /* Inside auto layout */
@@ -342,12 +429,23 @@
       flex-grow: 0;
     }
 
+    h2 {
+      font-family: 'Fira Code';
+      font-style: normal;
+    }
+
+    strong {
+      font-family: 'Roboto Flex Variable';
+      font-style: normal;
+      font-weight: 700;
+    }
+
     .feedbackName {
       width: 56px;
       height: 14px;
 
-      font-size: 12px;
-      line-height: 14px;
+      font-size: 14px;
+      line-height: 16px;
       /* identical to box height */
 
       display: flex;
@@ -358,7 +456,7 @@
       font-style: normal;
       font-weight: 900;
 
-      color: #FF9814;
+      /* color: #FF9814; */
 
 
       /* Inside auto layout */
@@ -405,23 +503,23 @@
       order: 0;
       flex-grow: 0;
     }
-    
+
     .draggable {
-      grid-area: a;
+      grid-area: b;
       display: flex;
       order: 1;
       justify-self: right;
       flex: 0 0;
+      height: 100%;
       /* justify-self: right; */
       /* float: right; */
       /* align-self: stretch;
       flex-grow: 0; */
     }
     .animation {
-      grid-area: b;
+      grid-area: c;
       display: flex;
       flex-direction: column;
-      /* flex-wrap: wrap; */
       align-items: flex-start;
       padding: 10px;
       gap: 10px;
@@ -481,6 +579,7 @@
       align-items: center;
       padding: 5px 6px;
 
+      margin-top: 5px;
       gap: 15px;
       width: 105px;
       max-width: 105px;
@@ -542,7 +641,7 @@
     }
 
     .hide {
-      display: none;
+      display: none !important;
     }
 
     .wrap {
@@ -550,17 +649,22 @@
       width: min-content;
       max-width: 1210px;
       gap: 10px;
-      grid-template-areas: "a b c";
+      grid-template-areas: "a b c d";
       grid-template-areas:
-        "a c"
-        "a b";
+        "a a"
+        "b d"
+        "b c";
       /* grid-template-columns: min-content min-content; */
-      margin: 2em auto;
-
+      margin: 0px auto;
+      align-self: start;
+      align-content: start;
+      align-items: start;
+      margin: 0 auto;
     }
 
     main {
-        /* margin: 0 auto; */
+        margin: 0;
+        padding: 0;
     }
 
     .ModalText {
@@ -576,13 +680,37 @@
       position:absolute;
           bottom: 0;
           right: 30px;
-          margin: 1em;
+      
     }
     .modalButton {
           position:absolute;
           bottom: 0;
           right: 0;
           margin: 1em;
+         
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          align-items: center;
+          padding: 5px 6px;
+          gap: 15px;
+
+          width: 88px;
+          height: 26px;
+
+          /* Grayscale/White */
+          background: white;
+          border: none;
+          border-radius: 2.5px;
+
+          /* Inside auto layout */
+
+          flex: none;
+          order: 2;
+          flex-grow: 0;
+
+          font-family: 'Fira Code';
+          font-style: normal;
     }
   
     h1 {
@@ -591,9 +719,7 @@
 
     button {
       background-color: white;
-      font-family: 'Roboto', sans-serif;
-      font-style: normal;
-      font-weight: 100;
+      
       color: #000000;
       position: relative;
       margin: 0;
@@ -605,13 +731,13 @@
       flex-direction: column;
       align-items: flex-start;
       padding: 7.5px;
-      gap: 5px;
+      gap: 6px;
 
       /* height: 114px; */
 
       /* Translucent/Orange/10% */
 
-      background: rgba(255, 152, 20, 0.1);
+      /* background: rgba(255, 152, 20, 0.1); */
       border-radius: 7.5px;
 
       /* Inside auto layout */
@@ -625,7 +751,7 @@
     
   
     .info {
-        grid-area: c;
+        grid-area: d;
         display: flex;
         flex-direction: column;
         align-items: flex-start;
@@ -654,6 +780,28 @@
   
     .info button {
       width: 175px;
+    }
+
+    @media (max-width: 1000px) {
+    .wrap {
+        display: grid;
+        width: min-content;
+        max-width: 1210px;
+        gap: 10px;
+        grid-template-areas: "a b c d";
+        grid-template-areas:
+          "a a"
+          "b b"
+          "d c";
+        /* grid-template-columns: min-content min-content; */
+        margin: 2em auto;
+      }
+      .draggable {
+        width: 100%;
+      }
+      .headerTitle{
+        padding-top: 0px !important;
+      }
     }
   
     

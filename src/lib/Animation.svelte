@@ -109,7 +109,7 @@
       if (level== 0){
         BOARD_SIZE_W = 2;
         BOARD_SIZE_H = 2;
-        widthBoard = 250;
+        widthBoard = 200;
         iterateTime = 750;
       } else if (level==1){
         BOARD_SIZE_W = 4;
@@ -124,7 +124,7 @@
       } else if (level==3){
         BOARD_SIZE_W = 5;
         BOARD_SIZE_H = 1;
-        widthBoard = 70;
+        widthBoard = 60;
         iterateTime = 600;
       } else if (level==4){
         BOARD_SIZE_W = 3;
@@ -148,8 +148,8 @@
                           'correctWeed': "You successfully removed all weeds without killing the beets!",
                           'incorrectWeed': "There are weeds and/or dead beets :(",
                           'overwatered': "Oh no! A beet plant died from overwatering!",
-                          'correctButTooLong': "Good, but you're code is too long (#Commands). Use repeats!",
-                          'correctWeedButNotUniversal': "Good, but you're code won't work if the weeds are in other locations. Check every block!"
+                          'correctButTooLong': "Good, but your code is too long. Use repeats!",
+                          'correctWeedButNotUniversal': "Good, but your code won't work if the weeds are in other locations. Check every block!"
                         }; 
 
 
@@ -483,7 +483,7 @@
             // if infected_list not init, stop
             if (!level4Steps['initInfected_list']){
               resetPending = true;
-              updateFeedback("'infected_list' variable is not initialized!")
+              updateFeedback("'bad_list' variable is not initialized!")
               stop();
               break;
             }
@@ -515,7 +515,7 @@
             // if bad not init, stop
             if (level4Steps['badStatus']==-1){
               resetPending = true;
-              updateFeedback("'bad' variable is not initialized!")
+              updateFeedback("'is_bad' variable is not initialized!")
               stop();
               break;
             }
@@ -799,14 +799,14 @@
           if (infectedPositions.length == level4Steps['infectedList'].length) {
             success[level]=1;
             successLOCAL.update(n=> JSON.stringify(success))
-            updateFeedback('Awesome job! You successfully recorded all infected beets!');
+            updateFeedback('Awesome job! You successfully recorded all dying beets!');
             successStatusStore.update(n=> true);
           } else {
-            updateFeedback('You successfully recorded all infected beets but somehow have duplicates..');
+            updateFeedback('You successfully recorded all dying beets but somehow have duplicates..');
           }
           
         } else {
-          updateFeedback('You did not successfully record all infected beets :(');
+          updateFeedback('You did not successfully record all dying beets :(');
         }
       }
       
@@ -928,7 +928,7 @@
 
   <div class="fieldAndVars">
 
-      <div class="field" style="grid-template-columns: repeat({BOARD_SIZE_W}, 1fr); grid-auto-rows: {rowHeight}; width:{BOARD_SIZE_W*rowHeight}px; height:{BOARD_SIZE_H*rowHeight}px">
+      <div class="field" class:fieldLevel4={level==4} class:fieldLevel0={level==0} style="grid-template-columns: repeat({BOARD_SIZE_W}, 1fr); grid-auto-rows: {rowHeight}; width:{BOARD_SIZE_W*rowHeight}px; height:{BOARD_SIZE_H*rowHeight}px">
           {#each board as row, outerIndex}
             {#each row as cell, index}
               <div class="cell" class:character={charPosition[0]==outerIndex && charPosition[1]==index}
@@ -949,7 +949,7 @@
                 <div class:hideCell={level!=4} class="indexText"> {outerIndex*BOARD_SIZE_W+index} </div>
                 
                 <div class="characterSVG" class:hideCell={charPosition[0]!=outerIndex || charPosition[1]!=index}>
-                  <Icon name={charSelect} width="{rowHeight}px" height="{rowHeight}px" class="large"/>
+                  <Icon name={charSelect} width="{rowHeight-10}px" height="{rowHeight-10}px" class="{level==4 ? "level4" : ""} {level==0 ? "level0" : ""}"/>
                 </div>
                 
               </div>
@@ -1061,7 +1061,8 @@
 
 
     .level4vars {
-     
+      font-size: 12px;
+      line-height: 2em;
     }
     .indexText {
       font-size: 16px;
@@ -1076,8 +1077,8 @@
 
     .characterSVG {
       position: absolute;
-      top: 0px;
-      left: 0px;
+      top: 5px;
+      left: 5px;
       width: 100%;
       height: 100%;
     }
@@ -1104,11 +1105,11 @@
     }
 
     .watered {
-      background-color: rgb(37, 86, 37);
+      background-color: rgba(255, 255, 255, 1);
     }
 
     .infected {
-      background-color: rgb(241, 73, 50);
+      background-color: rgba(255, 64, 64, 1)
     }
 
     :root {
@@ -1179,7 +1180,7 @@
       align-items: center;
       padding: 0px;
       gap: 10px;
-      min-width: 350px;
+      min-width: 300px;
       flex-wrap: wrap;
       /* width: 100px; */
 
@@ -1219,6 +1220,18 @@
       margin: 0 0.2em;
       border: 0.5px black solid;
     }
+
+    @media (max-width: 1000px) {
+      .fieldLevel4 {
+        width: 150px !important;
+        height: 150px !important;
+      }
+      .fieldLevel0 {
+        width: 150px !important;
+        height: 150px !important;
+      }
+    }
+
   </style>
   
   

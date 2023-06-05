@@ -89,11 +89,19 @@
     gap: 10px;
     width: 100%;
     height: 100%;
+    min-height: 420px;
 	}
+  .contentWrap {
+    
+  }
+  .longCol {
+    height: 400px !important;
+  }
 
 	.column-content {
-        min-height: 300px;
-        /* width: 100%; */
+        /* height: 100%; */
+        height: 335px;
+
         min-width: 230px;
         /* Notice that the scroll container needs to be the dndzone if you want dragging near the edge to trigger scrolling */
         overflow-y: scroll;
@@ -101,6 +109,7 @@
         flex-direction: column;
         align-items: flex-start;
         padding: 0px;
+        padding-bottom: 50px;
         gap: 5px;
 
         /* Inside auto layout */
@@ -109,6 +118,10 @@
         order: 1;
         flex-grow: 0;
         z-index: 1;
+    }
+
+    .colTool {
+      height: 100% !important;
     }
     
     .column-title {
@@ -383,13 +396,36 @@
       display: none;
     }
 
+    @media (max-width: 1000px) {
+      .column-content {
+        min-height: 210px;
+        max-height: 210px;
+        margin-bottom: 50px;
+      }
+      .wrapper {
+        min-height: 230px;
+        min-height: 230px;
+      }
+      .wrapperLong {
+        min-height: 240px;
+        min-height: 240px;
+      }
+      .colTool {
+        max-height: 350px !important;
+        padding-bottom: 0px;
+        margin-bottom: 0px;
+        /* height: 100% !important; */
+      }
+    }
+
 
 </style>
 <div class='wrapper' class:program="{name==='Program'}">
  	<div class="column-title">
 		{name}
 	</div>
-	<div class="column-content" use:dndzone={{items, flipDurationMs, zoneTabIndex: -1}}
+  <div class="contentWrap">
+	<div class:colTool={name==='Toolbox'} class:wrapperLong={level==3} class:longCol={level==0 || level==4} class="column-content" use:dndzone={{items, flipDurationMs, zoneTabIndex: -1}}
      	 on:consider={handleDndConsiderCards} 
 			 on:finalize={handleDndFinalizeCards}>
 				{#each items as item, i (item.id)}
@@ -445,6 +481,7 @@
             </div>
         {/each}
     </div>
+  </div>
     <div class:hideBottom={name=='Toolbox'} class="bottomBar">
       <div class="numSteps">
         # of Steps: {numSteps}
@@ -458,4 +495,5 @@
       </div>
 
     </div>
+    
 </div>

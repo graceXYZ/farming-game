@@ -11,21 +11,23 @@
   <style>
     .modal-wrapper {
       /* background-color: rgb(0, 0, 0); */
-      background-color: rgba(212, 212, 212, 0.9);
+      background-color: rgba(0, 0, 0, 0.75);
       position: absolute;
       width: 100%;
       height: 100%;
       top: 0;
       left: 0;
+      z-index: 100;
     }
   
     .modal {
-      background-color: white;
+      background-color: rgb(235, 235, 235); 
       max-width: 800px;
       height: 420px;
       padding: 1rem;
       position: relative;
       margin: 4em auto;
+      z-index: 101;
     }
     .close {
         float: right;

@@ -100,7 +100,7 @@
         <tr><th>2</th><td>{success[2]==1 ? "yes" : "no"}</td></tr>
         <tr><th>3</th><td>{success[3]==1 ? "yes" : "no"}</td></tr>
         <tr><th>4</th><td>{success[4]==1 ? "yes" : "no"}</td></tr>
-        <tr class="total"><th>Total</th><td colspan="1" style="font-weight:bold">{totalSuccess}/5</td></tr>
+        <tr class="total"><th>Total</th><td colspan="1" style="font-weight:bold">{totalSuccess} / 5</td></tr>
        </tbody>
       
       <tfoot>
@@ -120,6 +120,11 @@
 </div>
 
 <style>
+    * {
+        font-family: 'Roboto Flex Variable';
+        font-style: normal;
+        font-weight: 500;
+    }
     
     .title {
         margin: 20px;
@@ -132,12 +137,14 @@
     }
 
     thead th {
-        background: hsl(20, 50%, 70%);
+        background: rgba(0, 0, 0, 0.15);
         width: 10%;
+        font-family: 'Fira Code', normal;
+
     }
 
     .total th, .total td {
-        background: hsl(21, 31%, 80%);
+        background: rgba(0, 0, 0, 0.25);
     }
 
     th {
@@ -147,7 +154,7 @@
     td, th {
         border:  1px solid;
         padding: 10px;
-        background: white;
+        background: rgba(0, 0, 0, 0.15);
         box-sizing: border-box;
         text-align: left;
         max-width: 100px;
@@ -159,12 +166,14 @@
 
     tfoot td, tfoot th{
         font-weight: bold;
-        background: rgb(231, 231, 231);
+        background: rgba(0, 0, 0, 0.15);
     }
 
     .table-container {
         margin: 20px;
         position: relative;
+
+
         /* max-height:  300px; */
         /* width: 500px; */
         /* overflow: scroll; */

@@ -100,8 +100,8 @@
 			columnsData[0].items.push({id: 1, name: "index_list = [0,1,...,8]", indent:0, repeat:1})
 			toolboxItems.push({id: 2, name: "go_to(position)", indent:0, repeat:1})
 			columnsData[0].items.push({id: 2, name: "go_to(position)", indent:0, repeat:1})
-			toolboxItems.push({id: 3, name: "for position in bad_list :", indent:0, repeat:1})
-			columnsData[0].items.push({id: 3, name: "for position in bad_list :", indent:0, repeat:1})
+			toolboxItems.push({id: 3, name: "for position in index_list :", indent:0, repeat:1})
+			columnsData[0].items.push({id: 3, name: "for position in index_list :", indent:0, repeat:1})
 			toolboxItems.push({id: 7, name: "is_bad = check_status()", indent:0, repeat:1})
 			columnsData[0].items.push({id: 7, name: "is_bad = check_status()", indent:0, repeat:1})
 			toolboxItems.push({id: 4, name: "add position to bad_list", indent:0, repeat:1})
@@ -255,7 +255,7 @@
 				case "go_to(position)":
 					key = 'go_to';
 					break;
-				case "for position in bad_list :":
+				case "for position in index_list :":
 					key = 'for_position';
 					break;
 				case "is_bad = check_status()":
