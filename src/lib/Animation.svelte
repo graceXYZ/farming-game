@@ -1105,7 +1105,7 @@
     }
 
     .watered {
-      background-color: rgba(255, 255, 255, 1);
+      background-color: #20441C;
     }
 
     .infected {
