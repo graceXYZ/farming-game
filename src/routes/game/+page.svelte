@@ -315,7 +315,7 @@
   <style>
 
     .feedbackText{
-      width: 100%;
+      /* width: 100%; */
       height: 12px;
 
       font-family: 'Roboto Flex Variable';
@@ -405,20 +405,31 @@
       order: 0;
       flex-grow: 0;
     }
+    
     .draggable {
       grid-area: a;
+      display: flex;
+      order: 1;
+      justify-self: right;
+      flex: 0 0;
+      /* justify-self: right; */
+      /* float: right; */
+      /* align-self: stretch;
+      flex-grow: 0; */
     }
     .animation {
       grid-area: b;
       display: flex;
       flex-direction: column;
+      /* flex-wrap: wrap; */
       align-items: flex-start;
       padding: 10px;
       gap: 10px;
-      margin: 0;
-      max-width: 575px;
-      min-width: 300px;
-      height: 340px;
+      
+      /* min-width: 200px; */
+      width: 100%;
+      /* max-width: 575px; */
+      /* height: 340px; */
 
       /* Translucent/Grayscale/Black/5% */
 
@@ -431,6 +442,7 @@
       order: 1;
       align-self: stretch;
       flex-grow: 1;
+      flex-shrink: 1;
     }
 
     .hidden {
@@ -535,14 +547,16 @@
 
     .wrap {
       display: grid;
-      width: 100%;
-      max-width: 1200px;
-      margin: 2em auto;
+      width: min-content;
+      max-width: 1210px;
       gap: 10px;
       grid-template-areas: "a b c";
       grid-template-areas:
         "a c"
         "a b";
+      /* grid-template-columns: min-content min-content; */
+      margin: 2em auto;
+
     }
 
     main {
@@ -593,7 +607,7 @@
       padding: 7.5px;
       gap: 5px;
 
-      height: 114px;
+      /* height: 114px; */
 
       /* Translucent/Orange/10% */
 
@@ -621,8 +635,7 @@
         margin: 0;
 
         width: 100%;
-        max-width: 575px;
-        min-width: 490px;
+        /* max-width: 575px; */
 
         /* width: 575px; */
 

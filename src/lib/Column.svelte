@@ -84,14 +84,17 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    position: relative;
     /* padding: 10px; */
     gap: 10px;
-    /* width: 100%;
-    height: 100%; */
+    width: 100%;
+    height: 100%;
 	}
+
 	.column-content {
-        height: 464px;
-        min-width: 250px;
+        min-height: 300px;
+        /* width: 100%; */
+        min-width: 230px;
         /* Notice that the scroll container needs to be the dndzone if you want dragging near the edge to trigger scrolling */
         overflow-y: scroll;
         display: flex;
@@ -305,14 +308,18 @@
     }
 
     .bottomBar {
+      position: absolute;
+      bottom: 10px;
+
       display: flex;
       flex-direction: row;
       justify-content: space-between;
-      align-items: center;
-      padding: 0px;
-      gap: 10px;
+      align-items: baseline;
+      padding: 0 10px;
+      gap: 5px;
+      flex-wrap: wrap;
 
-      width: 294px;
+      width: 150px;
       height: 26px;
       /* Inside auto layout */
 
@@ -330,18 +337,11 @@
       /* identical to box height */
 
       display: flex;
-      align-items: center;
+      align-items: baseline;
 
       /* Grayscale/Black */
-
+      order: 1;
       color: #000000;
-
-
-      /* Inside auto layout */
-
-      flex: none;
-      order: 0;
-      flex-grow: 0;
     }
 
     .numSteps {
@@ -352,18 +352,11 @@
       /* identical to box height */
 
       display: flex;
-      align-items: center;
-
+      align-items: baseline;
+      order: 0;
       /* Grayscale/Black */
 
       color: #000000;
-
-
-      /* Inside auto layout */
-
-      flex: none;
-      order: 1;
-      flex-grow: 0;
     }
     .fakeButton {
       display: flex;
@@ -401,7 +394,7 @@
 			 on:finalize={handleDndFinalizeCards}>
 				{#each items as item, i (item.id)}
 
-           <div class="card" animate:flip="{{duration: flipDurationMs}}" style="margin-left: {item.indent}px;" class:toolbox="{name==='Toolbox'}" class:selected={stepIndex==i && name==='Program'}>
+           <div class="card" animate:flip="{{duration: flipDurationMs}}" style="margin-left: {item.indent/2}px;" class:toolbox="{name==='Toolbox' || level==0}" class:selected={stepIndex==i && name==='Program'}>
             <div class="buttons">
               <div class="leftbutton" on:click={toggleIndentDown(item)} class:hide={name==='Toolbox' || level == 0 || (item.name.includes("repeat") && level == 1)}>
                 <button class:hide={name==='Toolbox'}> <Icon name=3 width="20px" height="20px"/> </button>
@@ -445,7 +438,7 @@
               </div>
             </div>
             <!-- <div class="colon" class:hide={!(item.name.includes("repeat")||item.name.startsWith("for")||item.name.includes("if"))}> : </div> -->
-            <div class="name" class:smallText="{level==3}">
+            <div class="name">
               {item.name}
             </div>
               
@@ -453,12 +446,13 @@
         {/each}
     </div>
     <div class:hideBottom={name=='Toolbox'} class="bottomBar">
-      <div class="numCommands">
-        # of Commands: {numCommands}
-      </div>
       <div class="numSteps">
         # of Steps: {numSteps}
       </div>
+      <div class="numCommands">
+        # of Commands: {numCommands}
+      </div>
+      
       <div class="fakeButton">
 
       </div>

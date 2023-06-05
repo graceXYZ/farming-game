@@ -119,17 +119,17 @@
       } else if (level==2){
         BOARD_SIZE_W = 7;
         BOARD_SIZE_H = 3;
-        widthBoard = 200;
+        widthBoard = 150;
         iterateTime = 500;
       } else if (level==3){
         BOARD_SIZE_W = 5;
         BOARD_SIZE_H = 1;
-        widthBoard = 90;
+        widthBoard = 70;
         iterateTime = 600;
       } else if (level==4){
         BOARD_SIZE_W = 3;
         BOARD_SIZE_H = 3;
-        widthBoard = 250;
+        widthBoard = 200;
         iterateTime = 600;
       }
       rowHeight = widthBoard / BOARD_SIZE_H;
@@ -1132,7 +1132,7 @@
         padding: 0px;
         gap: 10px;
 
-        width: 555px;
+        /* width: 555px; */
         height: 26px;
 
         flex: none;
@@ -1152,8 +1152,8 @@
         display: grid;
         margin: 0;
 
-        width: 375px;
-        height: 250px;
+        /* width: 375px; */
+        /* height: 250px; */
         /* Inside auto layout */
 
         flex: none;
@@ -1169,8 +1169,7 @@
         align-items: flex-start;
         padding: 0px;
         gap: 9px;
-
-        width: 100%;
+        /* width: 100%; */
         height: 100%;
     }
     
@@ -1180,17 +1179,19 @@
       align-items: center;
       padding: 0px;
       gap: 10px;
+      min-width: 350px;
+      flex-wrap: wrap;
+      /* width: 100px; */
 
-      width: 555px;
+      /* width: 555px; */
       /* height: 250px; */
 
 
       /* Inside auto layout */
-
       flex: none;
       order: 2;
-      align-self: stretch;
-      flex-grow: 0;
+      /* align-self: stretch;
+      flex-grow: 0; */
     }
 
 
