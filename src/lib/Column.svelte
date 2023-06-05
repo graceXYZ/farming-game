@@ -116,7 +116,7 @@
 
       font-family: 'Roboto', sans-serif;
       font-style: normal;
-      font-weight: 300;
+      font-weight: 100;
       font-size: 24px;
       line-height: 28px;
       display: flex;

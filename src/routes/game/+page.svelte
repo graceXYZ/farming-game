@@ -5,6 +5,7 @@
 
     import Draggable from '../../lib/Draggable.svelte';
     import Animation from '../../lib/Animation.svelte';
+    import Icon from '../../lib/Icon.svelte';
   
     import Modal from "../../lib/Modal.svelte";
   
@@ -16,6 +17,7 @@
     import conditionalImg from '../../lib/conditionalBlock.png';
     import forloopImg from '../../lib/forloop.png';
     import ifbadImg from '../../lib/ifbad.png';
+    
   
     let modal = true;
     let modalSuccess = false;
@@ -126,13 +128,58 @@
   
   <main>
   
-    <div class="wrapElements">
-        
         <div class="wrap">
-            <Draggable/>
-            <Animation/>
-        </div>
-    
+            <div class="draggable">
+              <Draggable/>
+            </div>
+            <div class="animation">
+              <Animation/>
+            </div>
+            <div class="info">
+                  <div class="levelMessage"> 
+                      <div class="levelDisplay">Level {level}</div>
+                      <select class="levelSelect" bind:value={level} on:change="{changeLevel}">
+                        <option value=0>
+                          {0}
+                        </option>
+                        <option value=1>
+                          {1}
+                        </option>
+                        <option value=2>
+                          {2}
+                        </option>
+                        <option value=3>
+                          {3}
+                        </option>
+                        <option value=4>
+                          {4}
+                        </option>
+                      </select>
+                  </div>
+                  
+                  <button class="instructionsButton" on:click={showModal}> 
+                    <div class="nextButton">
+                      <Icon name=7 width="14px" height="15px"/>
+                    </div>
+                    <div class="nextText">Show Instructions</div>
+                  </button>
+
+                  <div class="feedback"> 
+                    <div class='feedbackName'>
+                      Feedback:
+                    </div>
+                    <div class='feedbackText' bind:this={element}> {feedbackThis}  </div>
+                    <button class="buttonNext" class:hide={!success[level] || level==4} on:click={nextLevel}> 
+                      <div class="nextButton">
+                        <Icon name=6 width="15px" height="12px"/>
+                      </div>
+                      <div class="nextText">Next Level </div>
+                    </button>
+
+                    <button class="buttonSuccess" class:hide={!success[level] || level<4} on:click={successFullGameFunction}> Click me! </button>
+                  </div>
+            </div>
+
       <Modal shown={modal}>
         
         <!-- LEVEL 0 -->
@@ -241,7 +288,6 @@
 
       </Modal>
 
-
       <Modal shown={modalSuccess}>
 
         <!-- SUCCESS FULL GAME -->
@@ -260,39 +306,6 @@
         
       </Modal>
 
-
-      <div class="footerWrap">
-        <button on:click={showModal}>Show instructions</button>
-        <div class="levelMessage"> 
-    
-          <select class="levelSelect" bind:value={level} on:change="{changeLevel}">
-            <option value=0>
-              {0}
-            </option>
-            <option value=1>
-              {1}
-            </option>
-            <option value=2>
-              {2}
-            </option>
-            <option value=3>
-              {3}
-            </option>
-            <option value=4>
-              {4}
-            </option>
-          </select>
-
-          Level {level}
-        
-        </div>
-        <div class="feedback"> 
-          <div bind:this={element}> {feedbackThis}  </div>
-        <button class="buttonNext" class:hide={!success[level] || level==4} on:click={nextLevel}> Next Level</button>
-          <button class="buttonSuccess" class:hide={!success[level] || level<4} on:click={successFullGameFunction}> Click me! </button>
-        </div>
-      </div>
-
       
 
     </div>    
@@ -300,18 +313,209 @@
   </main>
   
   <style>
+
+    .feedbackText{
+      width: 100%;
+      height: 12px;
+
+      font-family: 'Roboto Flex Variable';
+      font-style: normal;
+      font-weight: 500;
+
+      font-size: 10px;
+      line-height: 12px;
+      /* identical to box height */
+
+      display: flex;
+      align-items: center;
+
+      /* Secondary/Orange */
+
+      color: #FF9814;
+
+
+      /* Inside auto layout */
+
+      flex: none;
+      order: 1;
+      align-self: stretch;
+      flex-grow: 0;
+    }
+
+    .feedbackName {
+      width: 56px;
+      height: 14px;
+
+      font-size: 12px;
+      line-height: 14px;
+      /* identical to box height */
+
+      display: flex;
+      align-items: center;
+
+      /* Secondary/Orange */
+      font-family: 'Roboto Flex Variable';
+      font-style: normal;
+      font-weight: 900;
+
+      color: #FF9814;
+
+
+      /* Inside auto layout */
+
+      flex: none;
+      order: 0;
+      flex-grow: 0;
+    }
+
+    .levelMessage {
+      width: 185px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .levelSelect {
+      width: 45px;
+      height: 18px;
+    }
+
+    .levelDisplay {
+      width: 85px;
+      height: 28px;
+
+      /* Web/Mobile/H3/Default */
+
+      font-family: 'Roboto Flex Variable';
+      font-style: normal;
+      font-weight: 100;
+      font-size: 24px;
+      line-height: 28px;
+      display: flex;
+      align-items: center;
+
+      /* Grayscale/Black */
+
+      color: #000000;
+
+
+      /* Inside auto layout */
+
+      flex: none;
+      order: 0;
+      flex-grow: 0;
+    }
+    .draggable {
+      grid-area: a;
+    }
+    .animation {
+      grid-area: b;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 10px;
+      gap: 10px;
+      margin: 0;
+      max-width: 575px;
+      min-width: 300px;
+      height: 340px;
+
+      /* Translucent/Grayscale/Black/5% */
+
+      background: rgba(0, 0, 0, 0.05);
+      border-radius: 10px;
+
+      /* Inside auto layout */
+
+      flex: none;
+      order: 1;
+      align-self: stretch;
+      flex-grow: 1;
+    }
+
     .hidden {
       display: none;
     }
+    
+    .instructionsButton {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: baseline;
+      padding: 5px 10px;
+      gap: 20px;
+
+      width: 153px;
+      max-width: 153px;
+      border: none;
+      height: 26px;
+
+      /* Grayscale/White */
+
+      background: #FFFFFF;
+      border-radius: 2.5px;
+
+      /* Inside auto layout */
+
+      flex: none;
+      order: 0;
+      flex-grow: 0;
+    }
+
     .buttonNext {
-      /* position: absolute;
-      right:0;
-      margin: 0px 10px; */
-      margin-left: 10px;
-      padding: 2px !important;
-      width: 130px !important;
-      grid-row: 0;
-      grid-column: 1;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      padding: 5px 6px;
+
+      gap: 15px;
+      width: 105px;
+      max-width: 105px;
+      height: 26px;
+
+      /* Grayscale/White */
+      background: #FFFFFF;
+      border-radius: 2.5px;
+      border: none;
+
+      /* Inside auto layout */
+
+      flex: none;
+      order: 2;
+      flex-grow: 0
+    }
+
+    .nextButton {
+      position: relative;
+      width: 6px;
+      height: 14px;
+      font-family: 'Font Awesome 6 Free';
+      font-style: normal;
+      font-weight: 900;
+      font-size: 14px;
+      line-height: 14px;
+      display: flex;
+      align-items: center;
+      text-align: center;
+    }
+
+    .nextText {
+      font-family: 'Roboto Flex Variable';
+      font-style: normal;
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 16px;
+
+      /* Grayscale/Black */
+      color: #000000;
+
+
+      /* Inside auto layout */
+
+      flex: none;
+      order: 1;
+      flex-grow: 0;
     }
 
     .buttonSuccess{
@@ -330,11 +534,15 @@
     }
 
     .wrap {
-        display: flex;
-        flex-direction: row;
-        position: relative;
-        justify-content: center;
-        flex-wrap: wrap;
+      display: grid;
+      width: 100%;
+      max-width: 1200px;
+      margin: 2em auto;
+      gap: 10px;
+      grid-template-areas: "a b c";
+      grid-template-areas:
+        "a c"
+        "a b";
     }
 
     main {
@@ -367,15 +575,6 @@
       margin-bottom: 0.2em;
     }
 
-    .wrapElements {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      margin: 0;
-      margin-top: 1.5em;
-      position: relative;
-    }
-  
     button {
       background-color: white;
       font-family: 'Roboto', sans-serif;
@@ -386,40 +585,61 @@
       margin: 0;
       border: 0.5px black solid;
     }
-    .levelMessage {
-      font-weight: bold;
-    }
-    .levelMessage, .feedback {
-      padding: 0.5em;
-      text-align: center;
-      min-width: 130px;
-      background-color: rgb(245, 245, 245);
-      border-radius: 6px;
-      
-    }
-  
+    
     .feedback {
       display: flex;
-      min-width: 500px;
-      /* display: block; */
-      text-align: right;
-      position: relative;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 7.5px;
+      gap: 5px;
+
+      height: 114px;
+
+      /* Translucent/Orange/10% */
+
+      background: rgba(255, 152, 20, 0.1);
+      border-radius: 7.5px;
+
+      /* Inside auto layout */
+
+      flex: none;
+      order: 2;
+      align-self: stretch;
+      flex-grow: 1;
+      z-index: 2;
     }
     
   
-    .footerWrap {
-        margin: 0.5em auto;
-        /* width: 800px; */
-        max-width: 95%;
-        min-width: 500px;
-        height: 100px;
-        display: grid;    
-        gap: 15px;
-        align-items: start;
-        grid-template-columns: 175px 130px 1fr;
+    .info {
+        grid-area: c;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-self: start;
+        padding: 10px;
+        gap: 10px;
+        margin: 0;
+
+        width: 100%;
+        max-width: 575px;
+        min-width: 490px;
+
+        /* width: 575px; */
+
+        /* Translucent/Grayscale/Black/5% */
+
+        background: rgba(0, 0, 0, 0.05);
+        border-radius: 10px;
+
+        /* Inside auto layout */
+
+        flex: none;
+        order: 0;
+        align-self: stretch;
+        flex-grow: 0;
     }
   
-    .footerWrap button {
+    .info button {
       width: 175px;
     }
   

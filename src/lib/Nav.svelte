@@ -82,12 +82,13 @@
 
     a {
         color: #000000;
-        text-decoration: none;
+        font-family: 'Fira Code';
     }
 
     li {
         display: inline;
         padding: 0 10px;
+        font-family: 'Fira Code';
     }
 
     @media screen and (width < 580px) {

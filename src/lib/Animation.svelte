@@ -117,14 +117,14 @@
         widthBoard = 150;
         iterateTime = 600;
       } else if (level==2){
-        BOARD_SIZE_W = 3;
-        BOARD_SIZE_H = 7;
-        widthBoard = 350;
+        BOARD_SIZE_W = 7;
+        BOARD_SIZE_H = 3;
+        widthBoard = 200;
         iterateTime = 500;
       } else if (level==3){
-        BOARD_SIZE_W = 1;
-        BOARD_SIZE_H = 5;
-        widthBoard = 350;
+        BOARD_SIZE_W = 5;
+        BOARD_SIZE_H = 1;
+        widthBoard = 90;
         iterateTime = 600;
       } else if (level==4){
         BOARD_SIZE_W = 3;
@@ -192,7 +192,7 @@
         let blockedOuter = [0,1,1,2,2,3,4,4,5,5,6,6];
         let blockedInner = [2,0,2,0,2,0,0,1,0,1,0,1];
         for (let j=0; j < blockedOuter.length; j++){
-          blockedCells[blockedOuter[j]][blockedInner[j]] = 1;
+          blockedCells[blockedInner[j]][blockedOuter[j]] = 1;
         }
       }
       
@@ -908,57 +908,158 @@
   <div class="wrapper">
 
   
-  <h2>field</h2>
-
-
-  <div class="field" style="grid-template-columns: repeat({BOARD_SIZE_W}, 1fr); grid-auto-rows: {rowHeight}; width:{BOARD_SIZE_W*rowHeight}px; height:{BOARD_SIZE_H*rowHeight}px">
-      {#each board as row, outerIndex}
-        {#each row as cell, index}
-          <div class="cell" class:character={charPosition[0]==outerIndex && charPosition[1]==index}
-          class:sapling={board[outerIndex][index] == SAPLING_CELL} 
-          class:watered={boardWater[outerIndex][index] == WET_CELL}
-          class:weed={level == 3 && boardWeed[outerIndex][index] == 1} 
-          class:startBox={level==3 && outerIndex==0 && index == 0}
-          class:dead={boardWeed[outerIndex][index] == 2}
-          class:blocked = {blockedCells[outerIndex][index]==1}
-          class:infected = {boardInfected[outerIndex][index]==1}
-          >
-            <!-- {#if board[outerIndex][index] === 1}
-              <Character {choiceChar}/>
-            {:else if board[outerIndex][index] === 0}
-              <Sapling {level}/>
-            {/if} -->
-            <!-- {boardWeed[outerIndex][index]} -->
-            <div class:hideCell={level!=4} class="indexText"> {outerIndex*BOARD_SIZE_W+index} </div>
-            
-            <div class="characterSVG" class:hideCell={charPosition[0]!=outerIndex || charPosition[1]!=index}>
-              <Icon name={charSelect} width="{rowHeight}px" height="{rowHeight}px" class="large"/>
-            </div>
-            
-          </div>
-        {/each}
-      {/each}
-  </div>
-
-  <div class="level4vars" class:hideCell={level!=4}>
-    position = {positionString}
-    <br>
-    infectedList = {infectedListString}
-    <br>
-    bad = {badString}
-  </div>
+  <h2 class="title">Field</h2>
 
   <div class="controls">
-    <button on:click={start}> {startorPause[started]}</button>
-    <button on:click={reset}>Reset</button>
-    <!-- <button on:click={pause}>  </button> -->
+    <button class="playButton" on:click={start}> 
+      <div class="playIcon">
+        <Icon name=5 width="16px" height="15px"/>
+      </div>
+      <div class="playText">{startorPause[started]}</div>
+    </button>
+    <button class="playButton" on:click={reset}> 
+      <div class="playIcon">
+        <Icon name=8 width="14px" height="15px"/>
+      </div>
+      <div class="playText">Reset</div>
+    </button>
+
   </div>
+
+  <div class="fieldAndVars">
+
+      <div class="field" style="grid-template-columns: repeat({BOARD_SIZE_W}, 1fr); grid-auto-rows: {rowHeight}; width:{BOARD_SIZE_W*rowHeight}px; height:{BOARD_SIZE_H*rowHeight}px">
+          {#each board as row, outerIndex}
+            {#each row as cell, index}
+              <div class="cell" class:character={charPosition[0]==outerIndex && charPosition[1]==index}
+              class:sapling={board[outerIndex][index] == SAPLING_CELL} 
+              class:watered={boardWater[outerIndex][index] == WET_CELL}
+              class:weed={level == 3 && boardWeed[outerIndex][index] == 1} 
+              class:startBox={level==3 && outerIndex==0 && index == 0}
+              class:dead={boardWeed[outerIndex][index] == 2}
+              class:blocked = {blockedCells[outerIndex][index]==1}
+              class:infected = {boardInfected[outerIndex][index]==1}
+              >
+                <!-- {#if board[outerIndex][index] === 1}
+                  <Character {choiceChar}/>
+                {:else if board[outerIndex][index] === 0}
+                  <Sapling {level}/>
+                {/if} -->
+                <!-- {boardWeed[outerIndex][index]} -->
+                <div class:hideCell={level!=4} class="indexText"> {outerIndex*BOARD_SIZE_W+index} </div>
+                
+                <div class="characterSVG" class:hideCell={charPosition[0]!=outerIndex || charPosition[1]!=index}>
+                  <Icon name={charSelect} width="{rowHeight}px" height="{rowHeight}px" class="large"/>
+                </div>
+                
+              </div>
+            {/each}
+          {/each}
+      </div>
+
+      <div class="level4vars" class:hideCell={level!=4}>
+        position = {positionString}
+        <br>
+        infectedList = {infectedListString}
+        <br>
+        bad = {badString}
+      </div>
+
+    </div>
   
 
 </div>
 
   
   <style>
+    .playButton {
+      padding: 5px 8px;
+      gap: 8px;
+
+      width: 70px;
+      
+      border: none;
+      height: 26px;
+
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+
+      /* Grayscale/White */
+      background: #FFFFFF;
+      border-radius: 2.5px;
+
+      /* Inside auto layout */
+
+      flex: none;
+      order: 0;
+      flex-grow: 0;
+    }
+
+    .playIcon {
+      position: relative;
+      width: 12px;
+      height: 15px;
+      font-family: 'Font Awesome 6 Free';
+      font-style: normal;
+      font-weight: 900;
+      font-size: 14px;
+      line-height: 14px;
+      display: flex;
+      align-items: center;
+      text-align: center;
+    }
+
+
+    .playText {
+      font-family: 'Roboto Flex Variable';
+      font-style: normal;
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 16px;
+      display: flex;
+      align-items: center;
+      text-align: center;
+
+      /* Grayscale/Black */
+      color: #000000;
+
+      /* Inside auto layout */
+
+      flex: none;
+      order: 1;
+      flex-grow: 0;
+    }
+
+
+    .title {
+      width: 51px;
+      height: 28px;
+
+      /* Web/Mobile/H3/Default */
+
+      font-family: 'Roboto Flex Variable';
+      font-style: normal;
+      font-weight: 100;
+      font-size: 24px;
+      line-height: 28px;
+      display: flex;
+      align-items: center;
+      margin: 0;
+      /* Grayscale/Black */
+
+      color: #000000;
+
+
+      /* Inside auto layout */
+
+      flex: none;
+      order: 0;
+      flex-grow: 0;
+    }
+
+
     .level4vars {
      
     }
@@ -986,8 +1087,8 @@
     }
 
     .startBox {
-      background-color: rgb(240, 240, 240) !important;
-      border: none !important;
+      background: #E5E5E5 !important;
+      /* border: none !important; */
     }
 
     .weed {
@@ -1020,14 +1121,28 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      border: 0.1px black solid;
+      border: 1.25px solid #FFFFFF;
       color: white;
     }
+
     .controls {
-        margin: auto;
         display: flex;
-        justify-content: center;
-        height: 40px;
+        flex-direction: row;
+        align-items: center;
+        padding: 0px;
+        gap: 10px;
+
+        width: 555px;
+        height: 26px;
+
+        flex: none;
+        order: 1;
+        align-self: stretch;
+        flex-grow: 0;
+    }
+
+    .controls button {
+      padding: 0;
     }
 
     .field {
@@ -1035,25 +1150,54 @@
         background-color: rgb(245, 245, 245);        
         /* position: relative; */
         display: grid;
-    }
-    .wrapper {
-        position: relative;
-        padding: 1em;
-        margin: 0.5em;
-        min-width: 280px;
-        border: solid black 1px;
-        display:grid;
-        grid-template-rows: 50px 1 1 1;
+        margin: 0;
+
+        width: 375px;
+        height: 250px;
+        /* Inside auto layout */
+
+        flex: none;
+        order: 0;
+        flex-grow: 0;
+
     }
 
-    @font-face {
-      font-family: 'Roboto';
-      src: url("https://fonts.googleapis.com/css2?family=Roboto&display=swap") format("woff");
+    .wrapper {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 0px;
+        gap: 9px;
+
+        width: 100%;
+        height: 100%;
     }
     
+    .fieldAndVars {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding: 0px;
+      gap: 10px;
+
+      width: 555px;
+      /* height: 250px; */
+
+
+      /* Inside auto layout */
+
+      flex: none;
+      order: 2;
+      align-self: stretch;
+      flex-grow: 0;
+    }
+
+
     h2 {
       text-align: center;
-      font-family: 'Roboto', sans-serif;
+      font-family: 'Roboto Flex Variable';
+      font-style: normal;
       font-weight: 100;
       color: #000000;
       height: 1.5em;
@@ -1066,7 +1210,8 @@
     }
 
     button {
-      font-family: 'Roboto', sans-serif;
+      font-family: 'Roboto Flex Variable';
+      font-style: normal;
       font-weight: 100;
       color: #000000;
       font-size: 1em;

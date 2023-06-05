@@ -21,6 +21,9 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@fontsource-variable/roboto-flex": "^5.0.2",
+		"@fontsource/fira-code": "^5.0.2",
+		"@fontsource/roboto": "^5.0.2",
 		"simple-crypto-js": "^3.0.1"
 	}
 }

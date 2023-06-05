@@ -5,14 +5,8 @@ body {
     background-color: #ffffff;
     margin: 8px;
 
-    @font-face {
-        font-family: 'Roboto';
-        src: url("https://fonts.googleapis.com/css2?family=Roboto&display=swap") format("woff");
-      }
-      
-    font-family: 'Roboto', sans-serif;
-    font-style: normal;
-    font-weight: 100;
+    font-family: 'Roboto Flex Variable', normal;
+    font-weight: 300;
     line-height: 1.5;
     font-weight: 400;
     
@@ -24,7 +18,7 @@ body {
   }
   
   a {
-    font-weight: 500;
+    font-weight: 300;
     color: #646cff;
     text-decoration: inherit;
   }
@@ -48,12 +42,16 @@ body {
     /* margin: 0 auto; */
     padding: 2rem;
     text-align: center;
+    font-family: 'Roboto Flex Variable', normal;
+    font-weight: 300;
   }
 
   * {
     margin:0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Roboto Flex Variable', normal;
+    font-weight: 300;
   }
   
   button {
@@ -76,6 +74,4 @@ body {
   button:focus-visible {
     outline: 4px auto -webkit-focus-ring-color;
   }
-  
-  @import url('https://fonts.googleapis.com/css2?family=Fira+Code&family=Roboto&display=swap');
-  
+    

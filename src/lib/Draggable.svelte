@@ -374,8 +374,9 @@
 	}
 
 	.clearAll {
-		font-family: 'Roboto', sans-serif;
-		font-weight: 700;
+		font-family: 'Roboto Flex Variable';
+      	font-style: normal;
+      	font-weight: 700;
 		font-size: 14px;
 		line-height: 16px;
 
@@ -391,10 +392,16 @@
 	}
 
 .together {
-	display: flex;
 	padding: 0;
 	margin: 0;
 	position: relative;
+	/* position: relative;
+	display: flex;
+	flex-shrink: 0;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 0px;
+    gap: 10px; */
 }
 	
 :global(*) {

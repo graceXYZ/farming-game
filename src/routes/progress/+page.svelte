@@ -86,10 +86,6 @@
 
 </script>
 
-<!-- <h2 class="title">
-    Progress
-</h2> -->
-
 <div class="table-container">
     <table class="unfixed-table">
       <thead>
@@ -127,7 +123,8 @@
     
     .title {
         margin: 20px;
-        
+        font-family: 'Roboto Flex Variable', normal;
+        font-weight: 300;
     }
 
    table {

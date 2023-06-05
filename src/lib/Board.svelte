@@ -50,21 +50,21 @@
   .board {
     position: relative;
     display: flex;
-    flex-direction: row;
-    align-items: flex-start;
+    
     padding: 0px;
     gap: 10px;
+    width: 100%;
   }
 
   .column {
-      
+      grid-row: 0;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
       padding: 10px;
       gap: 10px;
 
-      min-width: 250px;
+      width: 240px;
       height: 558px;
 
       /* Translucent/Grayscale/Black/5% */
@@ -83,9 +83,9 @@
   }
 
   .program {
-      /* width: 100%; */
-      min-width: 314px;
-      /* max-width: 500px !important; */
+      width: 250px;
+      min-width: 300px;
+      max-width: 500px;
     }
 
     /* .wideProgram {
