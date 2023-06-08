@@ -966,9 +966,9 @@
       <div class="level4vars" class:hideCell={level!=4}>
         position = {positionString}
         <br>
-        infectedList = {infectedListString}
+        bad_list = {infectedListString}
         <br>
-        bad = {badString}
+        is_bad = {badString}
       </div>
 
     </div>

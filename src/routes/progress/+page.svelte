@@ -20,6 +20,7 @@
 
 
     import {successLOCAL} from '../../lib/stores.js';
+    import { goto } from '$app/navigation';
     let success = [0,0,0,0,0];
     successLOCAL.subscribe(value => {
       let readVal = value;
@@ -28,7 +29,6 @@
     });
 
     var simpleCrypto = new SimpleCrypto("codeiscool")
-
 
     function encryptASCII(name, email, successArray) {
         // NAME_EMAIL_successArray string split by character
@@ -199,9 +199,12 @@
         </tr>
       </tfoot>
     </table>
+    
 </div>
 
 <style>
+    
+
     .headerTItle {
         display: flex;
         flex-direction: row;

@@ -2,6 +2,7 @@
     import '../../styles.css';
 
     import { writable } from "svelte/store";
+    import {goto} from "$app/navigation"
 
     import Draggable from '../../lib/Draggable.svelte';
     import Animation from '../../lib/Animation.svelte';
@@ -99,6 +100,10 @@
     function nextLevel(){
       level = parseInt(level)+1;
       changeLevel()
+    }
+
+    function progress(){
+        goto("/progress")
     }
 
     function successFullGameFunction() {
@@ -378,6 +383,8 @@
             Now, head back to the course to finish solving this mystery and restore sugar to the world!
         </div>
 
+        <button class="submitButton" on:click={progress}>View Progress</button>  
+
         <button class="modalButton" on:click={hideModalS}>Close</button>
         
       </Modal>
@@ -389,6 +396,34 @@
   </main>
   
   <style>
+    .submitButton {
+        display: flex;
+        flex-wrap: wrap;
+		    flex-direction: row;
+        width: 180px;
+        padding: 15px;
+        margin: 5px;
+        margin-top: 1em;
+        
+
+		/* padding: 5px 10px; */
+
+        /* border: none; */
+        height: 30px;
+        justify-content: center;
+        align-content: center;
+        text-align: center;
+
+		/* Grayscale/White */
+		background: #ffffff;
+        border: none;
+		border-radius: 3px;
+
+        font-family: 'Fira Code';
+        
+        /* font-size: 1em; */
+    }
+
     .XYZlogo {
       position: relative;
       width: 40px;
