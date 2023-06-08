@@ -78,13 +78,27 @@
     }
 
     function simpleEncryptBase64(name, email, success) {
+        let nameClean = ""
+        let nameArray = name.split("");
+        nameArray.forEach(element => {
+            if (element != "," && element != "+") {
+                nameClean += element;
+            }
+        });
+        let emailClean = ""
+        let emailArray = email.split("");
+        emailArray.forEach(element => {
+            if (element != "," && element != "+") {
+                emailClean += element;
+            }
+        });
         // NOTE: no commas or plus signs are allowed in Name or UniqueID fields
-        let stringCode = name + "+" + email + "+" + success.toString();
+        let stringCode = nameClean + "+" + emailClean + "+" + success.toString();
         stringCode = stringCode.toUpperCase();
         let chars = stringCode.split("");
         let cleanString = "";
         chars.forEach(element => {
-            if (element != "," && element != "+") {
+            if (element != ",") {
                 cleanString += element;
             }
         });
