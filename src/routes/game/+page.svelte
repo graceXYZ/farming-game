@@ -443,7 +443,7 @@
     .titleXYZ {
       font-family: 'Roboto Flex Variable';
       font-style: normal;
-      font-weight: 500;
+      font-weight: 900;
       font-size: 32px;
       line-height: 40px;
       display: flex;
