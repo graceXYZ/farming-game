@@ -29,7 +29,7 @@
     <!-- ok -->
 
     <ul class="character">
-      <li class="namegrid">Hi, {name ? name : ""}!</li>
+      <li class="namegrid">{name ? ("Hi, " + name + "!") : ""}</li>
       <!-- <li class="levelCheckWrap"> 
         <div class="levelCheck">0</div>
         <div class="levelCheck">1</div>
