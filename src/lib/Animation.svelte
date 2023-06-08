@@ -19,10 +19,16 @@
     let resetPending = false;
     let finishedFirstIndexRep = false;
 
+    let charOptionsMap = [0,1,2,13,10,11,12,14,15]
+
     let charSelect;
     charSelectStore.subscribe(value => {
       charSelect = value;
+      charSelect = charOptionsMap[charSelect];
     });
+
+    let charOptions = ["femaleWhite","teacher","maleBrown","arrowLeftSmall","arrowRightSmall","playButton","nextButton",'info','reset','XYZ','genericMaleWhite','muslimFemaleDark','nerdyMale','formal','femaleBlondeWhite','violinPlayer']
+
 
     let numSteps = 0;
     numStepsStore.subscribe(value => {

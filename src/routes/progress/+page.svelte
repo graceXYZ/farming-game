@@ -78,12 +78,13 @@
     }
 
     function simpleEncryptBase64(name, email, success) {
+        // NOTE: no commas or plus signs are allowed in Name or UniqueID fields
         let stringCode = name + "+" + email + "+" + success.toString();
         stringCode = stringCode.toUpperCase();
         let chars = stringCode.split("");
         let cleanString = "";
         chars.forEach(element => {
-            if (element != ",") {
+            if (element != "," && element != "+") {
                 cleanString += element;
             }
         });
@@ -112,12 +113,9 @@
         return decode
     }
 
-    // let cipherText = fancyEncrypt(name)
-
     let cipherText = simpleEncryptBase64(name, email, success)
     let decryptChars = simpleDecryptBase64(cipherText);
     console.log("decryptChars: " + decryptChars)
-
 
     $: {
         // cipherText = fancyEncrypt(name, success)

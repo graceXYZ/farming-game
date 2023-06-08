@@ -1,5 +1,5 @@
 <script lang="ts">
-    let charOptions = ["femaleWhite","teacher","maleBrown"]
+    let charOptions = [0,1,2,13,10,11,12,14,15]
 
     import Icon from "./Icon.svelte";
     import {goto} from "$app/navigation"
@@ -44,7 +44,7 @@
         {#each charOptions as val,idx}
             <button on:click={()=>selected=idx} class="selectOption" class:selected="{selected==idx}">
                 <div class="iconWrap">
-                    <Icon name={idx} width="100px" height="100px" class="large"/>
+                    <Icon name={val} width="75px" height="75px" class="large"/>
                 </div>
             </button>
         {/each}
@@ -69,7 +69,6 @@
 
 <style>
     .submitButton {
-        
         display: flex;
         flex-wrap: wrap;
 		flex-direction: row;
@@ -106,7 +105,7 @@
     .iconWrap {
         position: absolute;
         left: 5px;
-        top: 10px;
+        top: 5px;
         /* width: 100px;
         height: 100px; */
     }
@@ -125,8 +124,8 @@
         width: 120px; */
         position: relative;
         padding: 10px;
-        width: 120px;
-        height: 120px;
+        width: 85px;
+        height: 85px;
         background-color: rgb(146, 146, 146);
     }
 
@@ -139,6 +138,7 @@
     .charSelect {
         display: flex;
         flex-wrap: wrap;
+        width: 300px;
         justify-content: left;
         margin-top: 1em;
         /* width: 450px; */
