@@ -25,7 +25,7 @@
 
 </script>
   
-<nav>
+<nav class="wrap">
     <!-- ok -->
 
     <ul class="character">
@@ -48,6 +48,14 @@
 </nav>
 
 <style>
+    .wrap {
+        display: flex;
+        justify-content: space-between;
+        padding: 3px 0px;
+        background: #cacafa;
+        color: #000000;
+    }
+
     .selected {
         text-shadow: #000000;
         border-bottom: 0.5px black solid;
@@ -87,10 +95,9 @@
     }
 
     .character {
-        width: 100%;
         display: flex;
-        justify-content: left;
-        text-align: center;
+        justify-content: right;
+        text-align: right;
         font-weight: bold;
         grid-column: 1;
         padding-right: 0;
@@ -100,9 +107,6 @@
     nav ul {
         justify-content: right;
         list-style: none;
-        padding: 3px 0px;
-        background: #cacafa;
-        color: #000000;
         grid-row: 1;
     }
 
@@ -117,19 +121,12 @@
         font-family: 'Fira Code';
     }
 
-    @media screen and (width < 580px) {
-        
+    @media (width < 600px) {
         .pages {
-            justify-content: right;
+            justify-content: right !important;
             gap: 12%;
         }
 
-        /* .namegrid {
-            display: none;
-        } */
-        /* li {
-            padding: 0 1px;
-        } */
     }
 
 </style>
