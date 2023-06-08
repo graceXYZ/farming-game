@@ -77,6 +77,21 @@
         return decryptChars;
     }
 
+    function simpleEncryptBase64(name, email, success) {
+        let stringCode = name + "+" + email + "+" + success.toString();
+        stringCode = stringCode.toUpperCase();
+        let chars = stringCode.split("");
+        let cleanString = "";
+        chars.forEach(element => {
+            if (element != ",") {
+                cleanString += element;
+            }
+        });
+        console.log("stringCode: " + cleanString)
+        let charsEncrypt = btoa(cleanString)
+        console.log("cipherText: " + charsEncrypt);
+        return charsEncrypt;
+    }
 
     function fancyEncrypt(name, success) {
         // single encrypted code communicating success at each level
@@ -92,16 +107,21 @@
         return cipherTextL;
     }
 
+    function simpleDecryptBase64(cipherText) {
+        let decode = atob(cipherText);
+        return decode
+    }
+
     // let cipherText = fancyEncrypt(name)
 
-    let cipherText = encryptASCII(name, email, success);
-    let decryptChars = decryptASCII(cipherText);
+    let cipherText = simpleEncryptBase64(name, email, success)
+    let decryptChars = simpleDecryptBase64(cipherText);
     console.log("decryptChars: " + decryptChars)
 
 
     $: {
         // cipherText = fancyEncrypt(name, success)
-        cipherText = encryptASCII(name, email, success)
+        cipherText = simpleEncryptBase64(name, email, success)
         
         totalSuccess = 0;
         success.forEach( num => {
