@@ -58,17 +58,21 @@
       successStatus = value;
     });
 
+    let level = 0;
 
     import {successLOCAL} from '../../lib/stores.js';
     let success = [0,0,0,0,0];
     successLOCAL.subscribe(value => {
       let readVal = value;
       success = JSON.parse(value);
+      if (level==4 && success[4]==1){
+        modalSuccess = true;
+      }
     });
 
     console.log("SUCCESS DEFINED"+ success)
     
-    let level = 0;
+    
     
     levelStore.subscribe(value => {
       level = value;
@@ -209,6 +213,7 @@
                       <Icon name=7 width="14px" height="15px"/>
                     </div>
                     <div class="nextText">Show Instructions</div>
+                    <div class="nextTextNarrow">Instructions</div>
                   </button>
 
                   <div class="feedback" bind:this={element} style="background-color: {feedbackBGColors[currFeedbackInd]}"> 
@@ -220,7 +225,8 @@
                       <div class="nextButton">
                         <Icon name=6 width="15px" height="12px"/>
                       </div>
-                      <div class="nextText">Next Level </div>
+                      <div class="nextText">Next Level</div>
+                      <div class="nextText nextTextNarrow">Next Level</div>
                     </button>
 
 
@@ -229,6 +235,7 @@
                         <Icon name=6 width="15px" height="12px"/>
                       </div>
                       <div class="nextText">Continue!</div>
+                      <div class="nextText nextTextNarrow">Continue!</div>
                     </button>
 
                     <!-- <button class="buttonSuccess" class:hide={!success[level] || level<4} on:click={successFullGameFunction}> Click me! </button> -->
@@ -253,53 +260,60 @@
         <!-- LEVEL 1 -->
         <h2 class:hide={level!=1}  style="margin-bottom: 0.1em">Level 1</h2>
         <div class:hide={level!=1}  class="ModalTextNarrow"> 
-          <p style="margin-bottom: 15px">Uh oh! Even with the watering yesterday, some of the beet leaves are turning yellow. What is happening?!
-          Try watering the rest of the field to see if more water will help.</p>
-          <!-- <br> -->
-          <p>To communicate more easily with your character, you have a new toolbox option to allow repeated commands!
-            Create a <strong>repeat block</strong> by adding a single indent to each of following commands to be repeated.</p>
-          <br>
-          <!-- <br> -->
-          <img src={repeatImg} alt="Repeat block example" width="200px" style="position:absolute; right:25px; top: 85px">
-          <p>Press <strong>Play</strong> to activate your program, and <strong>Reset</strong> to go back to the start. </p>
-          
-          <p>When all the plants are watered, you can move on to the next level!</p>
+          <div class="modalTextInner">
+              <p style="margin-bottom: 15px">Uh oh! Even with the watering yesterday, some of the beet leaves are turning yellow. What is happening?!
+              Try watering the rest of the field to see if more water will help.</p>
+              <!-- <br> -->
+              <p>To communicate more easily with your character, you have a new toolbox option to allow repeated commands!
+                Create a <strong>repeat block</strong> by adding a single indent to each of following commands to be repeated.</p>
+              <br>
+              <!-- <br> -->
+              <p>Press <strong>Play</strong> to activate your program, and <strong>Reset</strong> to go back to the start. </p>
+              <p>When all the plants are watered, you can move on to the next level!</p>
+          </div>
+          <div class="modalImgWrap">  <img src={repeatImg} alt="Repeat block example" width="200px">
+          </div>
         </div>
 
 
         <!-- LEVEL 2 -->
         <h2 class:hide={level!=2}  style="margin-bottom: 0.1em">Level 2</h2>
         <div class:hide={level!=2}  class="ModalTextNarrow"> 
+          <div class="modalTextInner">
           <p style="margin-bottom: 15px">Uh oh! The beet leaves are turning even more yellow and their roots look thin and hairy. Maybe we are watering them too much?</p>
           <p>Avoid the areas that have already been watered (dark blue squares) and water only the plants that need them!</p>
           <br>
           <p>You can now add a repeat block inside of another repeat block!</p>
           <br>
-          <img src={repeat2Img} alt="Repeat block example" width="200px" style="position:absolute; right:25px; top: 85px">
           <p>Press <strong>Play</strong> to activate your program, and <strong>Reset</strong> to go back to the start. </p>
           
           <p>When all the plants are watered, you can move on to the next level!</p>
+          </div>
+          <img src={repeat2Img} alt="Repeat block example" width="200px">
+
         </div>
 
 
         <!-- LEVEL 3 -->
         <h2 class:hide={level!=3}  style="margin-bottom: 0.1em">Level 3</h2>
         <div class:hide={level!=3}  class="ModalTextNarrow"> 
+          <div class="modalTextInner">
           <p style="margin-bottom: 15px"> Uh oh! There are a lot of weeds growing among the beet seedlings. Maybe this is what is killing them!
             You must de-weed the field to see if this solves our problem! But be careful, don't uproot the beet seedlings!  </p>
 
           <p style="margin-bottom: 15px">
             You must <strong>check</strong> each block for weeds (light green blocks) using the <em>check_for_weeds()</em> function, which stores the output status (true or false) in the variable <em>weed</em>.
           <strong>If there are weeds, remove them</strong> by calling the <em>remove_weeds()</em> function. Make sure you create an <em>if-statement block</em> with indentations to indicate which commands should be run if <em>weed</em> is currently true.</p>
-
-          <img src={ifbadImg} alt="Conditional block example" width="200px" style="position:absolute; right:25px; top: 85px">
           <p>When the weeds are removed and the beet plants are still alive, you can move on to the next level!</p>
+          </div>
+          <img src={ifbadImg} alt="Conditional block example" width="200px">
         </div>
 
 
         <!-- LEVEL 4 PAGE 1-->
         <h2 class:hide={level!=4  || !level4Modalpage}  style="margin-bottom: 0.1em">Level 4</h2>
         <div class:hide={level!=4 || !level4Modalpage}  class="ModalTextNarrow"> 
+          <div class="modalTextInner">
           <p style="margin-bottom: 15px"> You spent so much time carefully watering the plants, making sure not to over-water them. 
             You diligently checked the field for weeds and removed them. Still, the beet leaves are yellowing and you are quickly losing yield! 
             <em>What is the problem??? </em> </p>
@@ -310,8 +324,8 @@
             For each index or numbered location in the field [ <em>for position in index_list:</em> ], you will go to the next location [ <em>go_to(position)</em> ] and perform some actions.
             All commands included in the for loop must be indended one degree more than the for loop header.
           </p>
-
-          <img src={forloopImg} alt="For loop block example" width="200px" style="position:absolute; right:25px; top: 125px">
+        </div>
+          <img src={forloopImg} alt="For loop block example" width="200px">
           
         </div>
 
@@ -319,6 +333,7 @@
         <!-- LEVEL 4 PAGE 2-->
         <h2 class:hide={level!=4 || level4Modalpage}  style="margin-bottom: 0.1em">Level 4 </h2>
         <div class:hide={level!=4 || level4Modalpage}  class="ModalTextNarrow"> 
+          <div class="modalTextInner">
           <p style="margin-bottom: 15px"><strong>How can we store the locations of the beets that show symptoms?? </strong> 
              For each location, you will check for symptoms and store the locations of the bad beets in a list!</p>
           <p>
@@ -333,8 +348,8 @@
           </p>
 
           <p>Once you successfully record all locations of dying beets, we can figure out what is wrong and restore sugar to the world!</p>
-
-          <img src={conditionalImg} alt="If bad block example" width="200px" style="position:absolute; right:25px; top: 125px">
+          </div>
+          <img src={conditionalImg} alt="If bad block example" width="200px">
           
         </div>
         <!-- <button class="nextModalButton" class:hide={level!=4} style="{level4Modalpage ? '' : 'right: 110px;'}"  on:click={toggleLevel4Modal}>{level4Modalpage ? '->' : '<-'} Page {level4Modalpage ? 2 : 1}</button> -->
@@ -352,8 +367,8 @@
       <Modal shown={modalSuccess}>
 
         <!-- SUCCESS FULL GAME -->
-        <h2 class:hide={!success[4]}  style="margin-bottom: 0.1em">Congratulaions!!!</h2>
-        <div class:hide={!success[4]}  class="ModalTextNarrow"> 
+        <h2 class:hide={!success[4]}  style="margin-bottom: 0.1em">Congratulations!!!</h2>
+        <div class:hide={!success[4]}  class="ModalText"> 
           <p>You successfully passed all levels of the Sugar Beet Shortage Farming Game!</p>
           <br>
           <p>
@@ -475,12 +490,12 @@
 
     .levelSelect {
       width: 45px;
-      height: 18px;
+      /* height: 18px; */
     }
 
     .levelDisplay {
       width: 85px;
-      height: 28px;
+      /* height: 28px; */
 
       /* Web/Mobile/H3/Default */
 
@@ -526,8 +541,8 @@
       
       /* min-width: 200px; */
       width: 100%;
-      /* max-width: 575px; */
-      /* height: 340px; */
+      display: flex;
+      flex-grow: 3;
 
       /* Translucent/Grayscale/Black/5% */
 
@@ -551,9 +566,9 @@
       display: flex;
       flex-direction: row;
       justify-content: center;
-      align-items: baseline;
+      align-items: center;
       padding: 5px 10px;
-      gap: 20px;
+      gap: 5px;
 
       width: 153px;
       max-width: 153px;
@@ -580,7 +595,7 @@
       padding: 5px 6px;
 
       margin-top: 5px;
-      gap: 15px;
+      gap: 7px;
       width: 105px;
       max-width: 105px;
       height: 26px;
@@ -599,8 +614,8 @@
 
     .nextButton {
       position: relative;
-      width: 6px;
-      height: 14px;
+      /* width: 6px; */
+      /* height: 14px; */
       font-family: 'Font Awesome 6 Free';
       font-style: normal;
       font-weight: 900;
@@ -671,15 +686,27 @@
       text-align: left;
       padding: 0.5em;
     }
-    .ModalTextNarrow {
-      text-align: left;
-      padding: 0.5em;
-      width: 70%;
+    .modalTextInner {
+      
     }
-    .nextModalButton{
-      position:absolute;
-          bottom: 0;
-          right: 30px;
+    .modalTextInner p {
+      /* max-width: 400px; */
+    }
+    .ModalTextNarrow {
+        display: grid;
+        grid-template-columns: auto auto;
+        gap: 20px;
+        text-align: left;
+        padding: 0.5em;
+    }
+    .modalImgWrap {
+        width: 200px;
+    }
+
+    .nextModalButton {
+        position:absolute;
+        bottom: 0;
+        right: 30px;
       
     }
     .modalButton {
@@ -761,7 +788,6 @@
         margin: 0;
 
         width: 100%;
-        /* max-width: 575px; */
 
         /* width: 575px; */
 
@@ -780,9 +806,33 @@
   
     .info button {
       width: 175px;
+      
     }
 
-    @media (max-width: 1000px) {
+    .nextTextNarrow {
+      display: none;
+      font-family: 'Roboto Flex Variable';
+      font-style: normal;
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 16px;
+
+      /* Grayscale/Black */
+      color: #000000;
+
+
+      /* Inside auto layout */
+      flex: none;
+      order: 1;
+      flex-grow: 0;
+    }
+    /* .nextTextNarrow {
+        display: flex;
+        font-size: 12px !important;
+        line-height: 12px !important;
+      } */
+
+    @media (640px < width < 1000px) {
     .wrap {
         display: grid;
         width: min-content;
@@ -802,6 +852,113 @@
       .headerTitle{
         padding-top: 0px !important;
       }
+      
+    }
+
+    @media (max-width: 640px) {
+      .wrap {
+        display: grid;
+        width: 100%;
+        max-width: 640px;
+        gap: 10px;
+        grid-template-areas: "a b c d";
+        grid-template-areas:
+          "a a"
+          "b b"
+          "d c";
+        /* grid-template-columns: 2fr 3fr; */
+        min-height: 100%;
+        max-height: 100%;
+        margin: 1em auto;
+      }
+      .draggable {
+        width: 100%;
+      }
+      .headerTitle{
+        width: 100% !important;
+        padding-top: 0px !important;
+      }
+      .animation {
+        width: 100%;
+        /* flex: 1; */
+      }
+      
+      .feedbackText {
+        /* background-color: black; */
+        font-size: 12px !important;
+        line-height: 14px !important;
+        max-width: 200px;
+      }
+      .feedbackName {
+        font-size: 12px !important;
+        line-height: 14px !important;
+      }
+      .levelMessage {
+        gap: 5px;
+      }
+      .info {
+        gap: 5px;
+        /* max-width: 200px; */
+      }
+      
+      .levelDisplay {
+        width: 80px;
+        min-width: 0px;
+        font-size: 24px !important;
+        line-height: 28px !important;
+      }
+      .instructionsButton {
+        max-width: 110px;
+        padding: 0px 5px;
+        gap: 5px;
+        height: 22px;
+        align-items: center;
+      }
+      .nextButton{
+        height: 14px;
+      }
+      .buttonNext {
+        height: 22px;
+        padding: 0px 5px;
+        align-items: center;
+      }
+      /* .playButton{
+        height: 22px;
+      } */
+      .nextText {
+        display: none;
+      }
+      .levelMessage {
+        width: 100px;
+        gap: 3px;
+      }
+      .levelDisplay {
+        width: 80px;
+      }
+      .titleXYZ {
+        font-size: 28px;
+        line-height: 32px;
+      }
+      .headerTitle {
+        padding-bottom: 0px;
+      }
+      .nextTextNarrow {
+        display: block;
+        font-size: 12px !important;
+        line-height: 12px !important;
+      }
+      .ModalTextNarrow {
+        display: flex;
+        flex-wrap: wrap;
+
+      }
+      .info button {
+      width: 95px;
+      
+    }
+
+      
+
     }
   
     

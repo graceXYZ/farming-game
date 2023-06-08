@@ -101,10 +101,52 @@
       min-width: 265px;
     }
 
-    @media (max-width: 1000px) {
+    @media (640px <= width <= 1000px) {
       .program {
         min-width: 350px;
       }
+    }
+    @media (max-width: 640px) {
+      .program {
+        /* margin-right: 10px; */
+        /* margin: 0 10px; */
+        /* width: 100% !important; */
+      }
+      .board{
+        /* gap: 10px; */
+        display: grid !important;
+        grid-template-columns: 2fr 3fr;
+        gap: 10px;
+        margin: 0;
+        display: flex;
+        min-width: 50px !important;
+        /* width: 100% !important; */
+        /* margin-left: 10px; */
+        /* padding-right: 20px; */
+      }
+      
+      .column {
+        width: 100% !important;
+        min-width: 50px !important;
+        min-height: 150px;
+        /* width: 60%; */
+        /* margin-right: 10px; */
+        /* width: calc(40%-10px) !important;
+        max-width: calc(40%-10px) !important; */
+        /* width: 100%;
+        min-width: 40%; */
+        /* max-width: 600px; */
+      }
+      .narrow {
+        /* width: 40%; */
+        min-width: 50px !important;
+        /* width: calc(40%-10px) !important;
+        min-width: calc(40%-10px) !important;
+        max-width: calc(40%-10px) !important; */
+        /* width: 38%;
+        max-width: 38%; */
+      }
+      
     }
 
     /* .wideProgram {

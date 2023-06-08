@@ -273,7 +273,7 @@
       right: 5px;
       top: 7.5px;
       border-radius: 2.5px;
-      padding: 0px 6px 0px 5px;
+      padding: 0px;
     }
 
     .leftbutton button {
@@ -282,12 +282,10 @@
       border-radius: 2.5px;
       position: absolute;
       background-color: none;
-      height: 20px;
-      width: 20px;
       left: 5px;
       top: 7.5px;
       border-radius: 2.5px;
-      padding: 0px 6px 0px 5px;
+      padding: 0px;
 
     }
 
@@ -353,7 +351,7 @@
       align-items: baseline;
 
       /* Grayscale/Black */
-      order: 1;
+      order: 0;
       color: #000000;
     }
 
@@ -366,7 +364,7 @@
 
       display: flex;
       align-items: baseline;
-      order: 0;
+      order: 1;
       /* Grayscale/Black */
 
       color: #000000;
@@ -396,7 +394,7 @@
       display: none;
     }
 
-    @media (max-width: 1000px) {
+    @media (640px < width < 1000px) {
       .column-content {
         min-height: 210px;
         max-height: 210px;
@@ -418,6 +416,66 @@
       }
     }
 
+    @media (max-width: 640px) {
+      .column-content {
+        min-height: 110px;
+        max-height: 170px;
+        margin-bottom: 50px;
+        justify-content: left;
+        min-width: 170px;
+        /* width: 100px !important; */
+        overflow-x: scroll;
+      }
+      
+      .wrapper {
+        min-height: 130px;
+        min-height: 130px;
+        overflow-x: scroll;
+      }
+      
+      .colTool {
+        max-height: 450px !important;
+        padding-bottom: 0px;
+        margin-bottom: 0px;
+        /* height: 100% !important; */
+      }
+      .name {
+        font-size: 10px;
+      }
+      .card {
+        padding: 5px 35px;
+        height: min-content;
+        justify-content: left;
+        /* width: min-content; */
+      }
+      .toolbox {
+        padding: 5px 5px !important;
+      }
+      .selectRepeat {
+        position: absolute;
+        top: 3px;
+        left: 39%;
+      }
+      .selectDirect {
+        width: 33px;
+        font-size: 10px;
+      }
+      .leftbutton {
+        height: 27px;
+
+      }
+      .leftbutton button {
+        top: 4px;
+      }
+      .rightbutton button {
+        top: 4px;
+      }
+      .rightbutton {
+        height: 27px;
+      }
+      
+    }
+
 
 </style>
 <div class='wrapper' class:program="{name==='Program'}">
@@ -433,7 +491,7 @@
            <div class="card" animate:flip="{{duration: flipDurationMs}}" style="margin-left: {item.indent/2}px;" class:toolbox="{name==='Toolbox' || level==0}" class:selected={stepIndex==i && name==='Program'}>
             <div class="buttons">
               <div class="leftbutton" on:click={toggleIndentDown(item)} class:hide={name==='Toolbox' || level == 0 || (item.name.includes("repeat") && level == 1)}>
-                <button class:hide={name==='Toolbox'}> <Icon name=3 width="20px" height="20px"/> </button>
+                <button class:hide={name==='Toolbox'}> <Icon name=3 width="14px" height="9px"/> </button>
               </div>
               <div class="selectRepeat" class:hide={name==='Toolbox' || level == 0 || !item.name.includes("repeat")}>
                 <select class="selectDirect" bind:value={item.repeat} on:change="{handleRepSelect(i)}">
@@ -470,7 +528,7 @@
                 </select>
               </div>
               <div class="rightbutton" style="font-weight: 900;" on:click={toggleIndent(item)} class:hide={level == 0 || (item.name.includes("repeat") && level == 1)}>
-                <button class:hide={name==='Toolbox'}> <Icon name=4 width="20px" height="20px"/> </button>
+                <button class:hide={name==='Toolbox'}> <Icon name=4 width="14px" height="9px"/> </button>
               </div>
             </div>
             <!-- <div class="colon" class:hide={!(item.name.includes("repeat")||item.name.startsWith("for")||item.name.includes("if"))}> : </div> -->

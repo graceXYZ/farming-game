@@ -22,13 +22,17 @@
   
     .modal {
       background-color: rgb(235, 235, 235); 
-      max-width: 800px;
-      height: 420px;
+      width: 800px;
+      max-width: 95%;
+      min-height: 420px;
+      height: max-content;
       padding: 1rem;
       position: relative;
-      margin: 4em auto;
       z-index: 101;
+      margin: 4em auto;
+      overflow-y: scroll;
     }
+
     .close {
         float: right;
         cursor: pointer;
@@ -36,6 +40,14 @@
     .close:hover {
       font-weight: bold;
     }
+
+    @media (width < 640px) {
+      .modal {
+        font-size: 14px;
+      }
+      
+    }
+
    
   </style>
   

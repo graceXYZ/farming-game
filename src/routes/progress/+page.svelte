@@ -12,6 +12,12 @@
         name = value;
     });
 
+    import {emailStore} from '../../lib/stores.js';
+    let email = "";
+    emailStore.subscribe(value => {
+        email = value;
+    });
+
 
     import {successLOCAL} from '../../lib/stores.js';
     let success = [0,0,0,0,0];
@@ -23,53 +29,86 @@
 
     var simpleCrypto = new SimpleCrypto("codeiscool")
 
-    // version 1: encrypted code for every level
-    let plainText = name;
-    // let encryptedCodes = [];
-    // let plainTextCodes = [];
-    // for (let i = 0; i < 5; i++){
-    //     let plainText = data.name + i.toString();
-    //     const cipherText = simpleCrypto.encrypt(plainText)
-    //     console.log("Encryption process...")
-    //     console.log("Plain Text    : " + plainText)
-    //     console.log("Cipher Text   : " + cipherText)
-    //     const decipherText = simpleCrypto.decrypt(cipherText)
-    //     console.log("... and then decryption...")
-    //     console.log("Decipher Text : " + decipherText)
-    //     console.log("... done.")
-    //     plainTextCodes.push(plainText)
-    //     encryptedCodes.push(cipherText)
-    // }
-    // console.log(plainTextCodes)
-    // console.log(encryptedCodes)
 
-    // version 2: single encrypted code communicating success at each level
-    plainText = name + success.toString();
-    const cipherText = simpleCrypto.encrypt(plainText)
-    console.log("Encryption process...")
-    console.log("Plain Text    : " + plainText)
-    console.log("Cipher Text   : " + cipherText)
-    const decipherText = simpleCrypto.decrypt(cipherText)
-    console.log("... and then decryption...")
-    console.log("Decipher Text : " + decipherText)
-    console.log("... done.")
+    function encryptASCII(name, email, successArray) {
+        // NAME_EMAIL_successArray string split by character
+        // each character converted to ASCII number. (uppercase letters only)
+        // random letter placed in between each ASCII code
+        let stringCode = name + "_" + email + "_" + success.toString();
+        console.log("stringCode: " + stringCode)
+        stringCode = stringCode.toUpperCase();
+        let chars = stringCode.split("");
+        let charsEncrypt = ""
+        let allChars = "ABCDEFGHIJKLMNOPQURTUVWXYZ1234567890!@#$%^&*()./<>?;-=_+"; // replace this with ASCII order or something. Intentionally exclude commas cuz there will be commas in string of success array
+        let separatorChars = "asdfghjklzxcvbnmqwertyuiop";
+        chars.forEach(element => {
+            let uppercase = element.toUpperCase();
+            let eNum = allChars.indexOf(uppercase);
+            if (eNum > -1) {
+                let ran = Math.random() * 10
+                charsEncrypt += eNum + separatorChars.charAt(ran)
+            }
+        });
+        console.log("cipherText: " + charsEncrypt);
+        return charsEncrypt;
+    }
 
-    $: {
-        plainText = name + success.toString();
-        const cipherText = simpleCrypto.encrypt(plainText)
+    function decryptASCII(code) {
+        let allChars = "ABCDEFGHIJKLMNOPQURTUVWXYZ1234567890!@#$%^&*()./<>?;-=_+"; // replace this with ASCII order or something. Intentionally exclude commas cuz there will be commas in string of success array
+        let separatorChars = "asdfghjklzxcvbnmqwertyuiop";
+        let decryptChars = "";
+        let codeArray = code.split("");
+        let i = 0;
+        while (i< code.length){
+            // while we haven't found a separator char
+            let j = i;
+            let thisChar = code.charAt(i)
+            while (separatorChars.indexOf(code.charAt(j)) < 1) {
+                j ++;
+                thisChar += code.charAt(j)
+            }
+            let index = parseInt(thisChar);
+            thisChar = allChars.charAt(index)
+            decryptChars += thisChar;
+            // next is separator, so skip it too
+            i = j+1;
+        }
+        
+        return decryptChars;
+    }
+
+
+    function fancyEncrypt(name, success) {
+        // single encrypted code communicating success at each level
+        let plainText = name + success.toString();
+        let cipherTextL = simpleCrypto.encrypt(plainText)
         console.log("Encryption process...")
         console.log("Plain Text    : " + plainText)
-        console.log("Cipher Text   : " + cipherText)
-        const decipherText = simpleCrypto.decrypt(cipherText)
+        console.log("Cipher Text   : " + cipherTextL)
+        const decipherText = simpleCrypto.decrypt(cipherTextL)
         console.log("... and then decryption...")
         console.log("Decipher Text : " + decipherText)
         console.log("... done.")
-    
+        return cipherTextL;
+    }
+
+    // let cipherText = fancyEncrypt(name)
+
+    let cipherText = encryptASCII(name, email, success);
+    let decryptChars = decryptASCII(cipherText);
+    console.log("decryptChars: " + decryptChars)
+
+
+    $: {
+        // cipherText = fancyEncrypt(name, success)
+        cipherText = encryptASCII(name, email, success)
+        
         totalSuccess = 0;
         success.forEach( num => {
             totalSuccess += num;
         });
     }
+
 
     const copyContent = async () => {
         var copyText = document.getElementById("codeContainer");
@@ -90,7 +129,18 @@
     <table class="unfixed-table">
       <thead>
         <tr>
-            <th colspan="2" style="font-size: 30px">{name}</th>
+            <th colspan="2">
+                <div class="headerTItle">
+                    <div style="font-size: 25px;">
+                        {name} 
+                    </div>
+                    <div style="font-size: 15px; font-family: 'Fira Code', normal;">
+                        {email}
+                    </div>
+                </div>
+                
+            </th>
+            
         </tr>
       </thead>
       <tbody>
@@ -120,6 +170,14 @@
 </div>
 
 <style>
+    .headerTItle {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 20px;
+        width: 100%;
+        align-items: baseline;
+    }
     * {
         font-family: 'Roboto Flex Variable';
         font-style: normal;
@@ -140,7 +198,6 @@
         background: rgba(0, 0, 0, 0.15);
         width: 10%;
         font-family: 'Fira Code', normal;
-
     }
 
     .total th, .total td {

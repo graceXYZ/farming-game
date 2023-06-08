@@ -81,18 +81,19 @@
                `
         },
         "arrowLeftSmall": {
-            boxW: 12,
-            boxH: 12,
-            svg:  `<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M2.5 6L6.25 8.16506L6.25 3.83494L2.5 6ZM8.5 6.375C8.70711 6.375 8.875 6.20711 8.875 6C8.875 5.79289 8.70711 5.625 8.5 5.625L8.5 6.375ZM5.875 6.375L8.5 6.375L8.5 5.625L5.875 5.625L5.875 6.375Z" fill="black"/>
+            boxW: 14,
+            boxH: 9,
+            svg:  `<svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0.5 4.50001L8 8.83013L8 0.16988L0.5 4.50001ZM12.5 5.25001C12.9142 5.25001 13.25 4.91422 13.25 4.50001C13.25 4.08579 12.9142 3.75001 12.5 3.75001L12.5 5.25001ZM7.25 5.25001L12.5 5.25001L12.5 3.75001L7.25 3.75001L7.25 5.25001Z" fill="black"/>
                     </svg>`
         },
         "arrowRightSmall": {
-            boxW: 20,
-            boxH: 21,
-            svg:  `<svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M16.5 10.5L9 14.8301L9 6.16988L16.5 10.5ZM4.5 11.25C4.08579 11.25 3.75 10.9142 3.75 10.5C3.75 10.0858 4.08579 9.75001 4.5 9.75001L4.5 11.25ZM9.75 11.25L4.5 11.25L4.5 9.75001L9.75 9.75001L9.75 11.25Z" fill="black"/>
-                    </svg> `
+            boxW: 14,
+            boxH: 9,
+            svg:  `<svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M13.5 4.50001L6 8.83013L6 0.16988L13.5 4.50001ZM1.5 5.25001C1.08579 5.25001 0.75 4.91422 0.75 4.50001C0.75 4.08579 1.08579 3.75001 1.5 3.75001L1.5 5.25001ZM6.75 5.25001L1.5 5.25001L1.5 3.75001L6.75 3.75001L6.75 5.25001Z" fill="black"/>
+                    </svg>
+                    `
         },
         "playButton": {
             boxW: 12,
@@ -157,21 +158,45 @@
 
 <style>
     svg {
-        margin: 0 auto;
-        position: absolute;
-        top: 0;
-        left:0;
+        margin:  0 auto;
+        /* position: absolute; */
     }
+    
 
-    @media (max-width: 1000px) {
+    @media (640px < width < 1000px) {
       .level4 {
         width: 40px !important;
         height: 40px !important;
       }
       .level0 {
-        width: 65px !important;
-        height: 65px !important;
+        width: 65px ;
+        height: 65px;
       }
     }
+
+    @media (max-width: 640px) {
+        .level0 {
+            width: 38px !important ;
+            height: 38px !important;
+        } 
+        .level1 {
+            width: 36px !important;
+            height: 36px !important;
+        }
+        .level2 {
+            width: 20px !important;
+            height: 20px !important;
+        }
+        .level3 {
+            width: 30px !important;
+            height: 30px !important;
+        }
+        .level4 {
+        width: 40px !important;
+        height: 40px !important;
+      }
+    }
+
+
 
 </style>

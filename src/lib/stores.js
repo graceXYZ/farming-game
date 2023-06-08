@@ -29,6 +29,20 @@ if (typeof localStorage !== 'undefined') {
 }
 
 
+// email local storage
+let emailStoreS = '';
+if (typeof localStorage !== 'undefined') {
+    emailStoreS = localStorage.email;
+}
+// Set the stored value or a sane default.
+export const emailStore = writable(emailStoreS || "")
+
+// Anytime the store changes, update the local storage value.
+if (typeof localStorage !== 'undefined') {
+    emailStore.subscribe((value) => localStorage.email = value);
+}
+
+
 // char choice local storage
 let charSelectStoreS = '';
 if (typeof localStorage !== 'undefined') {

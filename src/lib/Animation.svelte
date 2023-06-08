@@ -928,7 +928,7 @@
 
   <div class="fieldAndVars">
 
-      <div class="field" class:fieldLevel4={level==4} class:fieldLevel0={level==0} style="grid-template-columns: repeat({BOARD_SIZE_W}, 1fr); grid-auto-rows: {rowHeight}; width:{BOARD_SIZE_W*rowHeight}px; height:{BOARD_SIZE_H*rowHeight}px">
+      <div class="field" class:fieldLevel4={level==4} class:fieldLevel3={level==3} class:fieldLevel2={level==2} class:fieldLevel1={level==1}  class:fieldLevel0={level==0} style="grid-template-columns: repeat({BOARD_SIZE_W}, 1fr); grid-auto-rows: {rowHeight}; width:{BOARD_SIZE_W*rowHeight}px; height:{BOARD_SIZE_H*rowHeight}px">
           {#each board as row, outerIndex}
             {#each row as cell, index}
               <div class="cell" class:character={charPosition[0]==outerIndex && charPosition[1]==index}
@@ -949,7 +949,7 @@
                 <div class:hideCell={level!=4} class="indexText"> {outerIndex*BOARD_SIZE_W+index} </div>
                 
                 <div class="characterSVG" class:hideCell={charPosition[0]!=outerIndex || charPosition[1]!=index}>
-                  <Icon name={charSelect} width="{rowHeight-10}px" height="{rowHeight-10}px" class="{level==4 ? "level4" : ""} {level==0 ? "level0" : ""}"/>
+                  <Icon name={charSelect} width="{rowHeight-10}px" height="{rowHeight-10}px" class="{level==4 ? "level4" : ""} {level==3 ? "level3" : ""} {level==2 ? "level2" : ""} {level==1 ? "level1" : ""} {level==0 ? "level0" : ""}"/>
                 </div>
                 
               </div>
@@ -972,6 +972,8 @@
 
   
   <style>
+    
+
     .playButton {
       padding: 5px 8px;
       gap: 8px;
@@ -1072,7 +1074,7 @@
       color:lightgray;
     }
     .hideCell {
-      display: none;
+      display: none !important;
     }
 
     .characterSVG {
@@ -1131,15 +1133,15 @@
         flex-direction: row;
         align-items: center;
         padding: 0px;
-        gap: 10px;
+        gap: 5px;
 
         /* width: 555px; */
         height: 26px;
 
-        flex: none;
+        /* flex: none;
         order: 1;
         align-self: stretch;
-        flex-grow: 0;
+        flex-grow: 0; */
     }
 
     .controls button {
@@ -1170,7 +1172,7 @@
         align-items: flex-start;
         padding: 0px;
         gap: 9px;
-        /* width: 100%; */
+        width: 100%;
         height: 100%;
     }
     
@@ -1221,7 +1223,7 @@
       border: 0.5px black solid;
     }
 
-    @media (max-width: 1000px) {
+    @media (640px <= width < 1000px) {
       .fieldLevel4 {
         width: 150px !important;
         height: 150px !important;
@@ -1229,7 +1231,57 @@
       .fieldLevel0 {
         width: 150px !important;
         height: 150px !important;
+      }     
+      
+    }
+
+    @media (max-width: 640px) {
+      .fieldAndVars {
+        display: flex;
+        flex-shrink: 5;
+        width: 100%;
+        /* width: 300px; */
+        min-width: 100px;
+        /* width: 100% !important; */
+        /* height: 100%; */
       }
+      .fieldLevel4 {
+        width: 150px !important;
+        height: 150px !important;
+      }
+      .fieldLevel0 {
+        width: 100px !important;
+        height: 100px !important;
+      }
+      .fieldLevel1 {
+        width: 200px !important;
+        height: 90px !important;
+      }
+      .fieldLevel2 {
+        width: 210px !important;
+        height: 90px !important;
+      }
+      .fieldLevel3 {
+        width: 200px !important;
+        height: 40px !important;
+      }
+
+      .wrapper {
+        gap: 5px;
+        width: 100%;
+        display: flex;
+        
+        flex-grow: 1;
+      }
+      .playButton{
+        height: 22px;
+      }
+      .playText {
+        font-size: 12px !important;
+        line-height: 12px !important;
+      }
+     
+      
     }
 
   </style>

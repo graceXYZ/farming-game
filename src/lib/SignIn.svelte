@@ -11,6 +11,14 @@
         name = value;
     });
     let nameNew = name;
+
+
+    import {emailStore} from '../lib/stores.js';
+    let email = "";
+    emailStore.subscribe(value => {
+        email = value;
+    });
+    let emailNew = email;
     
     import {charSelectStore} from '../lib/stores.js';
     let selected = 0;
@@ -21,6 +29,7 @@
     function playGame(){
         console.log("SELECT NAME: "+nameNew)
         nameStore.update(n => nameNew)
+        emailStore.update(n => emailNew)
         charSelectStore.update(n => selected)
         goto("/game")
     }
@@ -31,29 +40,63 @@
 
 
 <h2>Choose your character!</h2>
-<div class="charSelect">
-    {#each charOptions as val,idx}
-        <button on:click={()=>selected=idx} class="selectOption" class:selected="{selected==idx}">
-            <div class="iconWrap">
-                <Icon name={idx} width="100px" height="100px" class="large"/>
-            </div>
-        </button>
-    {/each}
-</div>
+    <div class="charSelect">
+        {#each charOptions as val,idx}
+            <button on:click={()=>selected=idx} class="selectOption" class:selected="{selected==idx}">
+                <div class="iconWrap">
+                    <Icon name={idx} width="100px" height="100px" class="large"/>
+                </div>
+            </button>
+        {/each}
+    </div>
 
-<h2 style="margin-top:1em; margin-bottom: 1em;">Type your name!</h2>
+    <h2 style="margin-top:1em; margin-bottom: 0.5em;">Type your name!</h2>
 
     <div style="display:flex">
-        <input style="margin-left: 5px; height:30px; font-size:20px" bind:value={nameNew}/>
+        <input style="margin-left: 5px; height:30px; font-size:20px; width: 200px;" bind:value={nameNew}/>
     </div>
-    <input class="hidden" type="character" name="character" value={selected} />
-    <button style="margin-top: 2em;" type="submit" on:click={playGame}>Let's Play!</button>
 
+    <h2 style="margin-top:1em; margin-bottom: 0.5em;">Type your unique ID!</h2>
+
+    <input class="hidden" type="character" name="character" value={selected} />
+
+    <div style="display: flex; gap: 10px; justify-content: space-between">
+        <input style="margin-left: 5px; height:30px; font-size:20px; width: 200px;" bind:value={emailNew}/>
+        <button class="submitButton" style="margin-top: 0em;" type="submit" on:click={playGame}>Let's Play!</button>    
+    </div>
 
 </div>
 
 <style>
+    .submitButton {
+        
+        display: flex;
+        flex-wrap: wrap;
+		flex-direction: row;
+        width: 120px;
+        padding: 0;
+        
+		/* padding: 5px 10px; */
+
+        /* border: none; */
+        height: 30px;
+        justify-content: center;
+        align-content: center;
+        text-align: center;
+
+		/* Grayscale/White */
+		background: #ffffff;
+        /* border: none; */
+		border-radius: 3px;
+
+        font-family: 'Roboto Flex Variable';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 1em;
+    }
+    
     .wrap {
+        position: relative;
         max-width: 500px;
         margin: 1.5em auto;
         padding: 1em;

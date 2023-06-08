@@ -313,8 +313,8 @@
 <style>
 	.playButton {
 		position: relative;
-		width: 6px;
-		height: 14px;
+		/* width: 6px;
+		height: 14px; */
 		font-family: 'Font Awesome 6 Free';
 		font-style: normal;
 		font-weight: 900;
@@ -357,7 +357,7 @@
 		justify-content: center;
 		align-items: center;
 		padding: 5px 6px;
-		gap: 15px;
+		gap: 5px;
 
 		width: 88px;
 		height: 26px;
@@ -409,6 +409,24 @@
 :global(*) {
 		box-sizing: border-box;
 		margin: 0;
+	}
+
+	@media (max-width: 640px) {
+		.resetButton {
+			height: 22px;
+			padding: 0px 5px;
+			align-items: center;
+		}
+		.clearAll {
+			font-size: 12px;
+			line-height: 12px;
+		}
+		.together {
+
+			/* margin: 0 10px; */
+
+			width: 100% !important;
+		}
 	}
 
 </style>
