@@ -26,6 +26,7 @@
 </script>
   
 <nav>
+    <!-- ok -->
 
     <ul class="character">
       <li class="namegrid">Hi, {name ? name : ""}!</li>
