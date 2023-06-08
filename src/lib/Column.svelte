@@ -422,7 +422,8 @@
         max-height: 170px;
         margin-bottom: 50px;
         justify-content: left;
-        min-width: 170px;
+        min-width: 100px;
+        width: 100%;
         /* width: 100px !important; */
         overflow-x: scroll;
       }
@@ -445,6 +446,7 @@
       .card {
         padding: 5px 35px;
         height: min-content;
+        width: max-content;
         justify-content: left;
         /* width: min-content; */
       }

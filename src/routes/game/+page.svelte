@@ -43,6 +43,11 @@
 
     import {successStatusStore} from '../../lib/stores.js';
     import {levelStore} from '../../lib/stores.js';
+    let level;
+    levelStore.subscribe(value => {
+      level = value;
+      modal = true;
+    });
 
     import { dataset_dev } from 'svelte/internal';
 
@@ -59,8 +64,6 @@
       successStatus = value;
     });
 
-    let level = 0;
-
     import {successLOCAL} from '../../lib/stores.js';
     let success = [0,0,0,0,0];
     successLOCAL.subscribe(value => {
@@ -75,10 +78,7 @@
     
     
     
-    levelStore.subscribe(value => {
-      level = value;
-      modal = true;
-    });
+    
     
     let feedbackThis = "";
     feedback.subscribe(value => {

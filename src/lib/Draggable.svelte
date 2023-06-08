@@ -299,7 +299,7 @@
 	<Board columns={columnsData} onFinalUpdate={handleBoardUpdated}/>
 	<button class="resetButton" on:click={resetAll}> 
 		<div class="playButton">
-			<Icon name=8 width="12px" height="13px"/>
+			<Icon name=16 width="16px" height="16px"/>
 		</div>
 		<div class="clearAll">
 			Clear All 
