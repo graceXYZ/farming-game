@@ -823,6 +823,7 @@
         margin: 0;
 
         width: 100%;
+        min-height: 185px;
 
         /* width: 575px; */
 
